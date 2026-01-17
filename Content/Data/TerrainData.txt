@@ -1,0 +1,587 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<terraintype>
+		<name>Polar Desert</name>
+		<displaycolor0>
+			<r>100</r>
+			<g>100</g>
+			<b>100</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Tundra</name>
+		<displaycolor0>
+			<r>106</r>
+			<g>103</g>
+			<b>79</b>
+		</displaycolor0>
+	</terraintype>
+		<terraintype>
+		<name>Alpine Tundra</name>
+		<displaycolor0>
+			<r>126</r>
+			<g>123</g>
+			<b>89</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Volcanic Tundra</name>
+		<displaycolor0>
+			<r>136</r>
+			<g>137</g>
+			<b>92</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Boreal Forest</name>
+		<displaycolor0>
+			<r>58</r>
+			<g>69</g>
+			<b>55</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Sparse Boreal Forest</name>
+		<displaycolor0>
+			<r>86</r>
+			<g>89</g>
+			<b>74</b>
+		</displaycolor0>
+	</terraintype>
+ 	<terraintype>
+		<name>Dense Boreal Forest</name>
+		<displaycolor0>
+			<r>50</r>
+			<g>61</g>
+			<b>52</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Subarctic Bog</name>
+		<displaycolor0>
+			<r>55</r>
+			<g>72</g>
+			<b>80</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Boreal Sandy Plains</name>
+		<displaycolor0>
+			<r>106</r>
+			<g>99</g>
+			<b>84</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Temperate Pine Forest</name>
+		<displaycolor0>
+			<r>66</r>
+			<g>76</g>
+			<b>58</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Temperate Forest</name>
+		<displaycolor0>
+			<r>65</r>
+			<g>88</g>
+			<b>63</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Sparse Temperate Forest</name>
+		<displaycolor0>
+			<r>75</r>
+			<g>95</g>
+			<b>69</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Dense Temperate Forest</name>
+		<displaycolor0>
+			<r>55</r>
+			<g>81</g>
+			<b>57</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Temperate Grassland</name>
+		<displaycolor0>
+			<r>88</r>
+			<g>98</g>
+			<b>75</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Temperate Mudland</name>
+		<displaycolor0>
+			<r>104</r>
+			<g>114</g>
+			<b>88</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Fertile Meadows</name>
+		<displaycolor0>
+			<r>75</r>
+			<g>85</g>
+			<b>67</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Temperate Bog</name>
+		<displaycolor0>
+			<r>50</r>
+			<g>69</g>
+			<b>77</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Volcanic Plains</name>
+		<displaycolor0>
+			<r>75</r>
+			<g>85</g>
+			<b>57</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Fertile Plains</name>
+		<displaycolor0>
+			<r>89</r>
+			<g>95</g>
+			<b>75</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Steppe</name>
+		<displaycolor0>
+			<r>95</r>
+			<g>100</g>
+			<b>75</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Temperate Sandy Plains</name>
+		<displaycolor0>
+			<r>186</r>
+			<g>149</g>
+			<b>109</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Subtropical Rainforest</name>
+		<displaycolor0>
+			<r>52</r>
+			<g>66</g>
+			<b>48</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Sparse Subtropical Rainforest</name>
+		<displaycolor0>
+			<r>60</r>
+			<g>76</g>
+			<b>57</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Dense Subtropical Rainforest</name>
+		<displaycolor0>
+			<r>44</r>
+			<g>56</g>
+			<b>38</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Subtropical Grassland</name>
+		<displaycolor0>
+			<r>72</r>
+			<g>90</g>
+			<b>64</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Wet Subtropical Bog</name>
+		<displaycolor0>
+			<r>60</r>
+			<g>89</g>
+			<b>97</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Wet Subtropical Mudland</name>
+		<displaycolor0>
+			<r>88</r>
+			<g>85</g>
+			<b>65</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Subtropical Sandy Plains</name>
+		<displaycolor0>
+			<r>186</r>
+			<g>159</g>
+			<b>109</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Volcanic Forest</name>
+		<displaycolor0>
+			<r>65</r>
+			<g>80</g>
+			<b>52</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Mediterranean Forest</name>
+		<displaycolor0>
+			<r>95</r>
+			<g>100</g>
+			<b>85</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Sparse Mediterranean Forest</name>
+		<displaycolor0>
+			<r>117</r>
+			<g>125</g>
+			<b>96</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Dense Mediterranean Forest</name>
+		<displaycolor0>
+			<r>117</r>
+			<g>140</g>
+			<b>96</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Mediterranean Pine Forest</name>
+		<displaycolor0>
+			<r>71</r>
+			<g>78</g>
+			<b>60</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Mediterranean Shrubland</name>
+		<displaycolor0>
+			<r>120</r>
+			<g>130</g>
+			<b>102</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Mediterranean Plains</name>
+		<displaycolor0>
+			<r>128</r>
+			<g>135</g>
+			<b>105</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Volcanic Shrubland</name>
+		<displaycolor0>
+			<r>85</r>
+			<g>95</g>
+			<b>67</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Dry Subtropical Bog</name>
+		<displaycolor0>
+			<r>60</r>
+			<g>69</g>
+			<b>77</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Dry Subtropical Mudland</name>
+		<displaycolor0>
+			<r>102</r>
+			<g>90</g>
+			<b>70</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Monsoon Forest</name>
+		<displaycolor0>
+			<r>58</r>
+			<g>78</g>
+			<b>48</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Sparse Monsoon Forest</name>
+		<displaycolor0>
+			<r>65</r>
+			<g>85</g>
+			<b>55</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Dense Monsoon Forest</name>
+		<displaycolor0>
+			<r>50</r>
+			<g>70</g>
+			<b>40</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Mud Desert</name>
+		<displaycolor0>
+			<r>160</r>
+			<g>125</g>
+			<b>90</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Sand Desert</name>
+		<displaycolor0>
+			<r>150</r>
+			<g>135</g>
+			<b>110</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Muddy Xeric Shrubland</name>
+		<displaycolor0>
+			<r>180</r>
+			<g>135</g>
+			<b>100</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Sandy Xeric Shrubland</name>
+		<displaycolor0>
+			<r>170</r>
+			<g>145</g>
+			<b>110</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Semiarid Desert</name>
+		<displaycolor0>
+			<r>150</r>
+			<g>145</g>
+			<b>110</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Semiarid Bushland</name>
+		<displaycolor0>
+			<r>165</r>
+			<g>160</g>
+			<b>125</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Semiarid Mudland</name>
+		<displaycolor0>
+			<r>185</r>
+			<g>160</g>
+			<b>125</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Volcanic Desert</name>
+		<displaycolor0>
+			<r>170</r>
+			<g>170</g>
+			<b>125</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Dry Steppe</name>
+		<displaycolor0>
+			<r>135</r>
+			<g>130</g>
+			<b>80</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Dry Shrubland</name>
+		<displaycolor0>
+			<r>145</r>
+			<g>140</g>
+			<b>90</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Dry Sandy Plains</name>
+		<displaycolor0>
+			<r>176</r>
+			<g>139</g>
+			<b>99</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Dry Fertile Plains</name>
+		<displaycolor0>
+			<r>109</r>
+			<g>115</g>
+			<b>95</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Grass Savanna</name>
+		<displaycolor0>
+			<r>155</r>
+			<g>160</g>
+			<b>100</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Sparse Tree Savanna</name>
+		<displaycolor0>
+			<r>135</r>
+			<g>140</g>
+			<b>80</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Tree Savanna</name>
+		<displaycolor0>
+			<r>115</r>
+			<g>135</g>
+			<b>70</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Volcanic Savanna</name>
+		<displaycolor0>
+			<r>135</r>
+			<g>130</g>
+			<b>80</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Dense Tree Savanna</name>
+		<displaycolor0>
+			<r>105</r>
+			<g>130</g>
+			<b>60</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Dry Tropical Bog</name>
+		<displaycolor0>
+			<r>70</r>
+			<g>79</g>
+			<b>87</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Dry Tropical Mudland</name>
+		<displaycolor0>
+			<r>98</r>
+			<g>89</g>
+			<b>60</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Dry Subtropical Forest</name>
+		<displaycolor0>
+			<r>105</r>
+			<g>115</g>
+			<b>85</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Sparse Dry Subtropical Forest</name>
+		<displaycolor0>
+			<r>135</r>
+			<g>140</g>
+			<b>90</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Dense Dry Subtropical Forest</name>
+		<displaycolor0>
+			<r>75</r>
+			<g>85</g>
+			<b>45</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Tropical Rainforest</name>
+		<displaycolor0>
+			<r>25</r>
+			<g>50</g>
+			<b>15</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Sparse Tropical Rainforest</name>
+		<displaycolor0>
+			<r>35</r>
+			<g>60</g>
+			<b>20</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Dense Tropical Rainforest</name>
+		<displaycolor0>
+			<r>10</r>
+			<g>40</g>
+			<b>5</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Wet Tropical Grassland</name>
+		<displaycolor0>
+			<r>82</r>
+			<g>100</g>
+			<b>60</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Wet Tropical Bog</name>
+		<displaycolor0>
+			<r>40</r>
+			<g>69</g>
+			<b>77</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Wet Tropical Mudland</name>
+		<displaycolor0>
+			<r>82</r>
+			<g>79</g>
+			<b>60</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Volcanic Rainforest</name>
+		<displaycolor0>
+			<r>75</r>
+			<g>85</g>
+			<b>60</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Tropical Sandy Plains</name>
+		<displaycolor0>
+			<r>82</r>
+			<g>79</g>
+			<b>60</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Rocklands</name>
+		<displaycolor0>
+			<r>135</r>
+			<g>119</g>
+			<b>99</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Shifting Sands</name>
+		<displaycolor0>
+			<r>226</r>
+			<g>169</g>
+			<b>129</b>
+		</displaycolor0>
+	</terraintype>
+</root>
