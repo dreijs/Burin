@@ -584,4 +584,20 @@
 			<b>129</b>
 		</displaycolor0>
 	</terraintype>
+	<terraintype>
+		<name>Glacial Plains</name>
+		<displaycolor0>
+			<r>210</r>
+			<g>210</g>
+			<b>210</b>
+		</displaycolor0>
+	</terraintype>
+	<terraintype>
+		<name>Polar Ice</name>
+		<displaycolor0>
+			<r>255</r>
+			<g>255</g>
+			<b>255</b>
+		</displaycolor0>
+	</terraintype>
 </root>

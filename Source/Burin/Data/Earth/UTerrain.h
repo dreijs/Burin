@@ -134,6 +134,8 @@ public:
 	static const int TROPICAL_SANDY_PLAINS;
 	static const int ROCKLANDS;
 	static const int SHIFTING_SANDS;
+	static const int GLACIAL_PLAINS;
+	static const int POLAR_ICE;
 
 	UTerrain();
 	~UTerrain();

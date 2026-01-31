@@ -123,6 +123,8 @@ const int UTerrain::VOLCANIC_RAINFOREST = 69;
 const int UTerrain::TROPICAL_SANDY_PLAINS = 70;
 const int UTerrain::ROCKLANDS = 71;
 const int UTerrain::SHIFTING_SANDS = 72;
+const int UTerrain::GLACIAL_PLAINS = 73;
+const int UTerrain::POLAR_ICE = 74;
 
 UTerrain::UTerrain(){
 
@@ -190,9 +192,9 @@ TArray<int> UTerrain::GetColor(UBurinWorld* world, int i, int mode) {
 		if (soil == 13) return UTerrain::SHIFTING_SAND;
 	}
 	if (mode == 0) {
-		if (elevation == 0 && soil == 14) return {255, 255, 255};
-		if (soil == 14) return { 210, 210, 210 };
+		if (elevation == 0 && soil == 14)								return world->GetDisplayColor0(UTerrain::POLAR_ICE);
 		if (elevation == 0) return { 10, 17, 35 };
+		if (soil == 14 || biome == 15)									return world->GetDisplayColor0(UTerrain::GLACIAL_PLAINS);
 		if ((biome == 0 || biome == 1) && soil == 1)					return world->GetDisplayColor0(UTerrain::VOLCANIC_TUNDRA);
 		if ((biome == 0 || biome == 1) && soil == 2)					return world->GetDisplayColor0(UTerrain::BOREAL_SANDY_PLAINS);
 		if (biome == 0 || (biome == 1 && soil == 4))					return world->GetDisplayColor0(UTerrain::TUNDRA);
