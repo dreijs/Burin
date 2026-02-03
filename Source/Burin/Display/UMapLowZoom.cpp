@@ -37,7 +37,7 @@ struct Triangle {
 TArray<Triangle> getWorldPoints(UBurinWorld* world, int mode) {
     TArray<Triangle> triangles;
 
-    FString fPath = FPaths::ProjectContentDir() + TEXT("Data/polygons_final.txt");
+    FString fPath = FPaths::ProjectContentDir() + TEXT("Data/Polygons/Scale_8/Polygons_0_0.txt");
 
     TArray<FString> take;
     FFileHelper::LoadANSITextFileToStrings(*fPath, NULL, take);
@@ -117,19 +117,7 @@ TArray<TArray<Point>> triangulatePolygon(TArray < Point>& polygon) {
             Point pPrev = polygon[(i == 0) ? polygon.Num() - 1 : i - 1];
             Point pCurr = polygon[i];
             Point pNext = polygon[(i == polygon.Num() - 1) ? 0 : i + 1];
-
-            // Check for convexity (adjust based on polygon winding)
-            //if (crossProduct(pPrev, pCurr, pNext) > 0) { // Assuming counter-clockwise winding
                 bool isEar = true;
-                // Check if any other polygon vertex is inside this triangle
-                //for (size_t j = 0; j < polygon.Num(); ++j) {
-                //    if (j != i && j != ((i == 0) ? polygon.Num() - 1 : i - 1) && j != ((i == polygon.Num() - 1) ? 0 : i + 1)) {
-                //        if (isInsideTriangle(polygon[j], pPrev, pCurr, pNext)) {
-                //            isEar = false;
-                //            break;
-                //        }
-                //    }
-                //}
 
                 if (isEar) {
                     triangles.Add({ pPrev, pCurr, pNext });
@@ -155,18 +143,19 @@ TArray<TArray<Point>> triangulatePolygon(TArray < Point>& polygon) {
 }
 
 FCanvasUVTri* convertToTri(Triangle triangle) {
+    int s = 4;
     FCanvasUVTri* result = new FCanvasUVTri();
     FVector2D* v0 = new FVector2D();
-    v0->X = triangle.p1.x;
-    v0->Y = triangle.p1.y;
+    v0->X = triangle.p1.x * s;
+    v0->Y = triangle.p1.y * s;
     result->V0_Pos = *v0;
     FVector2D* v1 = new FVector2D();
-    v1->X = triangle.p2.x;
-    v1->Y = triangle.p2.y;
+    v1->X = triangle.p2.x * s;
+    v1->Y = triangle.p2.y * s;
     result->V1_Pos = *v1;
     FVector2D* v2 = new FVector2D();
-    v2->X = triangle.p3.x;
-    v2->Y = triangle.p3.y;
+    v2->X = triangle.p3.x * s;
+    v2->Y = triangle.p3.y * s;
     result->V2_Pos = *v2;
 
     FLinearColor* color = new FLinearColor(1.f*triangle.r/255, 1.f * triangle.g / 255, 1.f * triangle.b / 255, 1.f);
@@ -188,8 +177,6 @@ TArray<FCanvasUVTri> convertArrayToTri(TArray<Triangle> triangles) {
 
 TArray<FCanvasUVTri> UMapLowZoom::GetTriangles(UBurinWorld* world, int mode) {
     TArray<Triangle> triangles = getWorldPoints(world, mode);
-    //if(mode == 0) return convertArrayToTri(triangles, 0, 255, 0);
-    //else if(mode == 1) return convertArrayToTri(triangles, 255, 0, 0);
     
     TArray<FCanvasUVTri> result = convertArrayToTri(triangles);
 
@@ -198,54 +185,5 @@ TArray<FCanvasUVTri> UMapLowZoom::GetTriangles(UBurinWorld* world, int mode) {
 
 void UMapLowZoom::RenderVcMap()
 {
-    //if (GEngine)
-    //{
-    //    GEngine->AddOnScreenDebugMessage(
-    //        -1,            // Unique key for the message (-1 for a new message each time)
-    //        5.0f,          // Duration in seconds to display the message
-    //        FColor::Red,   // Color of the message
-    //        TEXT("My Debug Message") // The message to display (use TEXT() macro)
-    //    );
-    //}
-
 
 }
-
-//void UMapLowZoom::DrawToRenderTarget()
-//{
-//    if (!RenderTarget)
-//    {
-//        // Handle case where render target is not set up
-//        return;
-//    }
-//
-//    // A UCanvas object that will be used to issue draw calls
-//    UCanvas* CanvasObject = nullptr;
-//    // A pointer to the FCanvas instance used by UCanvas
-//    FCanvas* Canvas = nullptr;
-//    // A vector to hold a list of dirty regions
-//    FVector2D DrawSize = FVector2D(RenderTarget->SizeX, RenderTarget->SizeY);
-//
-//    // Call the static function to start drawing on the render target
-//    UCanvas::BeginDrawCanvasToRenderTarget(CanvasObject, Canvas, RenderTarget, DrawSize, FVector2D::ZeroVector);
-//
-//    if (Canvas)
-//    {
-//        // Example: Draw a simple tile (a colored rectangle)
-//        FCanvasTileItem TileItem(FVector2D(100.0f, 100.0f), FVector2D(50.0f, 50.0f), FLinearColor::Red);
-//        TileItem.Draw(Canvas);
-//
-//        // Example: Draw some text
-//        FCanvasTextItem TextItem(FVector2D(100.0f, 200.0f), FText::FromString("Hello from FCanvas!"), GEngine->GetSmallFont(), FLinearColor::Green);
-//        TextItem.Draw(Canvas);
-//
-//        // Example: Draw a line
-//        FCanvasLineItem LineItem(FVector2D(0.0f, 0.0f), FVector2D(256.0f, 256.0f));
-//        LineItem.SetColor(FLinearColor::Blue);
-//        Canvas->DrawItem(LineItem);
-//
-//        // Call the static function to finish drawing
-//        UCanvas::EndDrawCanvasToRenderTarget(CanvasObject);
-//    }
-//}
-
