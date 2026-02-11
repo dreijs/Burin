@@ -13,6 +13,8 @@
 #include "../Data/Earth/UTerrain.h"
 #include <Burin/UBurinWorld.h>
 
+TArray<UTriangleDataEntry> TriangleData;
+
 // Sets default values
 UMapLowZoom::UMapLowZoom()
 {
@@ -23,142 +25,87 @@ UMapLowZoom::~UMapLowZoom()
 
 }
 
-// from Google search AI:
+// Function to calculate the signed area of a triangle defined by three points
+double sign(double x1, double y1, double x2, double y2, double x3, double y3) {
+    return (x1 - x3) * (y2 - y3) - (x2 - x3) * (y1 - y3);
+}
 
-struct Point {
-    double x, y;
-};
+// Function to check if a point is inside a triangle
+bool isPointInTriangle(double xp, double yp, double x1, double y1, double x2, double y2, double x3, double y3) {
+    if (x1 == x2 && y1 == y2 && x1 == x3 && y1 == y3) return false;
+    // Calculate signs of areas of the three subtriangles formed by the point
+    double d1 = sign(xp, yp, x1, y1, x2, y2);
+    double d2 = sign(xp, yp, x2, y2, x3, y3);
+    double d3 = sign(xp, yp, x3, y3, x1, y1);
 
-struct Triangle {
-    Point p1, p2, p3;
-    int r, g, b;
-};
+    // Check if the signs are consistent (all positive or all negative/zero)
+    bool has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+    bool has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
 
-TArray<Triangle> getWorldPoints(UBurinWorld* world, int mode) {
-    TArray<Triangle> triangles;
+    // The point is inside the triangle if not all signs are negative and not all signs are positive
+    // (i.e., all signs are the same, including zero)
+    return !(has_neg && has_pos);
+}
 
-    FString fPath = FPaths::ProjectContentDir() + TEXT("Data/Polygons/Scale_8/Polygons_0_0.txt");
+bool isPointInCoordTriangle(double xp, double yp, int x1, int y1, int x2, int y2, int x3, int y3) {
+    return isPointInTriangle(
+        (xp + 180) / 360 * 4096,
+        (yp + 90) / 180 * 4096,
+        1. * x1,
+        1. * y1,
+        1. * x2,
+        1. * y2,
+        1. * x3,
+        1. * y3
+    );
+}
 
-    TArray<FString> take;
-    FFileHelper::LoadANSITextFileToStrings(*fPath, NULL, take);
-
-    int r = 0, g = 0, b = 0;
-
-    for (int i = 0; i < take.Num(); i++) {
-        FString aString = take[i];
-        TArray<FString> stringArray = {};
-        aString.ParseIntoArray(stringArray, TEXT(","), false);
-
-        if (stringArray.Num() == 1) {
-            TArray<int> rgb = UTerrain::GetColor(world, FCString::Atoi(*stringArray[0]), mode);
-
-            r = rgb[0];
-            g = rgb[1];
-            b = rgb[2];
+TArray<double> UMapLowZoom::GetColorAtCoordinate(UBurinWorld* world, double x, double y) {
+    TArray<double> result = {0, 0, 0};
+    int i = 0;
+    for (UTriangleDataEntry& t : TriangleData) {
+        if (isPointInCoordTriangle(x, y, t.x1, t.y1, t.x2, t.y2, t.x3, t.y3)) {
+            TArray<int> rgb = UTerrain::GetColor(world, t.biomeData, 0);
+            result[0] = 1.f * rgb[0] / 255;
+            result[1] = 1.f * rgb[1] / 255;
+            result[2] = 1.f * rgb[2] / 255;
+            //result = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            //result[0] = (x + 180) / 360 * 4096;
+            //result[1] = (y + 90) / 180 * 4096;
+            //result[2] = i;
+            //result[3] = t.x1;
+            //result[4] = t.y1;
+            //result[5] = t.x2;
+            //result[6] = t.y2;
+            //result[7] = t.x3;
+            //result[8] = t.y3;
+            return result;
         }
-        else if (stringArray.Num() == 6) {
-            Point p1 = { FCString::Atoi(*stringArray[0]), FCString::Atoi(*stringArray[1]) };
-            Point p2 = { FCString::Atoi(*stringArray[2]), FCString::Atoi(*stringArray[3]) };
-            Point p3 = { FCString::Atoi(*stringArray[4]), FCString::Atoi(*stringArray[5]) };
-            Triangle ptTriangle = { p1, p2, p3, r, g, b};
-            triangles.Add(ptTriangle);
-        }
+        i++;
     }
 
-    return triangles;
+    return result;
 }
 
-static double crossProduct(Point p1, Point p2, Point p3) {
-    return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
-}
-
-double signedArea(Point p1, Point p2, Point p3) {
-    return 0.5 * ((p2.x - p1.x) * (p3.y - p1.y) - (p3.x - p1.x) * (p2.y - p1.y));
-}
-
-bool isInsideTriangle(Point p, Point a, Point b, Point c) {
-    // Calculate the signed areas of the main triangle and sub-triangles
-    double totalArea = signedArea(a, b, c);
-    double areaPBC = signedArea(p, b, c);
-    double areaPCA = signedArea(p, c, a);
-    double areaPAB = signedArea(p, a, b);
-
-    // If the totalArea is zero, the triangle is degenerate (a line or point)
-    // Handle this case as needed, e.g., return false or check if P is on the line segment.
-    if (totalArea == 0) {
-        // Example: if the triangle is degenerate, consider the point outside.
-        return false;
-    }
-
-    // Calculate barycentric coordinates
-    double alpha = areaPBC / totalArea;
-    double beta = areaPCA / totalArea;
-    double gamma = areaPAB / totalArea;
-
-    // Check conditions for point being inside the triangle (with a small epsilon for floating-point comparisons)
-    const double EPSILON = 1e-9;
-    return (alpha >= -EPSILON && alpha <= 1.0 + EPSILON) &&
-        (beta >= -EPSILON && beta <= 1.0 + EPSILON) &&
-        (gamma >= -EPSILON && gamma <= 1.0 + EPSILON);
-}
-
-TArray<TArray<Point>> triangulatePolygon(TArray < Point>& polygon) {
-    TArray<TArray<Point>> triangles;
-
-    // Ensure polygon has at least 3 vertices
-    if (polygon.Num() < 3) {
-        return triangles;
-    }
-
-    // Loop until only 3 vertices remain (forming the last triangle)
-    while (polygon.Num() > 3) {
-        bool earFound = false;
-        for (int32 i = 0; i < polygon.Num(); ++i) {
-            Point pPrev = polygon[(i == 0) ? polygon.Num() - 1 : i - 1];
-            Point pCurr = polygon[i];
-            Point pNext = polygon[(i == polygon.Num() - 1) ? 0 : i + 1];
-                bool isEar = true;
-
-                if (isEar) {
-                    triangles.Add({ pPrev, pCurr, pNext });
-                    // Remove pCurr from the polygon
-                    polygon.RemoveAt(i);
-                    earFound = true;
-                    break; // Restart search for ears
-                }
-            //}
-        }
-        if (!earFound) {
-            // Handle cases where no ear is found (e.g., self-intersecting polygon)
-            break;
-        }
-    }
-
-    // Add the final remaining triangle
-    if (polygon.Num() == 3) {
-        triangles.Add(polygon);
-    }
-
-    return triangles;
-}
-
-FCanvasUVTri* convertToTri(Triangle triangle) {
+FCanvasUVTri* convertToTri(UBurinWorld* world, int mode, UTriangleDataEntry triangleData) {
     int s = 4;
     FCanvasUVTri* result = new FCanvasUVTri();
     FVector2D* v0 = new FVector2D();
-    v0->X = triangle.p1.x * s;
-    v0->Y = triangle.p1.y * s;
+    v0->X = triangleData.x1 * s;
+    v0->Y = triangleData.y1 * s;
     result->V0_Pos = *v0;
     FVector2D* v1 = new FVector2D();
-    v1->X = triangle.p2.x * s;
-    v1->Y = triangle.p2.y * s;
+    v1->X = triangleData.x2 * s;
+    v1->Y = triangleData.y2 * s;
     result->V1_Pos = *v1;
     FVector2D* v2 = new FVector2D();
-    v2->X = triangle.p3.x * s;
-    v2->Y = triangle.p3.y * s;
+    v2->X = triangleData.x3 * s;
+    v2->Y = triangleData.y3 * s;
     result->V2_Pos = *v2;
 
-    FLinearColor* color = new FLinearColor(1.f*triangle.r/255, 1.f * triangle.g / 255, 1.f * triangle.b / 255, 1.f);
+    TArray<int> rgb = UTerrain::GetColor(world, triangleData.biomeData, mode);
+
+    FLinearColor* color = new FLinearColor(1.f * rgb[0]/255, 1.f * rgb[1] / 255, 1.f * rgb[2] / 255, 1.f);
 
     result->V0_Color = *color;
     result->V1_Color = *color;
@@ -167,23 +114,43 @@ FCanvasUVTri* convertToTri(Triangle triangle) {
     return result;
 }
 
-TArray<FCanvasUVTri> convertArrayToTri(TArray<Triangle> triangles) {
-    TArray<FCanvasUVTri> result;
-    for (Triangle& t : triangles) {
-        result.Add(*convertToTri(t));
+void UMapLowZoom::Initialize(UBurinWorld* world) {
+    TriangleData = {};
+
+    FString fPath = FPaths::ProjectContentDir() + TEXT("Data/Polygons/Scale_8/Polygons_0_0.txt");
+
+    TArray<FString> take;
+    FFileHelper::LoadANSITextFileToStrings(*fPath, NULL, take);
+
+    int biomeData = 0;
+
+    for (int i = 0; i < take.Num(); i++) {
+        FString aString = take[i];
+        TArray<FString> stringArray = {};
+        aString.ParseIntoArray(stringArray, TEXT(","), false);
+
+        if (stringArray.Num() == 1) {
+            biomeData = FCString::Atoi(*stringArray[0]);
+        }
+        else if (stringArray.Num() == 6) {
+            UTriangleDataEntry triangle = {};
+            triangle.x1 = FCString::Atoi(*stringArray[0]);
+            triangle.y1 = FCString::Atoi(*stringArray[1]);
+            triangle.x2 = FCString::Atoi(*stringArray[2]);
+            triangle.y2 = FCString::Atoi(*stringArray[3]);
+            triangle.x3 = FCString::Atoi(*stringArray[4]);
+            triangle.y3 = FCString::Atoi(*stringArray[5]);
+            triangle.biomeData = biomeData;
+
+            TriangleData.Add(triangle);
+        }
+    }
+}
+TArray<FCanvasUVTri> UMapLowZoom::GetTriangles(UBurinWorld* world, int mode) {
+    TArray<FCanvasUVTri> result = {};
+
+    for (UTriangleDataEntry& t : TriangleData) {
+        result.Add(*convertToTri(world, mode, t));
     }
     return result;
-}
-
-TArray<FCanvasUVTri> UMapLowZoom::GetTriangles(UBurinWorld* world, int mode) {
-    TArray<Triangle> triangles = getWorldPoints(world, mode);
-    
-    TArray<FCanvasUVTri> result = convertArrayToTri(triangles);
-
-    return result;
-}
-
-void UMapLowZoom::RenderVcMap()
-{
-
 }

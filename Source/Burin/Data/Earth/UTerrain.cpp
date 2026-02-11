@@ -50,6 +50,19 @@ const TArray<int> UTerrain::VERTISOL = { 80, 90, 150 };
 const TArray<int> UTerrain::ROCKY = { 209, 201, 194 };
 const TArray<int> UTerrain::SHIFTING_SAND = { 134, 125, 118 };
 
+const TArray<int> UTerrain::NO_FEATURES = { 255, 255, 255 };
+const TArray<int> UTerrain::WETLANDS_COLOR = { 0, 192, 128 };
+const TArray<int> UTerrain::HILL_COLOR = { 255, 128, 0 };
+const TArray<int> UTerrain::MOUNTAIN_COLOR = { 255, 0, 0 };
+const TArray<int> UTerrain::CLIFF_NORTH_COLOR = { 192, 0, 0 };
+const TArray<int> UTerrain::CLIFF_SOUTH_COLOR = { 128, 0, 0 };
+const TArray<int> UTerrain::OCEAN_COLOR = { 0, 16, 96 };
+const TArray<int> UTerrain::SEA_COLOR = { 0, 32, 128 };
+const TArray<int> UTerrain::INNER_SEA_COLOR = { 0, 32, 192 };
+const TArray<int> UTerrain::LAKE_COLOR = { 32, 96, 255 };
+const TArray<int> UTerrain::ICECAP_COLOR = { 240, 248, 255 };
+const TArray<int> UTerrain::ICY_WATER_COLOR = { 200, 224, 255 };
+
 const int UTerrain::POLAR_DESERT = 0;
 const int UTerrain::TUNDRA = 1;
 const int UTerrain::ALPINE_TUNDRA = 2;
@@ -126,7 +139,7 @@ const int UTerrain::SHIFTING_SANDS = 72;
 const int UTerrain::GLACIAL_PLAINS = 73;
 const int UTerrain::POLAR_ICE = 74;
 
-UTerrain::UTerrain(){
+UTerrain::UTerrain() {
 
 }
 
@@ -138,6 +151,7 @@ TArray<int> UTerrain::GetColor(UBurinWorld* world, int i, int mode) {
 	int elevation = i % 16;
 	int biome = (i / 16) % 16;
 	int soil = (i / 256) % 16;
+	int feature = (i / 4096) % 16;
 
 	if (mode == 1) {
 		if (elevation > 12) return UTerrain::ELEVATION_12;
@@ -153,10 +167,10 @@ TArray<int> UTerrain::GetColor(UBurinWorld* world, int i, int mode) {
 		if (elevation > 2) return UTerrain::ELEVATION_2;
 		if (elevation > 1) return UTerrain::ELEVATION_1;
 		if (elevation > 0) return UTerrain::ELEVATION_0;
-			return ELEVATION_N1;
+		return ELEVATION_N1;
 	}
-	if(mode == 2) {
-		if(elevation == 0) return ELEVATION_N1;
+	if (mode == 2) {
+		if (elevation == 0) return ELEVATION_N1;
 		if (biome == 0) return UTerrain::TUNDRA_COLOR;
 		if (biome == 1) return UTerrain::TAIGA;
 		if (biome == 2) return UTerrain::TEMPERATE;
@@ -190,6 +204,20 @@ TArray<int> UTerrain::GetColor(UBurinWorld* world, int i, int mode) {
 		if (soil == 11) return UTerrain::VERTISOL;
 		if (soil == 12) return UTerrain::ROCKY;
 		if (soil == 13) return UTerrain::SHIFTING_SAND;
+	}
+	if (mode == 4) {
+		if (feature == 0) return UTerrain::NO_FEATURES;
+		if (feature == 1) return UTerrain::WETLANDS_COLOR;
+		if (feature == 2) return UTerrain::HILL_COLOR;
+		if (feature == 3) return UTerrain::MOUNTAIN_COLOR;
+		if (feature == 4) return UTerrain::CLIFF_NORTH_COLOR;
+		if (feature == 5) return UTerrain::CLIFF_SOUTH_COLOR;
+		if (feature == 6) return UTerrain::OCEAN_COLOR;
+		if (feature == 7) return UTerrain::SEA_COLOR;
+		if (feature == 8) return UTerrain::INNER_SEA_COLOR;
+		if (feature == 9) return UTerrain::LAKE_COLOR;
+		if (feature == 10) return UTerrain::ICECAP_COLOR;
+		if (feature == 11) return UTerrain::ICY_WATER_COLOR;
 	}
 	if (mode == 0) {
 		if (elevation == 0 && soil == 14)								return world->GetDisplayColor0(UTerrain::POLAR_ICE);
@@ -287,5 +315,5 @@ TArray<int> UTerrain::GetColor(UBurinWorld* world, int i, int mode) {
 		if (biome == 13)												return world->GetDisplayColor0(UTerrain::DRY_SUBTROPICAL_FOREST);
 		if (biome == 14)												return world->GetDisplayColor0(UTerrain::TROPICAL_RAINFOREST);
 	}
-		return { 0, 0, 0 };
+	return { 0, 0, 0 };
 }

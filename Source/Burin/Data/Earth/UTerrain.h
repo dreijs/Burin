@@ -6,9 +6,9 @@
 #include <Burin/UBurinWorld.h>
 
 /**
- * 
+ *
  */
-class BURIN_API UTerrain 
+class BURIN_API UTerrain
 {
 public:
 
@@ -60,6 +60,19 @@ public:
 	static const TArray<int> VERTISOL;
 	static const TArray<int> ROCKY;
 	static const TArray<int> SHIFTING_SAND;
+
+	static const TArray<int> NO_FEATURES;
+	static const TArray<int> WETLANDS_COLOR;
+	static const TArray<int> HILL_COLOR;
+	static const TArray<int> MOUNTAIN_COLOR;
+	static const TArray<int> CLIFF_NORTH_COLOR;
+	static const TArray<int> CLIFF_SOUTH_COLOR;
+	static const TArray<int> OCEAN_COLOR;
+	static const TArray<int> SEA_COLOR;
+	static const TArray<int> INNER_SEA_COLOR;
+	static const TArray<int> LAKE_COLOR;
+	static const TArray<int> ICECAP_COLOR;
+	static const TArray<int> ICY_WATER_COLOR;
 
 	static const int POLAR_DESERT;
 	static const int TUNDRA;

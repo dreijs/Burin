@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include <Burin/UBurinWorld.h>
+#include "UTriangleDataEntry.h"
+
 #include "UMapLowZoom.generated.h"
 
 UCLASS(Blueprintable)
@@ -16,15 +18,15 @@ public:
 	UMapLowZoom();
 	~UMapLowZoom();
 
-	UPROPERTY()
-	UTextureRenderTarget2D* RenderTarget;
+	UFUNCTION(BlueprintCallable, Category = "RenderMap")
+	TArray<double> GetColorAtCoordinate(UBurinWorld* world, double x, double y);
 
-	UFUNCTION(BlueprintCallable, Category = "RenderVcMap")
-	void RenderVcMap();
-
-	UFUNCTION(BlueprintCallable, Category = "RenderVcMap")
+	UFUNCTION(BlueprintCallable, Category = "RenderMap")
 	TArray<FCanvasUVTri> GetTriangles(UBurinWorld* world, int mode);
 
-	//UFUNCTION(BlueprintCallable, Category = "RenderVcMap")
-	//void DrawToRenderTarget();
+	UFUNCTION(BlueprintCallable, Category = "RenderMap")
+	void Initialize(UBurinWorld* world);
+
+private:
+	TArray<UTriangleDataEntry> TriangleData;
 };
