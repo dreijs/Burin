@@ -19,7 +19,10 @@ public:
 	~UMapLowZoom();
 
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
-	TArray<double> GetColorAtCoordinate(UBurinWorld* world, double x, double y);
+	int GetTerrainDataAtCoordinate(UBurinWorld* world, double x, double y);
+
+	UFUNCTION(BlueprintCallable, Category = "RenderMap")
+	FString GetTerrainText(UBurinWorld* world, int v);
 
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
 	TArray<FCanvasUVTri> GetTriangles(UBurinWorld* world, int mode);

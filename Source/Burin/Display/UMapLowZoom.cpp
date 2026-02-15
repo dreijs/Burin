@@ -26,12 +26,12 @@ UMapLowZoom::~UMapLowZoom()
 }
 
 // Function to calculate the signed area of a triangle defined by three points
-double sign(double x1, double y1, double x2, double y2, double x3, double y3) {
+static double sign(double x1, double y1, double x2, double y2, double x3, double y3) {
     return (x1 - x3) * (y2 - y3) - (x2 - x3) * (y1 - y3);
 }
 
 // Function to check if a point is inside a triangle
-bool isPointInTriangle(double xp, double yp, double x1, double y1, double x2, double y2, double x3, double y3) {
+static bool isPointInTriangle(double xp, double yp, double x1, double y1, double x2, double y2, double x3, double y3) {
     if (x1 == x2 && y1 == y2 && x1 == x3 && y1 == y3) return false;
     // Calculate signs of areas of the three subtriangles formed by the point
     double d1 = sign(xp, yp, x1, y1, x2, y2);
@@ -47,7 +47,7 @@ bool isPointInTriangle(double xp, double yp, double x1, double y1, double x2, do
     return !(has_neg && has_pos);
 }
 
-bool isPointInCoordTriangle(double xp, double yp, int x1, int y1, int x2, int y2, int x3, int y3) {
+static bool isPointInCoordTriangle(double xp, double yp, int x1, int y1, int x2, int y2, int x3, int y3) {
     return isPointInTriangle(
         (xp + 180) / 360 * 4096,
         (yp + 90) / 180 * 4096,
@@ -60,31 +60,18 @@ bool isPointInCoordTriangle(double xp, double yp, int x1, int y1, int x2, int y2
     );
 }
 
-TArray<double> UMapLowZoom::GetColorAtCoordinate(UBurinWorld* world, double x, double y) {
-    TArray<double> result = {0, 0, 0};
-    int i = 0;
+FString UMapLowZoom::GetTerrainText(UBurinWorld* world, int v) {
+    return world->Terrain->GetTerrainText(v);
+}
+
+int UMapLowZoom::GetTerrainDataAtCoordinate(UBurinWorld* world, double x, double y) {
     for (UTriangleDataEntry& t : TriangleData) {
         if (isPointInCoordTriangle(x, y, t.x1, t.y1, t.x2, t.y2, t.x3, t.y3)) {
-            TArray<int> rgb = UTerrain::GetColor(world, t.biomeData, 0);
-            result[0] = 1.f * rgb[0] / 255;
-            result[1] = 1.f * rgb[1] / 255;
-            result[2] = 1.f * rgb[2] / 255;
-            //result = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-            //result[0] = (x + 180) / 360 * 4096;
-            //result[1] = (y + 90) / 180 * 4096;
-            //result[2] = i;
-            //result[3] = t.x1;
-            //result[4] = t.y1;
-            //result[5] = t.x2;
-            //result[6] = t.y2;
-            //result[7] = t.x3;
-            //result[8] = t.y3;
-            return result;
+            return world->Terrain->GetTerrain(t.biomeData);
         }
-        i++;
     }
 
-    return result;
+    return -1;
 }
 
 FCanvasUVTri* convertToTri(UBurinWorld* world, int mode, UTriangleDataEntry triangleData) {
@@ -103,7 +90,7 @@ FCanvasUVTri* convertToTri(UBurinWorld* world, int mode, UTriangleDataEntry tria
     v2->Y = triangleData.y3 * s;
     result->V2_Pos = *v2;
 
-    TArray<int> rgb = UTerrain::GetColor(world, triangleData.biomeData, mode);
+    TArray<int> rgb = world->Terrain->GetColor(triangleData.biomeData, mode);
 
     FLinearColor* color = new FLinearColor(1.f * rgb[0]/255, 1.f * rgb[1] / 255, 1.f * rgb[2] / 255, 1.f);
 

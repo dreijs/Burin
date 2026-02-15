@@ -1,0 +1,1502 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<terraintype>
+		<name>Polar Icecap</name>
+		<displaycolor0>
+			<r>220</r>
+			<g>220</g>
+			<b>220</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>elevation,water</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>feature,icecap</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Icy Water</name>
+		<displaycolor0>
+			<r>10</r>
+			<g>17</g>
+			<b>35</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>elevation,water</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>feature,icy water</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Ocean</name>
+		<displaycolor0>
+			<r>10</r>
+			<g>17</g>
+			<b>35</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>elevation,water</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>feature,ocean</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Sea</name>
+		<displaycolor0>
+			<r>10</r>
+			<g>17</g>
+			<b>35</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>elevation,water</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>feature,sea</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Quiet Sea</name>
+		<displaycolor0>
+			<r>10</r>
+			<g>17</g>
+			<b>35</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>elevation,water</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>feature,quiet sea</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Lake</name>
+		<displaycolor0>
+			<r>10</r>
+			<g>17</g>
+			<b>50</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>elevation,water</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>feature,lake</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Cliffs</name>
+		<displaycolor0>
+			<r>120</r>
+			<g>120</g>
+			<b>120</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>soil,gelisol</conditionelement>
+				<conditionelement>vegetation,polar desert</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>feature,north-facing cliffs</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Cliffs</name>
+		<displaycolor0>
+			<r>80</r>
+			<g>80</g>
+			<b>80</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>soil,gelisol</conditionelement>
+				<conditionelement>vegetation,polar desert</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>feature,south-facing cliffs</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Cliffs</name>
+		<displaycolor0>
+			<r>130</r>
+			<g>110</g>
+			<b>90</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,arid desert</conditionelement>
+				<conditionelement>vegetation,xeric shrubland</conditionelement>
+				<conditionelement>vegetation,dry steppe</conditionelement>
+				<conditionelement>vegetation,semiarid desert</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>feature,north-facing cliffs</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Cliffs</name>
+		<displaycolor0>
+			<r>90</r>
+			<g>70</g>
+			<b>50</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,arid desert</conditionelement>
+				<conditionelement>vegetation,xeric shrubland</conditionelement>
+				<conditionelement>vegetation,dry steppe</conditionelement>
+				<conditionelement>vegetation,semiarid desert</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>feature,south-facing cliffs</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Cliffs</name>
+		<displaycolor0>
+			<r>90</r>
+			<g>90</g>
+			<b>90</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>feature,north-facing cliffs</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Cliffs</name>
+		<displaycolor0>
+			<r>50</r>
+			<g>50</g>
+			<b>50</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>feature,south-facing cliffs</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Glacial Mountains</name>
+		<displaycolor0>
+			<r>170</r>
+			<g>170</g>
+			<b>170</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>soil,gelisol</conditionelement>
+				<conditionelement>vegetation,polar desert</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>feature,mountains</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Desert Mountains</name>
+		<displaycolor0>
+			<r>130</r>
+			<g>110</g>
+			<b>80</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,arid desert</conditionelement>
+				<conditionelement>vegetation,xeric shrubland</conditionelement>
+				<conditionelement>vegetation,dry steppe</conditionelement>
+				<conditionelement>vegetation,semiarid desert</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>feature,mountains</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Dry Subtropical Mountains</name>
+		<displaycolor0>
+			<r>100</r>
+			<g>90</g>
+			<b>75</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,mediterranean</conditionelement>
+				<conditionelement>vegetation,dry steppe</conditionelement>
+				<conditionelement>vegetation,grass savanna</conditionelement>
+				<conditionelement>vegetation,tree savanna</conditionelement>
+				<conditionelement>vegetation,subtropical dry forest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>feature,mountains</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Wet Subtropical Mountains</name>
+		<displaycolor0>
+			<r>80</r>
+			<g>90</g>
+			<b>70</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,subtropical rainforest</conditionelement>
+				<conditionelement>vegetation,monsoon forest</conditionelement>
+				<conditionelement>vegetation,tropical rainforest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>feature,mountains</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Temperate Mountains</name>
+		<displaycolor0>
+			<r>120</r>
+			<g>120</g>
+			<b>120</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>feature,mountains</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Glacial Hills</name>
+		<displaycolor0>
+			<r>160</r>
+			<g>160</g>
+			<b>160</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,polar desert</conditionelement>
+				<conditionelement>elevation,level 13</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>feature,hills</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Polar Desert</name>
+		<displaycolor0>
+			<r>180</r>
+			<g>180</g>
+			<b>180</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,polar desert</conditionelement>
+				<conditionelement>elevation,level 13</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Volcanic Tundra</name>
+		<displaycolor0>
+			<r>136</r>
+			<g>137</g>
+			<b>92</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,tundra</conditionelement>
+				<conditionelement>vegetation,taiga</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,andisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Alpine Tundra</name>
+		<displaycolor0>
+			<r>126</r>
+			<g>123</g>
+			<b>89</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>elevation,level 11</conditionelement>
+				<conditionelement>elevation,level 12</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Sparse Boreal Forest</name>
+		<displaycolor0>
+			<r>86</r>
+			<g>89</g>
+			<b>74</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,taiga</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,entisol</conditionelement>
+				<conditionelement>soil,inceptisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Dense Boreal Forest</name>
+		<displaycolor0>
+			<r>50</r>
+			<g>61</g>
+			<b>52</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,taiga</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,alfisol</conditionelement>
+				<conditionelement>soil,ultisol</conditionelement>
+				<conditionelement>soil,oxisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Boreal Bog</name>
+		<displaycolor0>
+			<r>55</r>
+			<g>72</g>
+			<b>80</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,tundra</conditionelement>
+				<conditionelement>vegetation,taiga</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,histosol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Boreal Sandy Plains</name>
+		<displaycolor0>
+			<r>106</r>
+			<g>99</g>
+			<b>84</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,tundra</conditionelement>
+				<conditionelement>vegetation,taiga</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,aridisol</conditionelement>
+				<conditionelement>soil,shifting sand</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Temperate Pine Forest</name>
+		<displaycolor0>
+			<r>66</r>
+			<g>76</g>
+			<b>58</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,temperate forest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,spodosol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Sparse Temperate Forest</name>
+		<displaycolor0>
+			<r>75</r>
+			<g>95</g>
+			<b>69</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,temperate forest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,inceptisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Dense Temperate Forest</name>
+		<displaycolor0>
+			<r>55</r>
+			<g>81</g>
+			<b>57</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,temperate forest</conditionelement>
+				<conditionelement>vegetation,temperate steppe</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,ultisol</conditionelement>
+				<conditionelement>soil,oxisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Temperate Grassland</name>
+		<displaycolor0>
+			<r>88</r>
+			<g>98</g>
+			<b>75</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,temperate forest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,entisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Temperate Mudland</name>
+		<displaycolor0>
+			<r>104</r>
+			<g>114</g>
+			<b>88</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,temperate forest</conditionelement>
+				<conditionelement>vegetation,temperate steppe</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,vertisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Fertile Meadows</name>
+		<displaycolor0>
+			<r>75</r>
+			<g>85</g>
+			<b>67</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,temperate forest</conditionelement>
+				<conditionelement>vegetation,temperate steppe</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,mollisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Temperate Bog</name>
+		<displaycolor0>
+			<r>50</r>
+			<g>69</g>
+			<b>77</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,temperate forest</conditionelement>
+				<conditionelement>vegetation,temperate steppe</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,histosol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Volcanic Plains</name>
+		<displaycolor0>
+			<r>75</r>
+			<g>85</g>
+			<b>57</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,temperate forest</conditionelement>
+				<conditionelement>vegetation,temperate steppe</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,andisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Temperate Sandy Plains</name>
+		<displaycolor0>
+			<r>186</r>
+			<g>149</g>
+			<b>109</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,temperate forest</conditionelement>
+				<conditionelement>vegetation,temperate steppe</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,aridisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Temperate Rocklands</name>
+		<displaycolor0>
+			<r>135</r>
+			<g>119</g>
+			<b>99</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,temperate forest</conditionelement>
+				<conditionelement>vegetation,temperate steppe</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,rocky</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Fertile Plains</name>
+		<displaycolor0>
+			<r>89</r>
+			<g>95</g>
+			<b>75</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,temperate steppe</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,mollisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Fertile Woodland</name>
+		<displaycolor0>
+			<r>72</r>
+			<g>92</g>
+			<b>67</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,temperate steppe</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,alfisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Sparse Subtropical Rainforest</name>
+		<displaycolor0>
+			<r>60</r>
+			<g>76</g>
+			<b>57</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,subtropical rainforest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,inceptisol</conditionelement>
+				<conditionelement>soil,spodosol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Dense Subtropical Rainforest</name>
+		<displaycolor0>
+			<r>44</r>
+			<g>56</g>
+			<b>38</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,subtropical rainforest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,ultisol</conditionelement>
+				<conditionelement>soil,oxisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Subtropical Grassland</name>
+		<displaycolor0>
+			<r>72</r>
+			<g>90</g>
+			<b>64</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,subtropical rainforest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,entisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Wet Subtropical Bog</name>
+		<displaycolor0>
+			<r>60</r>
+			<g>89</g>
+			<b>97</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,subtropical rainforest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,histosol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Wet Subtropical Mudland</name>
+		<displaycolor0>
+			<r>88</r>
+			<g>85</g>
+			<b>65</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,subtropical rainforest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,mollisol</conditionelement>
+				<conditionelement>soil,vertisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Subtropical Sandy Plains</name>
+		<displaycolor0>
+			<r>186</r>
+			<g>159</g>
+			<b>109</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,subtropical rainforest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,aridisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Volcanic Forest</name>
+		<displaycolor0>
+			<r>65</r>
+			<g>80</g>
+			<b>52</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,subtropical rainforest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,andisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Mediterranean Forest</name>
+		<displaycolor0>
+			<r>95</r>
+			<g>100</g>
+			<b>85</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,mediterranean</conditionelement>
+				<conditionelement>vegetation,dry steppe</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,alfisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Sparse Mediterranean Forest</name>
+		<displaycolor0>
+			<r>117</r>
+			<g>125</g>
+			<b>96</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,mediterranean</conditionelement>
+				<conditionelement>vegetation,dry steppe</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,inceptisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Dense Mediterranean Forest</name>
+		<displaycolor0>
+			<r>117</r>
+			<g>140</g>
+			<b>96</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,mediterranean</conditionelement>
+				<conditionelement>vegetation,dry steppe</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,ultisol</conditionelement>
+				<conditionelement>soil,oxisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Mediterranean Pine Forest</name>
+		<displaycolor0>
+			<r>71</r>
+			<g>78</g>
+			<b>60</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,mediterranean</conditionelement>
+				<conditionelement>vegetation,dry steppe</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,spodosol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Mediterranean Plains</name>
+		<displaycolor0>
+			<r>128</r>
+			<g>135</g>
+			<b>105</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,mediterranean</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,vertisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Volcanic Shrubland</name>
+		<displaycolor0>
+			<r>85</r>
+			<g>95</g>
+			<b>67</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,mediterranean</conditionelement>
+				<conditionelement>vegetation,dry steppe</conditionelement>
+				<conditionelement>vegetation,subtropical dry forest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,andisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Dry Subtropical Bog</name>
+		<displaycolor0>
+			<r>60</r>
+			<g>69</g>
+			<b>77</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,mediterranean</conditionelement>
+				<conditionelement>vegetation,dry steppe</conditionelement>
+				<conditionelement>vegetation,subtropical dry forest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,histosol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Dry Subtropical Mudland</name>
+		<displaycolor0>
+			<r>102</r>
+			<g>90</g>
+			<b>70</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,mediterranean</conditionelement>
+				<conditionelement>vegetation,dry steppe</conditionelement>
+				<conditionelement>vegetation,subtropical dry forest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,vertisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Dry Sandy Plains</name>
+		<displaycolor0>
+			<r>196</r>
+			<g>149</g>
+			<b>129</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,mediterranean</conditionelement>
+				<conditionelement>vegetation,dry steppe</conditionelement>
+				<conditionelement>vegetation,subtropical dry forest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,aridisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Dry Fertile Plains</name>
+		<displaycolor0>
+			<r>109</r>
+			<g>115</g>
+			<b>95</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,mediterranean</conditionelement>
+				<conditionelement>vegetation,dry steppe</conditionelement>
+				<conditionelement>vegetation,subtropical dry forest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,mollisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Subtropical Rocklands</name>
+		<displaycolor0>
+			<r>135</r>
+			<g>119</g>
+			<b>99</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,mediterranean</conditionelement>
+				<conditionelement>vegetation,dry steppe</conditionelement>
+				<conditionelement>vegetation,subtropical dry forest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,rocky</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Sparse Monsoon Forest</name>
+		<displaycolor0>
+			<r>65</r>
+			<g>85</g>
+			<b>55</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,monsoon forest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,inceptisol</conditionelement>
+				<conditionelement>soil,spodosol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Dense Monsoon Forest</name>
+		<displaycolor0>
+			<r>50</r>
+			<g>70</g>
+			<b>40</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,monsoon forest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,ultisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Sand Desert</name>
+		<displaycolor0>
+			<r>216</r>
+			<g>159</g>
+			<b>119</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,arid desert</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,entisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Sandy Xeric Shrubland</name>
+		<displaycolor0>
+			<r>216</r>
+			<g>179</g>
+			<b>119</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,xeric shrubland</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,entisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Volcanic Desert</name>
+		<displaycolor0>
+			<r>170</r>
+			<g>170</g>
+			<b>125</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,arid desert</conditionelement>
+				<conditionelement>vegetation,xeric shrubland</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,andisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Semiarid Desert</name>
+		<displaycolor0>
+			<r>205</r>
+			<g>170</g>
+			<b>135</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,semiarid desert</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,entisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Semiarid Bushland</name>
+		<displaycolor0>
+			<r>165</r>
+			<g>160</g>
+			<b>125</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,semiarid desert</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,alfisol</conditionelement>
+				<conditionelement>soil,oxisol</conditionelement>
+				<conditionelement>soil,ultisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Semiarid Plains</name>
+		<displaycolor0>
+			<r>155</r>
+			<g>140</g>
+			<b>105</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,semiarid desert</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,mollisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Sparse Tree Savanna</name>
+		<displaycolor0>
+			<r>135</r>
+			<g>140</g>
+			<b>80</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,grass savanna</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,oxisol</conditionelement>
+				<conditionelement>soil,ultisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Dense Tree Savanna</name>
+		<displaycolor0>
+			<r>105</r>
+			<g>130</g>
+			<b>60</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,tree savanna</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,oxisol</conditionelement>
+				<conditionelement>soil,ultisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Volcanic Savanna</name>
+		<displaycolor0>
+			<r>135</r>
+			<g>130</g>
+			<b>80</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,grass savanna</conditionelement>
+				<conditionelement>vegetation,tree savanna</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,andisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Dry Tropical Bog</name>
+		<displaycolor0>
+			<r>70</r>
+			<g>79</g>
+			<b>87</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,grass savanna</conditionelement>
+				<conditionelement>vegetation,tree savanna</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,histosol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Dry Tropical Mudland</name>
+		<displaycolor0>
+			<r>98</r>
+			<g>89</g>
+			<b>60</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,grass savanna</conditionelement>
+				<conditionelement>vegetation,tree savanna</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,vertisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Sparse Dry Subtropical Forest</name>
+		<displaycolor0>
+			<r>135</r>
+			<g>140</g>
+			<b>90</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,subtropical dry forest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,inceptisol</conditionelement>
+				<conditionelement>soil,spodosol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Dense Dry Subtropical Forest</name>
+		<displaycolor0>
+			<r>75</r>
+			<g>85</g>
+			<b>45</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,subtropical dry forest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,oxisol</conditionelement>
+				<conditionelement>soil,ultisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Sparse Tropical Rainforest</name>
+		<displaycolor0>
+			<r>35</r>
+			<g>60</g>
+			<b>20</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,tropical rainforest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,inceptisol</conditionelement>
+				<conditionelement>soil,spodosol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Dense Tropical Rainforest</name>
+		<displaycolor0>
+			<r>10</r>
+			<g>40</g>
+			<b>5</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,tropical rainforest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,oxisol</conditionelement>
+				<conditionelement>soil,ultisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Wet Tropical Grassland</name>
+		<displaycolor0>
+			<r>82</r>
+			<g>100</g>
+			<b>60</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,tropical rainforest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,inceptisol</conditionelement>
+				<conditionelement>soil,spodosol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Wet Tropical Bog</name>
+		<displaycolor0>
+			<r>40</r>
+			<g>69</g>
+			<b>77</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,tropical rainforest</conditionelement>
+				<conditionelement>vegetation,monsoon forest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,histosol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Wet Tropical Mudland</name>
+		<displaycolor0>
+			<r>82</r>
+			<g>79</g>
+			<b>60</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,tropical rainforest</conditionelement>
+				<conditionelement>vegetation,monsoon forest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,vertisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Volcanic Rainforest</name>
+		<displaycolor0>
+			<r>75</r>
+			<g>85</g>
+			<b>60</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,tropical rainforest</conditionelement>
+				<conditionelement>vegetation,monsoon forest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,andisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Tropical Sandy Plains</name>
+		<displaycolor0>
+			<r>82</r>
+			<g>79</g>
+			<b>60</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,tropical rainforest</conditionelement>
+				<conditionelement>vegetation,monsoon forest</conditionelement>
+			</condition>
+			<condition>
+				<conditionelement>soil,aridisol</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Shifting Sands</name>
+		<displaycolor0>
+			<r>226</r>
+			<g>169</g>
+			<b>129</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>soil,shifting sand</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Tundra</name>
+		<displaycolor0>
+			<r>106</r>
+			<g>103</g>
+			<b>79</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,tundra</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Boreal Forest</name>
+		<displaycolor0>
+			<r>58</r>
+			<g>69</g>
+			<b>55</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,taiga</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Temperate Forest</name>
+		<displaycolor0>
+			<r>65</r>
+			<g>88</g>
+			<b>63</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,temperate forest</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Temperate Steppe</name>
+		<displaycolor0>
+			<r>95</r>
+			<g>100</g>
+			<b>75</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,temperate steppe</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Subtropical Rainforest</name>
+		<displaycolor0>
+			<r>52</r>
+			<g>66</g>
+			<b>48</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,subtropical rainforest</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Mediterranean Shrubland</name>
+		<displaycolor0>
+			<r>135</r>
+			<g>130</g>
+			<b>102</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,mediterranean</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Monsoon Forest</name>
+		<displaycolor0>
+			<r>58</r>
+			<g>78</g>
+			<b>48</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,monsoon forest</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Arid Mudland</name>
+		<displaycolor0>
+			<r>210</r>
+			<g>165</g>
+			<b>140</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,arid desert</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Xeric Mudland</name>
+		<displaycolor0>
+			<r>200</r>
+			<g>175</g>
+			<b>130</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,xeric shrubland</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Dry Steppe</name>
+		<displaycolor0>
+			<r>185</r>
+			<g>165</g>
+			<b>125</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,dry steppe</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Semiarid Mudland</name>
+		<displaycolor0>
+			<r>185</r>
+			<g>160</g>
+			<b>125</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,semiarid desert</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Grass Savanna</name>
+		<displaycolor0>
+			<r>165</r>
+			<g>160</g>
+			<b>100</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,grass savanna</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Tree Savanna</name>
+		<displaycolor0>
+			<r>115</r>
+			<g>135</g>
+			<b>70</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,tree savanna</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Dry Subtropical Forest</name>
+		<displaycolor0>
+			<r>105</r>
+			<g>115</g>
+			<b>85</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,subtropical dry forest</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
+		<name>Tropical Rainforest</name>
+		<displaycolor0>
+			<r>25</r>
+			<g>50</g>
+			<b>15</b>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,tropical rainforest</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+</root>
