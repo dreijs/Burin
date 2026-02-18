@@ -18,11 +18,14 @@ UTerrain* Terrain;
 void UBurinWorld::InitializeTerrain()
 {
 	Terrain = new UTerrain();
+
 	Terrain->InitializeElevation();
 	Terrain->InitializeVegetation();
 	Terrain->InitializeSoil();
 	Terrain->InitializeFeatures();
 	Terrain->InitializeTerrain();
+
+	Terrain->InitializeTerrainMapping();
 }
 
 void UBurinWorld::Initialize()

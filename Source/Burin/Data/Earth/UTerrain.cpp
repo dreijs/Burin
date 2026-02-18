@@ -28,6 +28,14 @@ static FString extractString(FString aString) {
 	return stringArray2[0];
 }
 
+void UTerrain::InitializeTerrainMapping() {
+	int n = 16 * 16 * 16 * 16;
+	terrainMap.SetNum(n);
+	for (int i = 0; i < n; i++) {
+		terrainMap[i] = GetTerrain(i);
+	}
+}
+
 TArray<int> UTerrain::extractTerrainArray(FString aString) {
 	FString s = extractString(aString);
 	TArray<FString> stringArray1 = {};
@@ -73,7 +81,7 @@ TArray<int> UTerrain::extractTerrainArray(FString aString) {
 void UTerrain::InitializeElevation() {
 	ElevationData = {};
 
-	FString fPath = FPaths::ProjectContentDir() + TEXT("Data/ElevationData.xml");
+	FString fPath = FPaths::ProjectContentDir() + TEXT("Data/Earth/ElevationData.xml");
 
 	TArray<FString> take;
 	FFileHelper::LoadANSITextFileToStrings(*fPath, NULL, take);
@@ -102,7 +110,7 @@ void UTerrain::InitializeElevation() {
 void UTerrain::InitializeVegetation() {
 	VegetationData = {};
 
-	FString fPath = FPaths::ProjectContentDir() + TEXT("Data/VegetationData.xml");
+	FString fPath = FPaths::ProjectContentDir() + TEXT("Data/Earth/VegetationData.xml");
 
 	TArray<FString> take;
 	FFileHelper::LoadANSITextFileToStrings(*fPath, NULL, take);
@@ -131,7 +139,7 @@ void UTerrain::InitializeVegetation() {
 void UTerrain::InitializeSoil() {
 	SoilData = {};
 
-	FString fPath = FPaths::ProjectContentDir() + TEXT("Data/SoilData.xml");
+	FString fPath = FPaths::ProjectContentDir() + TEXT("Data/Earth/SoilData.xml");
 
 	TArray<FString> take;
 	FFileHelper::LoadANSITextFileToStrings(*fPath, NULL, take);
@@ -160,7 +168,7 @@ void UTerrain::InitializeSoil() {
 void UTerrain::InitializeFeatures() {
 	FeatureData = {};
 
-	FString fPath = FPaths::ProjectContentDir() + TEXT("Data/FeatureData.xml");
+	FString fPath = FPaths::ProjectContentDir() + TEXT("Data/Earth/FeatureData.xml");
 
 	TArray<FString> take;
 	FFileHelper::LoadANSITextFileToStrings(*fPath, NULL, take);
@@ -189,7 +197,7 @@ void UTerrain::InitializeFeatures() {
 void UTerrain::InitializeTerrain() {
 	TerrainData = {};
 
-	FString fPath = FPaths::ProjectContentDir() + TEXT("Data/TerrainData.xml");
+	FString fPath = FPaths::ProjectContentDir() + TEXT("Data/Earth/TerrainData.xml");
 
 	TArray<FString> take;
 	FFileHelper::LoadANSITextFileToStrings(*fPath, NULL, take);
@@ -235,6 +243,10 @@ FString UTerrain::GetTerrainText(int idx) {
 	if (idx >= 0 && idx <= TerrainData.Num()) return TerrainData[idx].name;
 	UE_LOG(LogTemp, Error, TEXT("Unregonized terrain idx: %d"), idx);
 	return "";
+}
+
+int UTerrain::GetTerrainFromCache(int terrainData) {
+	return terrainMap[terrainData];
 }
 
 int UTerrain::GetTerrain(int terrainData) {
@@ -297,51 +309,3 @@ TArray<int> UTerrain::GetColor(int terrainData, int mode) {
 
 	return { 0, 0, 0 };
 }
-
-		//if ((vegetation == 9 || vegetation == 13) && soil == 6)					return getDisplayColor0(UTerrain::DRY_STEPPE);
-		//if ((vegetation == 9 || vegetation == 13) && soil == 3)					return getDisplayColor0(UTerrain::DRY_SHRUBLAND);
-		//if (vegetation == 10 && (soil == 2 || soil == 3 || soil == 6))		return getDisplayColor0(UTerrain::SEMIARID_DESERT);
-		//if ((vegetation == 7 || vegetation == 8 || vegetation == 10) && soil == 0)		return getDisplayColor0(UTerrain::SEMIARID_DESERT);
-		//if ((vegetation == 7 || vegetation == 8 || vegetation == 10) && soil == 1)		return getDisplayColor0(UTerrain::VOLCANIC_DESERT);
-		//if (vegetation == 10 && (soil == 7 || soil == 11))					return getDisplayColor0(UTerrain::SEMIARID_MUDLAND);
-		//if (vegetation == 11 && (soil == 0 || soil == 6))					return getDisplayColor0(UTerrain::GRASS_SAVANNA);
-		//if ((vegetation == 11 || vegetation == 12) && soil == 3)					return getDisplayColor0(UTerrain::GRASS_SAVANNA);
-		//if ((vegetation == 11 || vegetation == 12) && soil == 2)					return getDisplayColor0(UTerrain::DRY_SHRUBLAND);
-		//if (vegetation == 11 && soil == 10)									return getDisplayColor0(UTerrain::SPARSE_TREE_SAVANNA);
-		//if (vegetation == 12 && (soil == 0 || soil == 6))					return getDisplayColor0(UTerrain::TREE_SAVANNA);
-		//if (vegetation == 11 && soil == 8)									return getDisplayColor0(UTerrain::TREE_SAVANNA);
-		//if (vegetation == 12 && (soil == 8 || soil == 10))					return getDisplayColor0(UTerrain::DENSE_TREE_SAVANNA);
-		//if ((vegetation == 11 || vegetation == 12) && soil == 5)					return getDisplayColor0(UTerrain::DRY_TROPICAL_BOG);
-		//if ((vegetation == 11 || vegetation == 12) && soil == 11)					return getDisplayColor0(UTerrain::DRY_TROPICAL_MUDLAND);
-		//if ((vegetation == 11 || vegetation == 12) && soil == 1)					return getDisplayColor0(UTerrain::VOLCANIC_SAVANNA);
-		//if (vegetation == 13 && soil == 0)									return getDisplayColor0(UTerrain::DRY_SUBTROPICAL_FOREST);
-		//if (vegetation == 13 && (soil == 6 || soil == 9))					return getDisplayColor0(UTerrain::SPARSE_DRY_SUBTROPICAL_FOREST);
-		//if (vegetation == 13 && (soil == 8 || soil == 10))					return getDisplayColor0(UTerrain::DENSE_DRY_SUBTROPICAL_FOREST);
-		//if (vegetation == 14 && (soil == 0 || soil == 10))					return getDisplayColor0(UTerrain::TROPICAL_RAINFOREST);
-		//if (vegetation == 14 && soil == 6)									return getDisplayColor0(UTerrain::SPARSE_TROPICAL_RAINFOREST);
-		//if ((vegetation == 14 || vegetation == 6) && soil == 8)					return getDisplayColor0(UTerrain::DENSE_TROPICAL_RAINFOREST);
-		//if ((vegetation == 14 || vegetation == 6) && soil == 3)					return getDisplayColor0(UTerrain::WET_TROPICAL_GRASSLAND);
-		//if ((vegetation == 14 || vegetation == 6) && soil == 5)					return getDisplayColor0(UTerrain::WET_TROPICAL_BOG);
-		//if ((vegetation == 14 || vegetation == 6) && soil == 11)					return getDisplayColor0(UTerrain::WET_TROPICAL_MUDLAND);
-		//if ((vegetation == 14 || vegetation == 6) && soil == 2)					return getDisplayColor0(UTerrain::TROPICAL_SANDY_PLAINS);
-		//if ((vegetation == 14 || vegetation == 6) && soil == 1)					return getDisplayColor0(UTerrain::VOLCANIC_RAINFOREST);
-		//if (soil == 12)													return getDisplayColor0(UTerrain::ROCKLANDS);
-		//if (soil == 13)													return getDisplayColor0(UTerrain::SHIFTING_SANDS);
-		//// edge cases
-		//if (vegetation == 0)													return getDisplayColor0(UTerrain::TUNDRA);
-		//if (vegetation == 1)													return getDisplayColor0(UTerrain::BOREAL_FOREST);
-		//if (vegetation == 2)													return getDisplayColor0(UTerrain::TEMPERATE_FOREST);
-		//if (vegetation == 3)													return getDisplayColor0(UTerrain::STEPPE);
-		//if (vegetation == 4)													return getDisplayColor0(UTerrain::SUBTROPICAL_RAINFOREST);
-		//if (vegetation == 5)													return getDisplayColor0(UTerrain::MEDITERRANEAN_SHRUBLAND);
-		//if (vegetation == 6)													return getDisplayColor0(UTerrain::MONSOON_FOREST);
-		//if (vegetation == 7)													return getDisplayColor0(UTerrain::MUD_DESERT);
-		//if (vegetation == 8)													return getDisplayColor0(UTerrain::MUDDY_XERIC_SHRUBLAND);
-		//if (vegetation == 9)													return getDisplayColor0(UTerrain::DRY_STEPPE);
-		//if (vegetation == 10)												return getDisplayColor0(UTerrain::SEMIARID_DESERT);
-		//if (vegetation == 11)												return getDisplayColor0(UTerrain::GRASS_SAVANNA);
-		//if (vegetation == 12)												return getDisplayColor0(UTerrain::TREE_SAVANNA);
-		//if (vegetation == 13)												return getDisplayColor0(UTerrain::DRY_SUBTROPICAL_FOREST);
-		//if (vegetation == 14)												return getDisplayColor0(UTerrain::TROPICAL_RAINFOREST);
-
-

@@ -67,7 +67,7 @@ FString UMapLowZoom::GetTerrainText(UBurinWorld* world, int v) {
 int UMapLowZoom::GetTerrainDataAtCoordinate(UBurinWorld* world, double x, double y) {
     for (UTriangleDataEntry& t : TriangleData) {
         if (isPointInCoordTriangle(x, y, t.x1, t.y1, t.x2, t.y2, t.x3, t.y3)) {
-            return world->Terrain->GetTerrain(t.biomeData);
+            return world->Terrain->GetTerrainFromCache(t.biomeData);
         }
     }
 
@@ -104,7 +104,7 @@ FCanvasUVTri* convertToTri(UBurinWorld* world, int mode, UTriangleDataEntry tria
 void UMapLowZoom::Initialize(UBurinWorld* world) {
     TriangleData = {};
 
-    FString fPath = FPaths::ProjectContentDir() + TEXT("Data/Polygons/Scale_8/Polygons_0_0.txt");
+    FString fPath = FPaths::ProjectContentDir() + TEXT("Data/Earth/Polygons/Scale_8/Polygons_0_0.txt");
 
     TArray<FString> take;
     FFileHelper::LoadANSITextFileToStrings(*fPath, NULL, take);
