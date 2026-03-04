@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include <Burin/UBurinWorld.h>
 #include "UTriangleDataEntry.h"
+#include "UEdgeDataEntry.h"
+#include "FLineDisplayData.h"
 
 #include "UMapLowZoom.generated.h"
 
@@ -28,8 +30,12 @@ public:
 	TArray<FCanvasUVTri> GetTriangles(UBurinWorld* world, int mode);
 
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
+	TArray<FLineDisplayData> GetBorders(UBurinWorld* world, int mode);
+
+	UFUNCTION(BlueprintCallable, Category = "RenderMap")
 	void Initialize(UBurinWorld* world);
 
 private:
 	TArray<UTriangleDataEntry> TriangleData;
+	TArray<UEdgeDataEntry> EdgeData;
 };

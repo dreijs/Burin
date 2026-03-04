@@ -13,6 +13,7 @@ public:
 	UTriangleDataEntry();
 	~UTriangleDataEntry();
 
-	int x1, y1, x2, y2, x3, y3;
-	int biomeData;
+	int e1, e2, e3;
+	bool b1, b2, b3;
+	int terrainData;
 };

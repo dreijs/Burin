@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<polity>
+		<name>Egypt</name>
+		<defaultflag>
+			
+		</defaultflag>
+		<defaultcolor1>255,192,0</defaultcolor1>
+		<defaultcolor2>0,144,255</defaultcolor2>
+		<defaultcolor3>0,64,176</defaultcolor3>
+	</polity>
+	<polity>
+		<name>Persia</name>
+		<defaultflag>
+			
+		</defaultflag>
+		<defaultcolor1>255,192,0</defaultcolor1>
+		<defaultcolor2>0,144,255</defaultcolor2>
+		<defaultcolor3>0,64,176</defaultcolor3>
+	</polity>
+</root>
