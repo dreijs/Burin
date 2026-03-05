@@ -5,17 +5,59 @@
 		<defaultflag>
 			
 		</defaultflag>
-		<defaultcolor1>255,192,0</defaultcolor1>
-		<defaultcolor2>0,144,255</defaultcolor2>
-		<defaultcolor3>0,64,176</defaultcolor3>
+		<mapcolor1>255,192,0</mapcolor1>
+		<mapcolor2>0,144,255</mapcolor2>
+		<mapcolor3>0,64,176</mapcolor3>
+		<history>
+			<item>
+				<year>-3150</year>
+				<govtype>ceremonial monarchy</govtype>
+			</item>
+			<item>
+				<year>-671</year>
+				<subject>satrapy</subject>
+				<overlord>Persia</overlord>
+			</item>
+			<item>
+				<year>-609</year>
+				<overlord>null</overlord>
+			</item>
+		</history>
 	</polity>
 	<polity>
 		<name>Persia</name>
 		<defaultflag>
 			
 		</defaultflag>
-		<defaultcolor1>255,192,0</defaultcolor1>
-		<defaultcolor2>0,144,255</defaultcolor2>
-		<defaultcolor3>0,64,176</defaultcolor3>
+		<mapcolor1>255,192,0</mapcolor1>
+		<mapcolor2>0,144,255</mapcolor2>
+		<mapcolor3>0,64,176</mapcolor3>
+		<history>
+			<item>
+				<year>-550</year>
+				<govtype>administrative monarchy</govtype>
+				<rank>empire</rank>
+			</item>
+			<item>
+				<year>-310</year>
+				<subject>satrapy</subject>
+				<overlord>Seleucids</overlord>
+				<rank>kingdom</rank>
+				<newflag></newflag>
+			</item>
+			<item>
+				<year>130</year>
+				<overlord>Parthia</overlord>
+			</item>
+			<item>
+				<year>211</year>
+				<newflag></newflag>
+			</item>
+			<item>
+				<year>224</year>
+				<overlord>null</overlord>
+				<rank>empire</rank>
+			</item>
+		</history>
 	</polity>
 </root>

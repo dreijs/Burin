@@ -3,37 +3,28 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include <Burin/UBurinWorld.h>
+#include "../Data/Earth/UTerrain.h"
 #include "UTriangleDataEntry.h"
 #include "UEdgeDataEntry.h"
 #include "FLineDisplayData.h"
 
-#include "UMapLowZoom.generated.h"
-
-UCLASS(Blueprintable)
-class BURIN_API UMapLowZoom : public UObject
+class BURIN_API UMapLowZoom
 {
-	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
 	UMapLowZoom();
 	~UMapLowZoom();
 
-	UFUNCTION(BlueprintCallable, Category = "RenderMap")
-	int GetTerrainDataAtCoordinate(UBurinWorld* world, double x, double y);
+	int GetTerrainDataAtCoordinate(UTerrain* terrain, double x, double y);
 
-	UFUNCTION(BlueprintCallable, Category = "RenderMap")
-	FString GetTerrainText(UBurinWorld* world, int v);
+	FString GetTerrainText(UTerrain* terrain, int v);
 
-	UFUNCTION(BlueprintCallable, Category = "RenderMap")
-	TArray<FCanvasUVTri> GetTriangles(UBurinWorld* world, int mode);
+	TArray<FCanvasUVTri> GetTriangles(UTerrain* terrain, int mode);
 
-	UFUNCTION(BlueprintCallable, Category = "RenderMap")
-	TArray<FLineDisplayData> GetBorders(UBurinWorld* world, int mode);
+	TArray<FLineDisplayData> GetBorders(int mode);
 
-	UFUNCTION(BlueprintCallable, Category = "RenderMap")
-	void Initialize(UBurinWorld* world);
+	void Initialize();
 
 private:
 	TArray<UTriangleDataEntry> TriangleData;

@@ -3,6 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Concepts/Provinces/UProvince.h"
+#include "UWorldCreatorSettings.h"
+#include "UBurinWorld.h"
 
 #include "UWorldCreator.generated.h"
 
@@ -15,4 +18,11 @@ public:
 	UWorldCreator();
 	~UWorldCreator();
 
+	static UArea CreateArea(FString name, double latitude, double longitude);
+	static void DestroyArea(FString name);
+	static UProvince CreateProvince(FString name, double latitude, double longitude);
+	static void DestroyProvince(FString name);
+
+	static void CreateRandomWorld(UBurinWorld* world);
+	static void CreateHistoricalWorld(UBurinWorld* world);
 };

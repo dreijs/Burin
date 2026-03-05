@@ -14,6 +14,6 @@ public:
 	~UTerrainDataEntry();
 
 	FString name;
-	TArray<int> color;
+	TArray<uint8_t> color;
 	TArray<TArray<TArray<int>>> conditions;
 };

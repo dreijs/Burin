@@ -7,12 +7,11 @@
 /**
  * 
  */
-class BURIN_API UPolityDataEntry
+class BURIN_API UFlagDataEntry
 {
 public:
-	UPolityDataEntry();
-	~UPolityDataEntry();
+	UFlagDataEntry();
+	~UFlagDataEntry();
 
 	FString name;
-	double latitude, longitude;
 };

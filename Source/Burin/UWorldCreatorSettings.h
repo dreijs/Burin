@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UProvince.generated.h"
+#include "UWorldCreatorSettings.generated.h"
 
 UCLASS(Blueprintable)
-class BURIN_API UProvince : public UObject
+class BURIN_API UWorldCreatorSettings : public UObject
 {
 	GENERATED_BODY()
 
 public:
-	UProvince();
-	~UProvince();
+	UWorldCreatorSettings();
+	~UWorldCreatorSettings();
 };

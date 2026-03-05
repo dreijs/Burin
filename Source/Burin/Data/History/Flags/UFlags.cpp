@@ -1,30 +1,31 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "UPlaces.h"
-#include "UPlaceDataEntry.h"
+#include "UFlags.h"
 
-UPlaces::UPlaces() {
-
-}
-
-UPlaces::~UPlaces() {
+UFlags::UFlags() {
 
 }
 
-void UPlaces::InitializePlaces() {
-	PlaceData = {};
+UFlags::~UFlags() {
+
+}
+
+void UFlags::InitializeFlags() {
+	flagMap = {};
+	FlagData = {};
 
 	FString fPath = FPaths::ProjectContentDir() + TEXT("Data/Earth/ElevationData.xml");
 
 	TArray<FString> take;
 	FFileHelper::LoadANSITextFileToStrings(*fPath, NULL, take);
 
-	UPlaceDataEntry entry;
+	UFlagDataEntry entry;
 	int r = 0, g = 0, b = 0;
+
 	for (int i = 0; i < take.Num(); i++) {
 		FString aString = take[i];
 
-		if (aString.Contains("<terraintype>")) {
+		if (aString.Contains("<polity>")) {
 			entry = {};
 		}
 		//if (aString.Contains("<name>")) { entry.name = extractString(aString); }
@@ -37,5 +38,5 @@ void UPlaces::InitializePlaces() {
 		//}
 	}
 
-	UE_LOG(LogTemp, Log, TEXT("Number of place data entries: %d"), PlaceData.Num());
+	UE_LOG(LogTemp, Log, TEXT("Number of polity data entries: %d"), FlagData.Num());
 }

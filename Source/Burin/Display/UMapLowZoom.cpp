@@ -11,8 +11,6 @@
 #include <string>  // For string manipulation
 #include <sstream> // For parsing strings
 #include <iostream>
-#include "../Data/Earth/UTerrain.h"
-#include <Burin/UBurinWorld.h>
 
 TArray<UTriangleDataEntry> TriangleData;
 TArray<UEdgeDataEntry> EdgeData;
@@ -62,11 +60,11 @@ static bool isPointInCoordTriangle(double xp, double yp, int x1, int y1, int x2,
     );
 }
 
-FString UMapLowZoom::GetTerrainText(UBurinWorld* world, int v) {
-    return world->Terrain->GetTerrainText(v);
+FString UMapLowZoom::GetTerrainText(UTerrain* terrain, int v) {
+    return terrain->GetTerrainText(v);
 }
 
-int UMapLowZoom::GetTerrainDataAtCoordinate(UBurinWorld* world, double x, double y) {
+int UMapLowZoom::GetTerrainDataAtCoordinate(UTerrain* terrain, double x, double y) {
     for (UTriangleDataEntry& triangleData : TriangleData) {
         int x1, y1, x2, y2, x3, y3;
         if (triangleData.b1) { x1 = EdgeData[triangleData.e1].x1; y1 = EdgeData[triangleData.e1].y1; }
@@ -76,14 +74,14 @@ int UMapLowZoom::GetTerrainDataAtCoordinate(UBurinWorld* world, double x, double
         if (triangleData.b3) { x3 = EdgeData[triangleData.e3].x1; y3 = EdgeData[triangleData.e3].y1; }
         else { x3 = EdgeData[triangleData.e3].x2; y3 = EdgeData[triangleData.e3].y2; }
         if (isPointInCoordTriangle(x, y, x1, y1, x2, y2, x3, y3)) {
-            return world->Terrain->GetTerrainFromCache(triangleData.terrainData);
+            return terrain->GetTerrainFromCache(triangleData.terrainData);
         }
     }
 
     return -1;
 }
 
-FCanvasUVTri* convertToTri(UBurinWorld* world, int mode, int x1, int y1, int x2, int y2, int x3, int y3, int terrainData) {
+FCanvasUVTri* convertToTri(UTerrain* terrain, int mode, int x1, int y1, int x2, int y2, int x3, int y3, int terrainData) {
     int s = 4;
     FCanvasUVTri* result = new FCanvasUVTri();
     FVector2D* v0 = new FVector2D();
@@ -100,7 +98,7 @@ FCanvasUVTri* convertToTri(UBurinWorld* world, int mode, int x1, int y1, int x2,
     v2->Y = s * y3;
     result->V2_Pos = *v2;
 
-    TArray<int> rgb = world->Terrain->GetColor(terrainData, mode);
+    TArray<uint8_t> rgb = terrain->GetColor(terrainData, mode);
 
     FLinearColor* color = new FLinearColor(1.f * rgb[0]/255, 1.f * rgb[1] / 255, 1.f * rgb[2] / 255, 1.f);
 
@@ -111,7 +109,7 @@ FCanvasUVTri* convertToTri(UBurinWorld* world, int mode, int x1, int y1, int x2,
     return result;
 }
 
-void UMapLowZoom::Initialize(UBurinWorld* world) {
+void UMapLowZoom::Initialize() {
     TriangleData = {};
     EdgeData = {};
 
@@ -169,7 +167,7 @@ void UMapLowZoom::Initialize(UBurinWorld* world) {
     UE_LOG(LogTemp, Log, TEXT("Number of triangles: %d"), TriangleData.Num());
 }
 
-TArray<FCanvasUVTri> UMapLowZoom::GetTriangles(UBurinWorld* world, int mode) {
+TArray<FCanvasUVTri> UMapLowZoom::GetTriangles(UTerrain* terrain, int mode) {
     TArray<FCanvasUVTri> result = {};
 
     for (UTriangleDataEntry& triangleData : TriangleData) {
@@ -181,13 +179,13 @@ TArray<FCanvasUVTri> UMapLowZoom::GetTriangles(UBurinWorld* world, int mode) {
         if (triangleData.b3) { x3 = EdgeData[triangleData.e3].x1; y3 = EdgeData[triangleData.e3].y1; }
         else { x3 = EdgeData[triangleData.e3].x2; y3 = EdgeData[triangleData.e3].y2; }
 
-        result.Add(*convertToTri(world, mode, x1, y1, x2, y2, x3, y3, triangleData.terrainData));
+        result.Add(*convertToTri(terrain, mode, x1, y1, x2, y2, x3, y3, triangleData.terrainData));
     }
     return result;
 }
 
-TArray<FLineDisplayData> UMapLowZoom::GetBorders(UBurinWorld* world, int mode) {
-    if (mode < 5) return {};
+TArray<FLineDisplayData> UMapLowZoom::GetBorders(int mode) {
+    if (mode != 5) return {};
     int s = 4;
     TArray<FLineDisplayData> result = {};
     for (UEdgeDataEntry& edgeData : EdgeData) {

@@ -4,15 +4,11 @@
 
 #include "CoreMinimal.h"
 
-/**
- * 
- */
-class BURIN_API UPlaceDataEntry
+class BURIN_API UPolityHistoryItemEntry
 {
 public:
-	UPlaceDataEntry();
-	~UPlaceDataEntry();
+	UPolityHistoryItemEntry();
+	~UPolityHistoryItemEntry();
 
-	FString name;
-	double latitude, longitude;
+	int year;
 };

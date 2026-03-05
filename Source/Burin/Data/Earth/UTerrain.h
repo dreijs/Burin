@@ -22,8 +22,6 @@ public:
 	TArray<UColorDataEntry> SoilData;
 	TArray<UColorDataEntry> FeatureData;
 
-	
-
 	void InitializeTerrain();
 	void InitializeElevation();
 	void InitializeVegetation();
@@ -34,12 +32,12 @@ public:
 
 	int GetTerrain(int terrainData);
 	int GetTerrainFromCache(int terrainData);
-	TArray<int> GetColor(int i, int mode);
+	TArray<uint8_t> GetColor(int i, int mode);
 	FString GetTerrainText(int idx);
 
 	private:
 		TArray<int> terrainMap;
 
-		TArray<int> getDisplayColor0(int idx);
+		TArray<uint8_t> getDisplayColor0(int idx);
 		TArray<int> extractTerrainArray(FString aString);
 };

@@ -4,9 +4,6 @@
 
 #include "CoreMinimal.h"
 
-/**
- * 
- */
 class BURIN_API UPlaceHistoryItemEntry
 {
 public:

@@ -75,17 +75,17 @@
 	<terraintype>
 		<name>Quiet Sea</name>
 		<color>
-			<r>0</r>
-			<g>32</g>
-			<b>192</b>
+			<r>32</r>
+			<g>64</g>
+			<b>160</b>
 		</color>
 	</terraintype>
 	<terraintype>
 		<name>Lake</name>
 		<color>
-			<r>32</r>
-			<g>96</g>
-			<b>255</b>
+			<r>64</r>
+			<g>128</g>
+			<b>224</b>
 		</color>
 	</terraintype>
 	<terraintype>

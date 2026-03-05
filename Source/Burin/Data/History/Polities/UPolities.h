@@ -5,9 +5,6 @@
 #include "CoreMinimal.h"
 #include "UPolityDataEntry.h"
 
-/**
- *
- */
 class BURIN_API UPolities
 {
 public:
@@ -17,6 +14,8 @@ public:
 
 	TArray<UPolityDataEntry> PolityData;
 
-	void InitializePlaces();
+	void InitializePolities();
 
+private:
+	TMap<FString, int32> polityMap;
 };

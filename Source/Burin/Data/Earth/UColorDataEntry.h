@@ -14,5 +14,5 @@ public:
 	~UColorDataEntry();	
 	
 	FString name;
-	TArray<int> color;
+	TArray<uint8_t> color;
 };

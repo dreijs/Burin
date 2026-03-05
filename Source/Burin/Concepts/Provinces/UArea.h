@@ -3,15 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UArea.generated.h"
 
-UCLASS(Blueprintable)
-class BURIN_API UArea : public UObject
+class BURIN_API UArea
 {
-	GENERATED_BODY()
 
 public:
 	UArea();
 	~UArea();
 
+	FString name;
+	FString commonName;
+	double latitude;
+	double longitude;
 };

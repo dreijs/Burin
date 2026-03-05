@@ -2,6 +2,7 @@
 
 #include "UTerrain.h"
 #include "UTerrainDataEntry.h"
+#include <Burin/UUtils.h>
 
 UTerrain::UTerrain() {
 
@@ -15,19 +16,6 @@ static bool isEquivalentName(FString a, FString b) {
 	return a.ToUpper().Equals(b.ToUpper());
 }
 
-static FString extractString(FString aString) {
-	TArray<FString> stringArray1 = {}, stringArray2 = {};
-	aString.ParseIntoArray(stringArray1, TEXT(">"), false);
-	if (stringArray1.Num() >= 2) {
-		stringArray1[1].ParseIntoArray(stringArray2, TEXT("<"), false);
-	}
-	else {
-		UE_LOG(LogTemp, Error, TEXT("Bad terrain element string: %s"), *aString);
-		return "";
-	}
-	return stringArray2[0];
-}
-
 void UTerrain::InitializeTerrainMapping() {
 	int n = 16 * 16 * 16 * 16;
 	terrainMap.SetNum(n);
@@ -37,7 +25,7 @@ void UTerrain::InitializeTerrainMapping() {
 }
 
 TArray<int> UTerrain::extractTerrainArray(FString aString) {
-	FString s = extractString(aString);
+	FString s = UUtils::UUtils::ExtractStringFromXMLContentLine(aString);
 	TArray<FString> stringArray1 = {};
 	s.ParseIntoArray(stringArray1, TEXT(","), false);
 
@@ -87,17 +75,17 @@ void UTerrain::InitializeElevation() {
 	FFileHelper::LoadANSITextFileToStrings(*fPath, NULL, take);
 
 	UColorDataEntry entry;
-	int r = 0, g = 0, b = 0;
+	uint8_t  r = 0, g = 0, b = 0;
 	for (int i = 0; i < take.Num(); i++) {
 		FString aString = take[i];
 
 		if (aString.Contains("<terraintype>")) {
 			entry = {};
 		}
-		if (aString.Contains("<name>")) { entry.name = extractString(aString); }
-		if (aString.Contains("<r>")) { r = FCString::Atoi(*extractString(aString)); }
-		if (aString.Contains("<g>")) { g = FCString::Atoi(*extractString(aString)); }
-		if (aString.Contains("<b>")) { b = FCString::Atoi(*extractString(aString)); }
+		if (aString.Contains("<name>")) { entry.name = UUtils::ExtractStringFromXMLContentLine(aString); }
+		if (aString.Contains("<r>")) { r = FCString::Atoi(*UUtils::ExtractStringFromXMLContentLine(aString)); }
+		if (aString.Contains("<g>")) { g = FCString::Atoi(*UUtils::ExtractStringFromXMLContentLine(aString)); }
+		if (aString.Contains("<b>")) { b = FCString::Atoi(*UUtils::ExtractStringFromXMLContentLine(aString)); }
 		if (aString.Contains("</terraintype>")) {
 			entry.color = { r, g, b };
 			ElevationData.Add(entry);
@@ -116,17 +104,17 @@ void UTerrain::InitializeVegetation() {
 	FFileHelper::LoadANSITextFileToStrings(*fPath, NULL, take);
 
 	UColorDataEntry entry;
-	int r = 0, g = 0, b = 0;
+	uint8_t  r = 0, g = 0, b = 0;
 	for (int i = 0; i < take.Num(); i++) {
 		FString aString = take[i];
 
 		if (aString.Contains("<terraintype>")) {
 			entry = {};
 		}
-		if (aString.Contains("<name>")) { entry.name = extractString(aString); }
-		if (aString.Contains("<r>")) { r = FCString::Atoi(*extractString(aString)); }
-		if (aString.Contains("<g>")) { g = FCString::Atoi(*extractString(aString)); }
-		if (aString.Contains("<b>")) { b = FCString::Atoi(*extractString(aString)); }
+		if (aString.Contains("<name>")) { entry.name = UUtils::ExtractStringFromXMLContentLine(aString); }
+		if (aString.Contains("<r>")) { r = FCString::Atoi(*UUtils::ExtractStringFromXMLContentLine(aString)); }
+		if (aString.Contains("<g>")) { g = FCString::Atoi(*UUtils::ExtractStringFromXMLContentLine(aString)); }
+		if (aString.Contains("<b>")) { b = FCString::Atoi(*UUtils::ExtractStringFromXMLContentLine(aString)); }
 		if (aString.Contains("</terraintype>")) {
 			entry.color = { r, g, b };
 			VegetationData.Add(entry);
@@ -145,17 +133,17 @@ void UTerrain::InitializeSoil() {
 	FFileHelper::LoadANSITextFileToStrings(*fPath, NULL, take);
 
 	UColorDataEntry entry;
-	int r = 0, g = 0, b = 0;
+	uint8_t  r = 0, g = 0, b = 0;
 	for (int i = 0; i < take.Num(); i++) {
 		FString aString = take[i];
 
 		if (aString.Contains("<terraintype>")) {
 			entry = {};
 		}
-		if (aString.Contains("<name>")) { entry.name = extractString(aString); }
-		if (aString.Contains("<r>")) { r = FCString::Atoi(*extractString(aString)); }
-		if (aString.Contains("<g>")) { g = FCString::Atoi(*extractString(aString)); }
-		if (aString.Contains("<b>")) { b = FCString::Atoi(*extractString(aString)); }
+		if (aString.Contains("<name>")) { entry.name = UUtils::ExtractStringFromXMLContentLine(aString); }
+		if (aString.Contains("<r>")) { r = FCString::Atoi(*UUtils::ExtractStringFromXMLContentLine(aString)); }
+		if (aString.Contains("<g>")) { g = FCString::Atoi(*UUtils::ExtractStringFromXMLContentLine(aString)); }
+		if (aString.Contains("<b>")) { b = FCString::Atoi(*UUtils::ExtractStringFromXMLContentLine(aString)); }
 		if (aString.Contains("</terraintype>")) {
 			entry.color = { r, g, b };
 			SoilData.Add(entry);
@@ -174,17 +162,17 @@ void UTerrain::InitializeFeatures() {
 	FFileHelper::LoadANSITextFileToStrings(*fPath, NULL, take);
 
 	UColorDataEntry entry;
-	int r = 0, g = 0, b = 0;
+	uint8_t  r = 0, g = 0, b = 0;
 	for (int i = 0; i < take.Num(); i++) {
 		FString aString = take[i];
 
 		if (aString.Contains("<terraintype>")) {
 			entry = {};
 		}
-		if (aString.Contains("<name>")) { entry.name = extractString(aString); }
-		if (aString.Contains("<r>")) { r = FCString::Atoi(*extractString(aString)); }
-		if (aString.Contains("<g>")) { g = FCString::Atoi(*extractString(aString)); }
-		if (aString.Contains("<b>")) { b = FCString::Atoi(*extractString(aString)); }
+		if (aString.Contains("<name>")) { entry.name = UUtils::ExtractStringFromXMLContentLine(aString); }
+		if (aString.Contains("<r>")) { r = FCString::Atoi(*UUtils::ExtractStringFromXMLContentLine(aString)); }
+		if (aString.Contains("<g>")) { g = FCString::Atoi(*UUtils::ExtractStringFromXMLContentLine(aString)); }
+		if (aString.Contains("<b>")) { b = FCString::Atoi(*UUtils::ExtractStringFromXMLContentLine(aString)); }
 		if (aString.Contains("</terraintype>")) {
 			entry.color = { r, g, b };
 			FeatureData.Add(entry);
@@ -203,7 +191,7 @@ void UTerrain::InitializeTerrain() {
 	FFileHelper::LoadANSITextFileToStrings(*fPath, NULL, take);
 
 	UTerrainDataEntry entry;
-	int r = 0, g = 0, b = 0;
+	uint8_t  r = 0, g = 0, b = 0;
 	TArray<TArray<TArray<int>>> conditions = {};
 	TArray<TArray<int>> condition = {};
 	for (int i = 0; i < take.Num(); i++) {
@@ -212,10 +200,10 @@ void UTerrain::InitializeTerrain() {
 		if (aString.Contains("<terraintype>")) {
 			entry = {};
 		}
-		if (aString.Contains("<name>")) { entry.name = extractString(aString); }
-		if (aString.Contains("<r>")) { r = FCString::Atoi(*extractString(aString)); }
-		if (aString.Contains("<g>")) { g = FCString::Atoi(*extractString(aString)); }
-		if (aString.Contains("<b>")) { b = FCString::Atoi(*extractString(aString)); }
+		if (aString.Contains("<name>")) { entry.name = UUtils::ExtractStringFromXMLContentLine(aString); }
+		if (aString.Contains("<r>")) { r = FCString::Atoi(*UUtils::ExtractStringFromXMLContentLine(aString)); }
+		if (aString.Contains("<g>")) { g = FCString::Atoi(*UUtils::ExtractStringFromXMLContentLine(aString)); }
+		if (aString.Contains("<b>")) { b = FCString::Atoi(*UUtils::ExtractStringFromXMLContentLine(aString)); }
 		if (aString.Contains("</terraintype>")) {
 			entry.color = { r, g, b };
 			TerrainData.Add(entry);
@@ -233,7 +221,7 @@ void UTerrain::InitializeTerrain() {
 	UE_LOG(LogTemp, Log, TEXT("Number of terrain data entries: %d"), TerrainData.Num());
 }
 
-TArray<int> UTerrain::getDisplayColor0(int idx) {
+TArray<uint8_t> UTerrain::getDisplayColor0(int idx) {
 	if (idx >= 0 && idx <= TerrainData.Num()) return TerrainData[idx].color;
 	UE_LOG(LogTemp, Error, TEXT("Unregonized terrain idx: %d"), idx);
 	return { 0, 255, 0 };
@@ -276,7 +264,7 @@ int UTerrain::GetTerrain(int terrainData) {
 	return -1;
 }
 
-TArray<int> UTerrain::GetColor(int terrainData, int mode) {
+TArray<uint8_t> UTerrain::GetColor(int terrainData, int mode) {
 	if (mode == 0) {
 		int idx = GetTerrain(terrainData);
 		if (idx >= 0) { 

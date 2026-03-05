@@ -5,6 +5,12 @@
 #include "CoreMinimal.h"
 #include "Data/Earth/UTerrainDataEntry.h"
 #include "Data/Earth/UTerrain.h"
+#include "Data/History/Polities/UPolities.h"
+#include "Data/History/Places/UPlaces.h"
+#include "Concepts/Provinces/UProvince.h"
+#include "Concepts/Provinces/UArea.h"
+#include "UWorldCreatorSettings.h"
+#include "Display/UMapLowZoom.h"
 
 #include "UBurinWorld.generated.h"
 
@@ -18,10 +24,39 @@ public:
 	~UBurinWorld();
 
 	UTerrain* Terrain;
+	UPolities* Polities;
+	UPlaces* Places;
+
+	UWorldCreatorSettings* Settings;
+
+	UMapLowZoom* MapLowZoom;
+
+	TArray<UArea> Areas;
+	TArray<UProvince> Provinces;
 
 	UFUNCTION(BlueprintCallable, Category = "Initialization")
 	void Initialize();
 
+	UFUNCTION(BlueprintCallable, Category = "Initialization")
+	void InitializeProvinces();
+
+	UFUNCTION(BlueprintCallable, Category = "Initialization")
+	void SetWorldCreatorSettings();
+
+	UFUNCTION(BlueprintCallable, Category = "RenderMap")
+	int GetTerrainDataAtCoordinate(double x, double y);
+
+	UFUNCTION(BlueprintCallable, Category = "RenderMap")
+	FString GetTerrainText(int v);
+
+	UFUNCTION(BlueprintCallable, Category = "RenderMap")
+	TArray<FCanvasUVTri> GetTriangles(int mode);
+
+	UFUNCTION(BlueprintCallable, Category = "RenderMap")
+	TArray<FLineDisplayData> GetBorders(int mode);
+
 private:
-	void InitializeTerrain();
+	void initializeTerrain();
+	void initializeHistory();
+	void initializeMap();
 };

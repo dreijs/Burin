@@ -5,9 +5,6 @@
 #include "CoreMinimal.h"
 #include "UPlaceDataEntry.h"
 
-/**
- *
- */
 class BURIN_API UPlaces
 {
 public:
@@ -19,4 +16,6 @@ public:
 
 	void InitializePlaces();
 
+private:
+	TMap<FString, int32> placeMap;
 };
