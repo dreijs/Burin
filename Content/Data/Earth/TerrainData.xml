@@ -3,9 +3,7 @@
 	<terraintype>
 		<name>Polar Icecap</name>
 		<displaycolor0>
-			<r>220</r>
-			<g>220</g>
-			<b>220</b>
+			<rgb>220,220,220</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -19,9 +17,7 @@
 	<terraintype>
 		<name>Icy Water</name>
 		<displaycolor0>
-			<r>10</r>
-			<g>17</g>
-			<b>35</b>
+			<rgb>10,17,35</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -35,9 +31,7 @@
 	<terraintype>
 		<name>Ocean</name>
 		<displaycolor0>
-			<r>10</r>
-			<g>17</g>
-			<b>35</b>
+			<rgb>10,17,35</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -51,9 +45,7 @@
 	<terraintype>
 		<name>Sea</name>
 		<displaycolor0>
-			<r>10</r>
-			<g>17</g>
-			<b>35</b>
+			<rgb>10,17,35</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -67,9 +59,7 @@
 	<terraintype>
 		<name>Quiet Sea</name>
 		<displaycolor0>
-			<r>10</r>
-			<g>17</g>
-			<b>35</b>
+			<rgb>10,17,35</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -83,9 +73,7 @@
 	<terraintype>
 		<name>Lake</name>
 		<displaycolor0>
-			<r>10</r>
-			<g>17</g>
-			<b>50</b>
+			<rgb>10,17,50</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -99,9 +87,7 @@
 	<terraintype>
 		<name>Cliffs</name>
 		<displaycolor0>
-			<r>120</r>
-			<g>120</g>
-			<b>120</b>
+			<rgb>120,120,120</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -116,9 +102,7 @@
 	<terraintype>
 		<name>Cliffs</name>
 		<displaycolor0>
-			<r>80</r>
-			<g>80</g>
-			<b>80</b>
+			<rgb>80,80,80</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -133,9 +117,7 @@
 	<terraintype>
 		<name>Cliffs</name>
 		<displaycolor0>
-			<r>130</r>
-			<g>110</g>
-			<b>90</b>
+			<rgb>130,110,90</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -152,9 +134,7 @@
 	<terraintype>
 		<name>Cliffs</name>
 		<displaycolor0>
-			<r>90</r>
-			<g>70</g>
-			<b>50</b>
+			<rgb>90,70,50</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -171,9 +151,7 @@
 	<terraintype>
 		<name>Cliffs</name>
 		<displaycolor0>
-			<r>90</r>
-			<g>90</g>
-			<b>90</b>
+			<rgb>90,90,90</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -184,9 +162,7 @@
 	<terraintype>
 		<name>Cliffs</name>
 		<displaycolor0>
-			<r>50</r>
-			<g>50</g>
-			<b>50</b>
+			<rgb>50,50,50</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -197,9 +173,7 @@
 	<terraintype>
 		<name>Glacial Mountains</name>
 		<displaycolor0>
-			<r>170</r>
-			<g>170</g>
-			<b>170</b>
+			<rgb>170,170,170</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -214,9 +188,7 @@
 	<terraintype>
 		<name>Desert Mountains</name>
 		<displaycolor0>
-			<r>130</r>
-			<g>110</g>
-			<b>80</b>
+			<rgb>130,110,80</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -233,9 +205,7 @@
 	<terraintype>
 		<name>Dry Subtropical Mountains</name>
 		<displaycolor0>
-			<r>85</r>
-			<g>85</g>
-			<b>75</b>
+			<rgb>85,85,75</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -253,9 +223,7 @@
 	<terraintype>
 		<name>Wet Subtropical Mountains</name>
 		<displaycolor0>
-			<r>80</r>
-			<g>90</g>
-			<b>70</b>
+			<rgb>80,90,70</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -271,9 +239,7 @@
 	<terraintype>
 		<name>Temperate Mountains</name>
 		<displaycolor0>
-			<r>120</r>
-			<g>120</g>
-			<b>120</b>
+			<rgb>120,120,120</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -284,9 +250,7 @@
 	<terraintype>
 		<name>Glacial Hills</name>
 		<displaycolor0>
-			<r>160</r>
-			<g>160</g>
-			<b>160</b>
+			<rgb>160,160,160</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -301,9 +265,7 @@
 	<terraintype>
 		<name>Sand Dunes</name>
 		<displaycolor0>
-			<r>206</r>
-			<g>159</g>
-			<b>129</b>
+			<rgb>206,159,129</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -317,9 +279,7 @@
 	<terraintype>
 		<name>Tundra Hills</name>
 		<displaycolor0>
-			<r>96</r>
-			<g>93</g>
-			<b>79</b>
+			<rgb>96,93,79</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -333,9 +293,7 @@
 	<terraintype>
 		<name>Boreal Forest Hills</name>
 		<displaycolor0>
-			<r>52</r>
-			<g>59</g>
-			<b>50</b>
+			<rgb>52,59,50</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -349,9 +307,7 @@
 	<terraintype>
 		<name>Temperate Forest Hills</name>
 		<displaycolor0>
-			<r>60</r>
-			<g>78</g>
-			<b>60</b>
+			<rgb>60,78,60</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -365,9 +321,7 @@
 	<terraintype>
 		<name>Temperate Steppe Hills</name>
 		<displaycolor0>
-			<r>105</r>
-			<g>110</g>
-			<b>95</b>
+			<rgb>105,110,95</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -381,9 +335,7 @@
 	<terraintype>
 		<name>Subtropical Rainforest Hills</name>
 		<displaycolor0>
-			<r>42</r>
-			<g>56</g>
-			<b>38</b>
+			<rgb>42,56,38</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -397,9 +349,7 @@
 	<terraintype>
 		<name>Mediterranean Hills</name>
 		<displaycolor0>
-			<r>125</r>
-			<g>120</g>
-			<b>97</b>
+			<rgb>125,120,97</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -413,9 +363,7 @@
 	<terraintype>
 		<name>Monsoon Forest Hills</name>
 		<displaycolor0>
-			<r>50</r>
-			<g>68</g>
-			<b>40</b>
+			<rgb>50,68,40</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -429,9 +377,7 @@
 	<terraintype>
 		<name>Arid Hills</name>
 		<displaycolor0>
-			<r>200</r>
-			<g>155</g>
-			<b>140</b>
+			<rgb>200,155,140</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -445,9 +391,7 @@
 	<terraintype>
 		<name>Xeric Hills</name>
 		<displaycolor0>
-			<r>190</r>
-			<g>165</g>
-			<b>130</b>
+			<rgb>190,165,130</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -461,9 +405,7 @@
 	<terraintype>
 		<name>Dry Steppe Hills</name>
 		<displaycolor0>
-			<r>175</r>
-			<g>155</g>
-			<b>125</b>
+			<rgb>175,155,125</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -477,9 +419,7 @@
 	<terraintype>
 		<name>Semiarid Hills</name>
 		<displaycolor0>
-			<r>175</r>
-			<g>150</g>
-			<b>125</b>
+			<rgb>175,150,125</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -493,9 +433,7 @@
 	<terraintype>
 		<name>Grass Savanna Hills</name>
 		<displaycolor0>
-			<r>155</r>
-			<g>150</g>
-			<b>100</b>
+			<rgb>155,150,100</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -509,9 +447,7 @@
 	<terraintype>
 		<name>Tree Savanna Hills</name>
 		<displaycolor0>
-			<r>105</r>
-			<g>125</g>
-			<b>70</b>
+			<rgb>105,125,70</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -525,9 +461,7 @@
 	<terraintype>
 		<name>Dry Subtropical Forest Hills</name>
 		<displaycolor0>
-			<r>95</r>
-			<g>105</g>
-			<b>85</b>
+			<rgb>95,105,85</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -541,9 +475,7 @@
 	<terraintype>
 		<name>Tropical Rainforest Hills</name>
 		<displaycolor0>
-			<r>20</r>
-			<g>40</g>
-			<b>10</b>
+			<rgb>20,40,10</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -557,9 +489,7 @@
 	<terraintype>
 		<name>Tundra Valley</name>
 		<displaycolor0>
-			<r>96</r>
-			<g>103</g>
-			<b>89</b>
+			<rgb>96,103,89</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -573,9 +503,7 @@
 	<terraintype>
 		<name>Boreal Forest Valley</name>
 		<displaycolor0>
-			<r>48</r>
-			<g>69</g>
-			<b>45</b>
+			<rgb>48,69,45</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -589,9 +517,7 @@
 	<terraintype>
 		<name>Temperate Forest Valley</name>
 		<displaycolor0>
-			<r>55</r>
-			<g>88</g>
-			<b>53</b>
+			<rgb>55,88,53</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -605,9 +531,7 @@
 	<terraintype>
 		<name>Temperate Steppe Valley</name>
 		<displaycolor0>
-			<r>85</r>
-			<g>100</g>
-			<b>65</b>
+			<rgb>85,100,65</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -621,9 +545,7 @@
 	<terraintype>
 		<name>Subtropical Rainforest Valley</name>
 		<displaycolor0>
-			<r>42</r>
-			<g>66</g>
-			<b>38</b>
+			<rgb>42,66,38</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -637,9 +559,7 @@
 	<terraintype>
 		<name>Mediterranean Valley</name>
 		<displaycolor0>
-			<r>125</r>
-			<g>130</g>
-			<b>92</b>
+			<rgb>125,130,92</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -653,9 +573,7 @@
 	<terraintype>
 		<name>Monsoon Forest Valley</name>
 		<displaycolor0>
-			<r>48</r>
-			<g>78</g>
-			<b>38</b>
+			<rgb>48,78,38</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -669,9 +587,7 @@
 	<terraintype>
 		<name>Arid Valley</name>
 		<displaycolor0>
-			<r>200</r>
-			<g>165</g>
-			<b>130</b>
+			<rgb>200,165,130</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -685,9 +601,7 @@
 	<terraintype>
 		<name>Xeric Valley</name>
 		<displaycolor0>
-			<r>190</r>
-			<g>175</g>
-			<b>120</b>
+			<rgb>190,175,120</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -701,9 +615,7 @@
 	<terraintype>
 		<name>Dry Steppe Valley</name>
 		<displaycolor0>
-			<r>175</r>
-			<g>165</g>
-			<b>115</b>
+			<rgb>175,165,115</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -717,9 +629,7 @@
 	<terraintype>
 		<name>Semiarid Valley</name>
 		<displaycolor0>
-			<r>175</r>
-			<g>160</g>
-			<b>115</b>
+			<rgb>175,160,115</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -733,9 +643,7 @@
 	<terraintype>
 		<name>Grass Savanna Valley</name>
 		<displaycolor0>
-			<r>155</r>
-			<g>160</g>
-			<b>90</b>
+			<rgb>155,160,90</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -749,9 +657,7 @@
 	<terraintype>
 		<name>Tree Savanna Valley</name>
 		<displaycolor0>
-			<r>105</r>
-			<g>135</g>
-			<b>60</b>
+			<rgb>105,135,60</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -765,9 +671,7 @@
 	<terraintype>
 		<name>Dry Subtropical Forest Valley</name>
 		<displaycolor0>
-			<r>95</r>
-			<g>115</g>
-			<b>75</b>
+			<rgb>95,115,75</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -781,9 +685,7 @@
 	<terraintype>
 		<name>Tropical Rainforest Valley</name>
 		<displaycolor0>
-			<r>15</r>
-			<g>50</g>
-			<b>5</b>
+			<rgb>15,50,5</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -797,9 +699,7 @@
 	<terraintype>
 		<name>Subarctic Wetlands</name>
 		<displaycolor0>
-			<r>60</r>
-			<g>89</g>
-			<b>97</b>
+			<rgb>60,89,97</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -814,9 +714,7 @@
 	<terraintype>
 		<name>Flood Plains</name>
 		<displaycolor0>
-			<r>130</r>
-			<g>160</g>
-			<b>120</b>
+			<rgb>130,160,120</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -833,9 +731,7 @@
 	<terraintype>
 		<name>Grassy Subtropical Wetlands</name>
 		<displaycolor0>
-			<r>100</r>
-			<g>140</g>
-			<b>155</b>
+			<rgb>100,140,155</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -851,9 +747,7 @@
 	<terraintype>
 		<name>Wooded Subtropical Wetlands</name>
 		<displaycolor0>
-			<r>80</r>
-			<g>120</g>
-			<b>130</b>
+			<rgb>80,120,130</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -867,9 +761,7 @@
 	<terraintype>
 		<name>Grassy Tropical Wetlands</name>
 		<displaycolor0>
-			<r>100</r>
-			<g>110</g>
-			<b>95</b>
+			<rgb>100,110,95</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -884,9 +776,7 @@
 	<terraintype>
 		<name>Wooded Tropical Wetlands</name>
 		<displaycolor0>
-			<r>80</r>
-			<g>110</g>
-			<b>100</b>
+			<rgb>80,110,100</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -901,9 +791,7 @@
 	<terraintype>
 		<name>Temperate Wetlands</name>
 		<displaycolor0>
-			<r>70</r>
-			<g>89</g>
-			<b>97</b>
+			<rgb>70,89,97</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -914,9 +802,7 @@
 	<terraintype>
 		<name>Polar Desert</name>
 		<displaycolor0>
-			<r>180</r>
-			<g>180</g>
-			<b>180</b>
+			<rgb>180,180,180</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -928,9 +814,7 @@
 	<terraintype>
 		<name>Volcanic Tundra</name>
 		<displaycolor0>
-			<r>136</r>
-			<g>137</g>
-			<b>92</b>
+			<rgb>136,137,92</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -945,9 +829,7 @@
 	<terraintype>
 		<name>Alpine Tundra</name>
 		<displaycolor0>
-			<r>126</r>
-			<g>123</g>
-			<b>89</b>
+			<rgb>126,123,89</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -959,9 +841,7 @@
 	<terraintype>
 		<name>Sparse Boreal Forest</name>
 		<displaycolor0>
-			<r>86</r>
-			<g>89</g>
-			<b>74</b>
+			<rgb>86,89,74</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -976,9 +856,7 @@
 	<terraintype>
 		<name>Dense Boreal Forest</name>
 		<displaycolor0>
-			<r>50</r>
-			<g>61</g>
-			<b>52</b>
+			<rgb>50,61,52</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -994,9 +872,7 @@
 	<terraintype>
 		<name>Boreal Bog</name>
 		<displaycolor0>
-			<r>55</r>
-			<g>72</g>
-			<b>80</b>
+			<rgb>55,72,80</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1011,9 +887,7 @@
 	<terraintype>
 		<name>Boreal Sandy Plains</name>
 		<displaycolor0>
-			<r>106</r>
-			<g>99</g>
-			<b>84</b>
+			<rgb>106,99,84</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1029,9 +903,7 @@
 	<terraintype>
 		<name>Temperate Pine Forest</name>
 		<displaycolor0>
-			<r>66</r>
-			<g>76</g>
-			<b>58</b>
+			<rgb>66,76,58</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1045,9 +917,7 @@
 	<terraintype>
 		<name>Sparse Temperate Forest</name>
 		<displaycolor0>
-			<r>75</r>
-			<g>95</g>
-			<b>69</b>
+			<rgb>75,95,69</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1061,9 +931,7 @@
 	<terraintype>
 		<name>Dense Temperate Forest</name>
 		<displaycolor0>
-			<r>55</r>
-			<g>81</g>
-			<b>57</b>
+			<rgb>55,81,57</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1079,9 +947,7 @@
 	<terraintype>
 		<name>Temperate Grassland</name>
 		<displaycolor0>
-			<r>88</r>
-			<g>98</g>
-			<b>75</b>
+			<rgb>88,98,75</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1095,9 +961,7 @@
 	<terraintype>
 		<name>Temperate Mudland</name>
 		<displaycolor0>
-			<r>104</r>
-			<g>114</g>
-			<b>88</b>
+			<rgb>104,114,88</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1112,9 +976,7 @@
 	<terraintype>
 		<name>Fertile Meadows</name>
 		<displaycolor0>
-			<r>75</r>
-			<g>85</g>
-			<b>67</b>
+			<rgb>75,85,67</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1129,9 +991,7 @@
 	<terraintype>
 		<name>Temperate Bog</name>
 		<displaycolor0>
-			<r>50</r>
-			<g>69</g>
-			<b>77</b>
+			<rgb>50,69,77</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1146,9 +1006,7 @@
 	<terraintype>
 		<name>Volcanic Plains</name>
 		<displaycolor0>
-			<r>75</r>
-			<g>85</g>
-			<b>57</b>
+			<rgb>75,85,57</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1163,9 +1021,7 @@
 	<terraintype>
 		<name>Temperate Sandy Plains</name>
 		<displaycolor0>
-			<r>156</r>
-			<g>149</g>
-			<b>120</b>
+			<rgb>156,149,120</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1180,9 +1036,7 @@
 	<terraintype>
 		<name>Temperate Rocklands</name>
 		<displaycolor0>
-			<r>135</r>
-			<g>119</g>
-			<b>99</b>
+			<rgb>135,119,99</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1197,9 +1051,7 @@
 	<terraintype>
 		<name>Fertile Plains</name>
 		<displaycolor0>
-			<r>89</r>
-			<g>95</g>
-			<b>75</b>
+			<rgb>89,95,75</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1213,9 +1065,7 @@
 	<terraintype>
 		<name>Fertile Woodland</name>
 		<displaycolor0>
-			<r>72</r>
-			<g>92</g>
-			<b>67</b>
+			<rgb>72,92,67</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1229,9 +1079,7 @@
 	<terraintype>
 		<name>Sparse Subtropical Rainforest</name>
 		<displaycolor0>
-			<r>60</r>
-			<g>76</g>
-			<b>57</b>
+			<rgb>60,76,57</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1246,9 +1094,7 @@
 	<terraintype>
 		<name>Dense Subtropical Rainforest</name>
 		<displaycolor0>
-			<r>44</r>
-			<g>56</g>
-			<b>38</b>
+			<rgb>44,56,38</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1263,9 +1109,7 @@
 	<terraintype>
 		<name>Subtropical Grassland</name>
 		<displaycolor0>
-			<r>72</r>
-			<g>90</g>
-			<b>64</b>
+			<rgb>72,90,64</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1279,9 +1123,7 @@
 	<terraintype>
 		<name>Wet Subtropical Bog</name>
 		<displaycolor0>
-			<r>60</r>
-			<g>89</g>
-			<b>97</b>
+			<rgb>60,89,97</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1295,9 +1137,7 @@
 	<terraintype>
 		<name>Wet Subtropical Mudland</name>
 		<displaycolor0>
-			<r>88</r>
-			<g>85</g>
-			<b>65</b>
+			<rgb>88,85,65</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1312,9 +1152,7 @@
 	<terraintype>
 		<name>Subtropical Sandy Plains</name>
 		<displaycolor0>
-			<r>186</r>
-			<g>159</g>
-			<b>109</b>
+			<rgb>186,159,109</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1328,9 +1166,7 @@
 	<terraintype>
 		<name>Volcanic Forest</name>
 		<displaycolor0>
-			<r>65</r>
-			<g>80</g>
-			<b>52</b>
+			<rgb>65,80,52</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1344,9 +1180,7 @@
 	<terraintype>
 		<name>Mediterranean Forest</name>
 		<displaycolor0>
-			<r>95</r>
-			<g>100</g>
-			<b>85</b>
+			<rgb>95,100,85</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1361,9 +1195,7 @@
 	<terraintype>
 		<name>Sparse Mediterranean Forest</name>
 		<displaycolor0>
-			<r>117</r>
-			<g>125</g>
-			<b>96</b>
+			<rgb>117,125,96</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1378,9 +1210,7 @@
 	<terraintype>
 		<name>Dense Mediterranean Forest</name>
 		<displaycolor0>
-			<r>117</r>
-			<g>140</g>
-			<b>96</b>
+			<rgb>117,140,96</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1396,9 +1226,7 @@
 	<terraintype>
 		<name>Mediterranean Pine Forest</name>
 		<displaycolor0>
-			<r>71</r>
-			<g>78</g>
-			<b>60</b>
+			<rgb>71,78,60</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1413,9 +1241,7 @@
 	<terraintype>
 		<name>Mediterranean Plains</name>
 		<displaycolor0>
-			<r>128</r>
-			<g>135</g>
-			<b>105</b>
+			<rgb>128,135,105</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1429,9 +1255,7 @@
 	<terraintype>
 		<name>Volcanic Shrubland</name>
 		<displaycolor0>
-			<r>85</r>
-			<g>95</g>
-			<b>67</b>
+			<rgb>85,95,67</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1447,9 +1271,7 @@
 	<terraintype>
 		<name>Dry Subtropical Bog</name>
 		<displaycolor0>
-			<r>60</r>
-			<g>69</g>
-			<b>77</b>
+			<rgb>60,69,77</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1465,9 +1287,7 @@
 	<terraintype>
 		<name>Dry Subtropical Mudland</name>
 		<displaycolor0>
-			<r>102</r>
-			<g>90</g>
-			<b>70</b>
+			<rgb>102,90,70</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1483,9 +1303,7 @@
 	<terraintype>
 		<name>Dry Sandy Plains</name>
 		<displaycolor0>
-			<r>160</r>
-			<g>149</g>
-			<b>129</b>
+			<rgb>160,149,129</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1501,9 +1319,7 @@
 	<terraintype>
 		<name>Dry Fertile Plains</name>
 		<displaycolor0>
-			<r>109</r>
-			<g>115</g>
-			<b>95</b>
+			<rgb>109,115,95</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1519,9 +1335,7 @@
 	<terraintype>
 		<name>Subtropical Rocklands</name>
 		<displaycolor0>
-			<r>135</r>
-			<g>119</g>
-			<b>99</b>
+			<rgb>135,119,99</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1537,9 +1351,7 @@
 	<terraintype>
 		<name>Sparse Monsoon Forest</name>
 		<displaycolor0>
-			<r>65</r>
-			<g>85</g>
-			<b>55</b>
+			<rgb>65,85,55</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1554,9 +1366,7 @@
 	<terraintype>
 		<name>Dense Monsoon Forest</name>
 		<displaycolor0>
-			<r>50</r>
-			<g>70</g>
-			<b>40</b>
+			<rgb>50,70,40</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1570,9 +1380,7 @@
 	<terraintype>
 		<name>Sand Desert</name>
 		<displaycolor0>
-			<r>216</r>
-			<g>159</g>
-			<b>119</b>
+			<rgb>216,159,119</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1586,9 +1394,7 @@
 	<terraintype>
 		<name>Sandy Xeric Shrubland</name>
 		<displaycolor0>
-			<r>216</r>
-			<g>179</g>
-			<b>119</b>
+			<rgb>216,179,119</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1602,9 +1408,7 @@
 	<terraintype>
 		<name>Volcanic Desert</name>
 		<displaycolor0>
-			<r>170</r>
-			<g>170</g>
-			<b>125</b>
+			<rgb>170,170,125</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1619,9 +1423,7 @@
 	<terraintype>
 		<name>Semiarid Desert</name>
 		<displaycolor0>
-			<r>205</r>
-			<g>170</g>
-			<b>135</b>
+			<rgb>205,170,135</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1635,9 +1437,7 @@
 	<terraintype>
 		<name>Semiarid Bushland</name>
 		<displaycolor0>
-			<r>165</r>
-			<g>160</g>
-			<b>125</b>
+			<rgb>165,160,125</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1653,9 +1453,7 @@
 	<terraintype>
 		<name>Semiarid Plains</name>
 		<displaycolor0>
-			<r>155</r>
-			<g>140</g>
-			<b>105</b>
+			<rgb>155,140,105</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1669,9 +1467,7 @@
 	<terraintype>
 		<name>Sparse Tree Savanna</name>
 		<displaycolor0>
-			<r>135</r>
-			<g>140</g>
-			<b>80</b>
+			<rgb>135,140,80</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1686,9 +1482,7 @@
 	<terraintype>
 		<name>Dense Tree Savanna</name>
 		<displaycolor0>
-			<r>95</r>
-			<g>120</g>
-			<b>50</b>
+			<rgb>95,120,50</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1703,9 +1497,7 @@
 	<terraintype>
 		<name>Volcanic Savanna</name>
 		<displaycolor0>
-			<r>135</r>
-			<g>130</g>
-			<b>80</b>
+			<rgb>135,130,80</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1720,9 +1512,7 @@
 	<terraintype>
 		<name>Dry Tropical Bog</name>
 		<displaycolor0>
-			<r>70</r>
-			<g>79</g>
-			<b>87</b>
+			<rgb>70,79,87</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1737,9 +1527,7 @@
 	<terraintype>
 		<name>Dry Tropical Mudland</name>
 		<displaycolor0>
-			<r>98</r>
-			<g>89</g>
-			<b>60</b>
+			<rgb>98,89,60</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1754,9 +1542,7 @@
 	<terraintype>
 		<name>Sparse Dry Subtropical Forest</name>
 		<displaycolor0>
-			<r>135</r>
-			<g>140</g>
-			<b>90</b>
+			<rgb>135,140,90</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1771,9 +1557,7 @@
 	<terraintype>
 		<name>Dense Dry Subtropical Forest</name>
 		<displaycolor0>
-			<r>75</r>
-			<g>85</g>
-			<b>45</b>
+			<rgb>75,85,45</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1788,9 +1572,7 @@
 	<terraintype>
 		<name>Sparse Tropical Rainforest</name>
 		<displaycolor0>
-			<r>35</r>
-			<g>60</g>
-			<b>20</b>
+			<rgb>35,60,20</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1805,9 +1587,7 @@
 	<terraintype>
 		<name>Dense Tropical Rainforest</name>
 		<displaycolor0>
-			<r>10</r>
-			<g>40</g>
-			<b>5</b>
+			<rgb>10,40,5</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1822,9 +1602,7 @@
 	<terraintype>
 		<name>Wet Tropical Grassland</name>
 		<displaycolor0>
-			<r>82</r>
-			<g>100</g>
-			<b>60</b>
+			<rgb>82,100,60</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1839,9 +1617,7 @@
 	<terraintype>
 		<name>Wet Tropical Bog</name>
 		<displaycolor0>
-			<r>40</r>
-			<g>69</g>
-			<b>77</b>
+			<rgb>40,69,77</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1856,9 +1632,7 @@
 	<terraintype>
 		<name>Wet Tropical Mudland</name>
 		<displaycolor0>
-			<r>82</r>
-			<g>79</g>
-			<b>60</b>
+			<rgb>82,79,60</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1873,9 +1647,7 @@
 	<terraintype>
 		<name>Volcanic Rainforest</name>
 		<displaycolor0>
-			<r>75</r>
-			<g>85</g>
-			<b>60</b>
+			<rgb>75,85,60</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1890,9 +1662,7 @@
 	<terraintype>
 		<name>Tropical Sandy Plains</name>
 		<displaycolor0>
-			<r>82</r>
-			<g>79</g>
-			<b>60</b>
+			<rgb>82,79,60</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1907,9 +1677,7 @@
 	<terraintype>
 		<name>Shifting Sands</name>
 		<displaycolor0>
-			<r>226</r>
-			<g>169</g>
-			<b>129</b>
+			<rgb>226,169,129</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1920,9 +1688,7 @@
 	<terraintype>
 		<name>Tundra</name>
 		<displaycolor0>
-			<r>106</r>
-			<g>103</g>
-			<b>79</b>
+			<rgb>106,103,79</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1933,9 +1699,7 @@
 	<terraintype>
 		<name>Boreal Forest</name>
 		<displaycolor0>
-			<r>58</r>
-			<g>69</g>
-			<b>55</b>
+			<rgb>58,69,55</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1946,9 +1710,7 @@
 	<terraintype>
 		<name>Temperate Forest</name>
 		<displaycolor0>
-			<r>65</r>
-			<g>88</g>
-			<b>63</b>
+			<rgb>65,88,63</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1959,9 +1721,7 @@
 	<terraintype>
 		<name>Temperate Steppe</name>
 		<displaycolor0>
-			<r>95</r>
-			<g>100</g>
-			<b>75</b>
+			<rgb>95,100,75</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1972,9 +1732,7 @@
 	<terraintype>
 		<name>Subtropical Rainforest</name>
 		<displaycolor0>
-			<r>52</r>
-			<g>66</g>
-			<b>48</b>
+			<rgb>52,66,48</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1985,9 +1743,7 @@
 	<terraintype>
 		<name>Mediterranean Shrubland</name>
 		<displaycolor0>
-			<r>135</r>
-			<g>130</g>
-			<b>102</b>
+			<rgb>135,130,102</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -1998,9 +1754,7 @@
 	<terraintype>
 		<name>Monsoon Forest</name>
 		<displaycolor0>
-			<r>58</r>
-			<g>78</g>
-			<b>48</b>
+			<rgb>58,78,48</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -2011,9 +1765,7 @@
 	<terraintype>
 		<name>Arid Mudland</name>
 		<displaycolor0>
-			<r>210</r>
-			<g>165</g>
-			<b>140</b>
+			<rgb>210,165,140</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -2024,9 +1776,7 @@
 	<terraintype>
 		<name>Xeric Mudland</name>
 		<displaycolor0>
-			<r>200</r>
-			<g>175</g>
-			<b>130</b>
+			<rgb>200,175,130</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -2037,9 +1787,7 @@
 	<terraintype>
 		<name>Dry Steppe</name>
 		<displaycolor0>
-			<r>185</r>
-			<g>165</g>
-			<b>145</b>
+			<rgb>185,165,145</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -2050,9 +1798,7 @@
 	<terraintype>
 		<name>Semiarid Mudland</name>
 		<displaycolor0>
-			<r>185</r>
-			<g>160</g>
-			<b>125</b>
+			<rgb>185,160,125</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -2063,9 +1809,7 @@
 	<terraintype>
 		<name>Grass Savanna</name>
 		<displaycolor0>
-			<r>165</r>
-			<g>160</g>
-			<b>100</b>
+			<rgb>165,160,100</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -2076,9 +1820,7 @@
 	<terraintype>
 		<name>Tree Savanna</name>
 		<displaycolor0>
-			<r>115</r>
-			<g>135</g>
-			<b>70</b>
+			<rgb>115,135,70</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -2089,9 +1831,7 @@
 	<terraintype>
 		<name>Dry Subtropical Forest</name>
 		<displaycolor0>
-			<r>105</r>
-			<g>115</g>
-			<b>85</b>
+			<rgb>105,115,85</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>
@@ -2102,9 +1842,7 @@
 	<terraintype>
 		<name>Tropical Rainforest</name>
 		<displaycolor0>
-			<r>25</r>
-			<g>50</g>
-			<b>15</b>
+			<rgb>25,50,15</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>

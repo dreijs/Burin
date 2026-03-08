@@ -3,113 +3,85 @@
 	<terraintype>
 		<name>Water</name>
 		<color>
-			<r>5</r>
-			<g>98</g>
-			<b>155</b>
+			<rgb>5,98,155</rgb>
 		</color>
 	</terraintype>
 	<terraintype>
 		<name>Level 1</name>
 		<color>
-			<r>0</r>
-			<g>136</g>
-			<b>0</b>
+			<rgb>0,136,0</rgb>
 		</color>
 	</terraintype>
-		<terraintype>
+	<terraintype>
 		<name>Level 2</name>
 		<color>
-			<r>0</r>
-			<g>187</g>
-			<b>0</b>
+			<rgb>0,187,0</rgb>
 		</color>
 	</terraintype>
 	<terraintype>
 		<name>Level 3</name>
 		<color>
-			<r>0</r>
-			<g>238</g>
-			<b>0</b>
+			<rgb>0,238,0</rgb>
 		</color>
 	</terraintype>
 	<terraintype>
 		<name>Level 4</name>
 		<color>
-			<r>136</r>
-			<g>255</g>
-			<b>0</b>
+			<rgb>136,255,0</rgb>
 		</color>
 	</terraintype>
 	<terraintype>
 		<name>Level 5</name>
 		<color>
-			<r>255</r>
-			<g>255</g>
-			<b>0</b>
+			<rgb>255,255,0</rgb>
 		</color>
 	</terraintype>
  	<terraintype>
 		<name>Level 6</name>
 		<color>
-			<r>221</r>
-			<g>187</g>
-			<b>34</b>
+			<rgb>221,187,34</rgb>
 		</color>
 	</terraintype>
 	<terraintype>
 		<name>Level 7</name>
 		<color>
-			<r>187</r>
-			<g>119</g>
-			<b>68</b>
+			<rgb>187,119,68</rgb>
 		</color>
 	</terraintype>
 	<terraintype>
 		<name>Level 8</name>
 		<color>
-			<r>170</r>
-			<g>102</g>
-			<b>51</b>
+			<rgb>170,102,51</rgb>
 		</color>
 	</terraintype>
 	<terraintype>
 		<name>Level 9</name>
 		<color>
-			<r>153</r>
-			<g>85</g>
-			<b>34</b>
+			<rgb>153,85,34</rgb>
 		</color>
 	</terraintype>
 	<terraintype>
 		<name>Level 10</name>
 		<color>
-			<r>136</r>
-			<g>68</g>
-			<b>17</b>
+			<rgb>136,68,17</rgb>
 		</color>
 	</terraintype>
 	<terraintype>
 		<name>Level 11</name>
 		<color>
-			<r>119</r>
-			<g>51</g>
-			<b>0</b>
+			<rgb>119,51,0</rgb>
 		</color>
 	</terraintype>
 	<terraintype>
 		<name>Level 12</name>
 		<color>
-			<r>102</r>
-			<g>34</g>
-			<b>0</b>
+			<rgb>102,34,0</rgb>
 		</color>
 	</terraintype>
 	<terraintype>
 		<name>Level 13</name>
 		<color>
-			<r>85</r>
-			<g>17</g>
-			<b>0</b>
+			<rgb>85,17,0</rgb>
 		</color>
 	</terraintype>
 </root>

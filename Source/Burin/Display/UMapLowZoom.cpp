@@ -185,7 +185,7 @@ TArray<FCanvasUVTri> UMapLowZoom::GetTriangles(UTerrain* terrain, int mode) {
 }
 
 TArray<FLineDisplayData> UMapLowZoom::GetBorders(int mode) {
-    if (mode != 5) return {};
+    if (mode != 6) return {};
     int s = 4;
     TArray<FLineDisplayData> result = {};
     for (UEdgeDataEntry& edgeData : EdgeData) {
