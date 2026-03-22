@@ -24,8 +24,8 @@ public:
 	~UBurinWorld();
 
 	UTerrain* Terrain;
-	UPolities* Polities;
-	UPlaces* Places;
+	UPolities* HistoricalPolities;
+	UPlaces* HistoricalPlaces;
 
 	UWorldCreatorSettings* Settings;
 
@@ -33,6 +33,7 @@ public:
 
 	TArray<UArea> Areas;
 	TArray<UProvince> Provinces;
+	TArray<UPolity> Polities;
 
 	UFUNCTION(BlueprintCallable, Category = "Initialization")
 	void Initialize();
@@ -53,10 +54,19 @@ public:
 	TArray<FCanvasUVTri> GetTriangles(int mode);
 
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
+	TArray<FCanvasUVTri> GetMaterialTriangles(int mode);
+
+	UFUNCTION(BlueprintCallable, Category = "RenderMap")
 	TArray<FLineDisplayData> GetBorders(int mode);
+
+	UFUNCTION(BlueprintCallable, Category = "RenderMap")
+	TArray<FCanvasUVTri> GetProvinceTriangles(int mode);
+
+	int GetTriangleIDAtCoordinate(double x, double y);
 
 private:
 	void initializeTerrain();
 	void initializeHistory();
 	void initializeMap();
+	
 };

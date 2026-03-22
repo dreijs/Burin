@@ -3,14 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UProvince.generated.h"
+#include <Burin/Concepts/Polities/UPolity.h>
 
-UCLASS(Blueprintable)
-class BURIN_API UProvince : public UObject
+class BURIN_API UProvince
 {
-	GENERATED_BODY()
 
 public:
 	UProvince();
 	~UProvince();
+
+	FString Name;
+	FString CommonName;
+	double Latitude, Longitude;
+	TArray<int> Triangles;
+	UPolity controller;
 };

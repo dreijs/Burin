@@ -250,7 +250,7 @@ int UTerrain::GetTerrain(int terrainData) {
 }
 
 TArray<uint8_t> UTerrain::GetColor(int terrainData, int mode) {
-	if (mode == 0) {
+	if (mode == 0 || mode == 1) {
 		int idx = GetTerrain(terrainData);
 		if (idx >= 0) { 
 			return getDisplayColor0(idx); 
@@ -265,19 +265,23 @@ TArray<uint8_t> UTerrain::GetColor(int terrainData, int mode) {
 	int soil = (terrainData / 256) % 16;
 	int feature = (terrainData / 4096) % 16;
 
-	if (mode == 1) {
-		return ElevationData[elevation].color;
-	}
 	if (mode == 2) {
-		if (elevation == 0) return ElevationData[0].color;
-		return VegetationData[vegetation].color;
+		return ElevationData[elevation].color;
 	}
 	if (mode == 3) {
 		if (elevation == 0) return ElevationData[0].color;
-		return SoilData[soil].color;
+		return VegetationData[vegetation].color;
 	}
 	if (mode == 4) {
+		if (elevation == 0) return ElevationData[0].color;
+		return SoilData[soil].color;
+	}
+	if (mode == 5) {
 		return FeatureData[feature].color;
+	}
+	if (mode == 7) {
+		if (elevation == 0) return {128, 192, 255};
+		return { 255, 255, 224 };
 	}
 
 	return { 0, 0, 0 };

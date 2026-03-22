@@ -27,11 +27,11 @@ void UBurinWorld::initializeTerrain() {
 }
 
 void UBurinWorld::initializeHistory() {
-	Polities = new UPolities();
-	Places = new UPlaces();
+	HistoricalPolities = new UPolities();
+	HistoricalPlaces = new UPlaces();
 
-	Polities->InitializePolities();
-	Places->InitializePlaces();
+	HistoricalPolities->InitializePolities();
+	HistoricalPlaces->InitializePlaces();
 }
 
 void UBurinWorld::initializeMap() {
@@ -60,6 +60,10 @@ int UBurinWorld::GetTerrainDataAtCoordinate(double x, double y) {
 	return MapLowZoom->GetTerrainDataAtCoordinate(Terrain, x, y);
 }
 
+int UBurinWorld::GetTriangleIDAtCoordinate(double x, double y) {
+	return MapLowZoom->GetTriangleIDAtCoordinate(x, y);
+}
+
 FString UBurinWorld::GetTerrainText(int v) {
 	return MapLowZoom->GetTerrainText(Terrain, v);
 }
@@ -68,6 +72,14 @@ TArray<FCanvasUVTri> UBurinWorld::GetTriangles(int mode) {
 	return MapLowZoom->GetTriangles(Terrain, mode);
 }
 
+TArray<FCanvasUVTri> UBurinWorld::GetMaterialTriangles(int mode) {
+	return MapLowZoom->GetMaterialTriangles(Terrain, mode);
+}
+
 TArray<FLineDisplayData> UBurinWorld::GetBorders(int mode) {
 	return MapLowZoom->GetBorders(mode);
+}
+
+TArray<FCanvasUVTri> UBurinWorld::GetProvinceTriangles(int mode) {
+	return MapLowZoom->GetProvinceTriangles(Provinces, mode);
 }

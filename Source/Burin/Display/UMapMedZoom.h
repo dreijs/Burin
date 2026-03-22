@@ -4,16 +4,12 @@
 
 #include "CoreMinimal.h"
 
-/**
- * 
- */
-class BURIN_API UEdgeDataEntry
+class BURIN_API UMapMedZoom
 {
-public:
-	UEdgeDataEntry();
-	~UEdgeDataEntry();
 
-	int p1, p2;
-	int t1, t2;
-	int riverData;
+public:
+	// Sets default values for this actor's properties
+	UMapMedZoom();
+	~UMapMedZoom();
+
 };

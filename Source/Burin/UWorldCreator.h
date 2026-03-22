@@ -20,7 +20,7 @@ public:
 
 	static UArea CreateArea(FString name, double latitude, double longitude);
 	static void DestroyArea(FString name);
-	static UProvince CreateProvince(FString name, double latitude, double longitude);
+	static UProvince CreateProvince(UBurinWorld* world, FString name, double latitude, double longitude);
 	static void DestroyProvince(FString name);
 
 	static void CreateRandomWorld(UBurinWorld* world);

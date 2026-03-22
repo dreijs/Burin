@@ -12,19 +12,27 @@ UWorldCreator::~UWorldCreator()
 }
 
 UArea UWorldCreator::CreateArea(FString name, double latitude, double longitude) {
-	UProvince province;
+	UArea area;
 	//province.
-	return {};
+	return area;
 }
 
 void UWorldCreator::DestroyArea(FString name) {
 
 }
 
-UProvince UWorldCreator::CreateProvince(FString name, double latitude, double longitude) {
+UProvince UWorldCreator::CreateProvince(UBurinWorld* world, FString name, double latitude, double longitude) {
 	UProvince province;
-	//province.
-	return {};
+
+	province.Name = name;
+	province.CommonName = name;
+	province.Latitude = latitude;
+	province.Longitude = longitude;
+
+	province.Triangles = {};
+	province.Triangles.Add(world->GetTriangleIDAtCoordinate(latitude, longitude));
+	
+	return province;
 }
 
 void UWorldCreator::DestroyProvince(FString name) {
@@ -36,9 +44,10 @@ void UWorldCreator::CreateRandomWorld(UBurinWorld* world) {
 }
 
 void UWorldCreator::CreateHistoricalWorld(UBurinWorld* world) {
-	world->Areas = {};
-	for (int i = 0; i < world->Places->PlaceData.Num(); i++) {
-		UArea area = CreateArea(world->Places->PlaceData[i].name, world->Places->PlaceData[i].latitude, world->Places->PlaceData[i].longitude);
-		world->Areas.Add(area);
+	world->Provinces = {};
+	world->Polities = {};
+	for (int i = 0; i < world->HistoricalPlaces->PlaceData.Num(); i++) {
+		//UProvince province = CreateProvince(world, world->HistoricalPlaces->PlaceData[i].name, world->HistoricalPlaces->PlaceData[i].latitude, world->HistoricalPlaces->PlaceData[i].longitude);
+		//world->Provinces.Add(province);
 	}
 }

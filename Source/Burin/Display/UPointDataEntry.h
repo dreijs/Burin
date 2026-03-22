@@ -7,13 +7,12 @@
 /**
  * 
  */
-class BURIN_API UEdgeDataEntry
+class BURIN_API UPointDataEntry
 {
 public:
-	UEdgeDataEntry();
-	~UEdgeDataEntry();
+	UPointDataEntry();
+	~UPointDataEntry();
 
-	int p1, p2;
-	int t1, t2;
-	int riverData;
+	int x, y;
+	TArray<int> neighbors;
 };
