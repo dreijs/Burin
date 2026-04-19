@@ -49,8 +49,8 @@ static bool isPointInTriangle(double xp, double yp, double x1, double y1, double
 
 static bool isPointInCoordTriangle(double xp, double yp, int x1, int y1, int x2, int y2, int x3, int y3) {
     return isPointInTriangle(
-        (xp + 180) / 360 * 4096,
-        (yp + 90) / 180 * 4096,
+        (xp + 180) / 360 * 16384,
+        (yp + 90) / 180 * 16384,
         1. * x1,
         1. * y1,
         1. * x2,
@@ -90,7 +90,7 @@ int UMapLowZoom::GetTriangleIDAtCoordinate(double x, double y) {
 }
 
 FCanvasUVTri* convertToTri(TArray<uint8_t> rgb, int x1, int y1, int x2, int y2, int x3, int y3) {
-    int s = 4;
+    int s = 1;
     FCanvasUVTri* result = new FCanvasUVTri();
 
     FVector2D* v0 = new FVector2D();
@@ -177,6 +177,8 @@ void UMapLowZoom::Initialize() {
         }
         if (stringArray.Num() > 4) {
             edge.riverData = FCString::Atoi(*stringArray[4]);
+        } else {
+            edge.riverData = -1;
         }
 
         EdgeData.Add(edge);
@@ -283,16 +285,34 @@ TArray<FCanvasUVTri> UMapLowZoom::GetMaterialTriangles(UTerrain* terrain, int mo
 
 TArray<FLineDisplayData> UMapLowZoom::GetBorders(int mode) {
     if (mode != 6) return {};
-    int s = 4;
+    int s = 1;
     TArray<FLineDisplayData> result = {};
     for (UEdgeDataEntry& edgeData : EdgeData) {
         if (edgeData.t2 >= 0) {
             bool i1 = TriangleData[edgeData.t1].terrainData % 16 == 0;
             bool i2 = TriangleData[edgeData.t2].terrainData % 16 == 0;
             if (i1 != i2) result.Add(FLineDisplayData{ FVector2D{ 1. * PointData[edgeData.p1].x * s, 1. * PointData[edgeData.p1].y * s }, FVector2D{ 1. * PointData[edgeData.p2].x * s, 1. * PointData[edgeData.p2].y * s } });
-        } else result.Add(FLineDisplayData{ FVector2D{ 1. * PointData[edgeData.p1].x * s, 1. * PointData[edgeData.p1].y * s }, FVector2D{ 1. * PointData[edgeData.p2].x * s, 1. * PointData[edgeData.p2].y * s } });
+        }
+        else  if (edgeData.t2 < -1) {
+            bool i1 = TriangleData[edgeData.t1].terrainData % 16 == 0;
+            bool i2 = (-edgeData.t2-2) % 16 == 0;
+            if (i1 != i2) result.Add(FLineDisplayData{ FVector2D{ 1. * PointData[edgeData.p1].x * s, 1. * PointData[edgeData.p1].y * s }, FVector2D{ 1. * PointData[edgeData.p2].x * s, 1. * PointData[edgeData.p2].y * s } });
+        }
     }
-    UE_LOG(LogTemp, Log, TEXT("Number of lines: %d"), result.Num());
+    UE_LOG(LogTemp, Log, TEXT("Number of border lines: %d"), result.Num());
+    return result;
+}
+
+TArray<FLineDisplayData> UMapLowZoom::GetRivers(int mode) {
+    if (mode != 6) return {};
+    int s = 1;
+    TArray<FLineDisplayData> result = {};
+    for (UEdgeDataEntry& edgeData : EdgeData) {
+        if (edgeData.riverData >= 0) {
+            result.Add(FLineDisplayData{ FVector2D{ 1. * PointData[edgeData.p1].x * s, 1. * PointData[edgeData.p1].y * s }, FVector2D{ 1. * PointData[edgeData.p2].x * s, 1. * PointData[edgeData.p2].y * s } });
+        }
+    }
+    UE_LOG(LogTemp, Log, TEXT("Number of river lines: %d"), result.Num());
     return result;
 }
 

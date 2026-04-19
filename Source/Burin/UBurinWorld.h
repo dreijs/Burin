@@ -60,6 +60,9 @@ public:
 	TArray<FLineDisplayData> GetBorders(int mode);
 
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
+	TArray<FLineDisplayData> GetRivers(int mode);
+
+	UFUNCTION(BlueprintCallable, Category = "RenderMap")
 	TArray<FCanvasUVTri> GetProvinceTriangles(int mode);
 
 	int GetTriangleIDAtCoordinate(double x, double y);

@@ -80,6 +80,10 @@ TArray<FLineDisplayData> UBurinWorld::GetBorders(int mode) {
 	return MapLowZoom->GetBorders(mode);
 }
 
+TArray<FLineDisplayData> UBurinWorld::GetRivers(int mode) {
+	return MapLowZoom->GetRivers(mode);
+}
+
 TArray<FCanvasUVTri> UBurinWorld::GetProvinceTriangles(int mode) {
 	return MapLowZoom->GetProvinceTriangles(Provinces, mode);
 }

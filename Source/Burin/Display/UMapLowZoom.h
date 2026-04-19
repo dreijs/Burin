@@ -26,6 +26,7 @@ public:
 	TArray<FCanvasUVTri> GetTriangles(UTerrain* terrain, int mode);
 	TArray<FCanvasUVTri> GetMaterialTriangles(UTerrain* terrain, int mode);
 	TArray<FLineDisplayData> GetBorders(int mode);
+	TArray<FLineDisplayData> GetRivers(int mode);
 	TArray<FCanvasUVTri> GetProvinceTriangles(TArray<UProvince> provinces, int mode);
 
 	void Initialize();
