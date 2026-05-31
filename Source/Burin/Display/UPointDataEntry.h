@@ -13,6 +13,6 @@ public:
 	UPointDataEntry();
 	~UPointDataEntry();
 
-	int x, y;
+	double x, y;
 	TArray<int> neighbors;
 };

@@ -65,6 +65,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
 	TArray<FCanvasUVTri> GetProvinceTriangles(int mode);
 
+	UFUNCTION(BlueprintCallable, Category = "RenderMap")
 	int GetTriangleIDAtCoordinate(double x, double y);
 
 private:
