@@ -12,6 +12,8 @@
 #include <sstream> // For parsing strings
 #include <iostream>
 
+
+
 TArray<UTriangleDataEntry> TriangleData;
 TArray<UEdgeDataEntry> EdgeData;
 
@@ -60,52 +62,77 @@ static bool isPointInCoordTriangle(double xp, double yp, double x1, double y1, d
     );
 }
 
-UPointDataEntry UMapLowZoom::getFirstPoint(bool b, int edge) {
-    if (b) { return PointData[EdgeData[edge].p1]; }
-    return PointData[EdgeData[edge].p2];
+double bound(double x) {
+    if (x >= 1) return 1;
+    if (x <= 0) return 0;
+    return x;
 }
 
+TArray<int> UMapLowZoom::GetSubregionIndices(int zoomCategory, double lat, double lon, double latDelta, double lonDelta) {
+    int minX = static_cast<int>(std::floor(bound((lon - lonDelta + 180) / 360) * TriangleData[zoomCategory].Num()));
+    int maxY = static_cast<int>(std::floor(bound((90 - (lat - latDelta)) / 180) * TriangleData[zoomCategory][minX].Num()));
+    int maxX = static_cast<int>(std::floor(bound((lon + lonDelta + 180) / 360) * TriangleData[zoomCategory].Num()));
+    int minY = static_cast<int>(std::floor(bound((90 - (lat + latDelta)) / 180) * TriangleData[zoomCategory][minX].Num()));
+    return { minX, minY, maxX, maxY};
+}
+
+int UMapLowZoom::GetNumSubregions(int zoomCategory, bool isX) {
+    if (isX) return TriangleData[zoomCategory].Num();
+    return TriangleData[zoomCategory][0].Num();
+}
+
+UPointDataEntry UMapLowZoom::getFirstPoint(bool b, int edge, int zoomCategory, int x, int y) {
+    if (b) { return PointData[zoomCategory][x][y][EdgeData[zoomCategory][x][y][edge].p1]; }
+    return PointData[zoomCategory][x][y][EdgeData[zoomCategory][x][y][edge].p2];
+}
 
 FString UMapLowZoom::GetTerrainText(UTerrain* terrain, int v) {
     return terrain->GetTerrainText(v);
 }
 
-int UMapLowZoom::GetTerrainDataAtCoordinate(UTerrain* terrain, double x, double y) {
-    int idx = GetTriangleIDAtCoordinate(x, y);
-    if(idx >= 0) return terrain->GetTerrainFromCache(TriangleData[idx].terrainData);
+int UMapLowZoom::GetTerrainDataAtCoordinate(UTerrain* terrain, int zoomCategory, double lon, double lat) {
+    int x = static_cast<int>(std::floor((lon +180) / 360 * TriangleData[zoomCategory].Num()));
+    int y = static_cast<int>(std::floor((lat +90) / 180 * TriangleData[zoomCategory][x].Num()));
+    int idx = GetTriangleIDAtCoordinate(zoomCategory, lon, lat);
+    if(idx >= 0) return terrain->GetTerrainFromCache(TriangleData[zoomCategory][x][y][idx].terrainData);
 
     return -1;
 }
 
-int UMapLowZoom::GetTriangleIDAtCoordinate(double x, double y) {
-    for (int i = TriangleData.Num() - 1; i >= 0; i--) {
-        UPointDataEntry p1 = getFirstPoint(TriangleData[i].b1, TriangleData[i].e1);
-        UPointDataEntry p2 = getFirstPoint(TriangleData[i].b2, TriangleData[i].e2);
-        UPointDataEntry p3 = getFirstPoint(TriangleData[i].b3, TriangleData[i].e3);
-        if (isPointInCoordTriangle(x, y, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y)) {
+int UMapLowZoom::GetTriangleIDAtCoordinate(int zoomCategory, double lon, double lat) {
+    int x = static_cast<int>(std::floor((lon + 180) / 360 * TriangleData[zoomCategory].Num()));
+    int y = static_cast<int>(std::floor((lat + 90) / 180 * TriangleData[zoomCategory][x].Num()));
+    UE_LOG(LogTemp, Log, TEXT("Triangle region: %d, %d"), x, y);
+    for (int i = TriangleData[zoomCategory][x][y].Num() - 1; i >= 0; i--) {
+        UPointDataEntry p1 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b1, TriangleData[zoomCategory][x][y][i].e1, zoomCategory, x, y);
+        UPointDataEntry p2 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b2, TriangleData[zoomCategory][x][y][i].e2, zoomCategory, x, y);
+        UPointDataEntry p3 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b3, TriangleData[zoomCategory][x][y][i].e3, zoomCategory, x, y);
+        if (isPointInCoordTriangle(lon, lat, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y)) {
+            UE_LOG(LogTemp, Log, TEXT("Triangle region: %d"), i);
             return i;
         }
     }
+    UE_LOG(LogTemp, Log, TEXT("Triangle region: -1"));
     return -1;
 }
 
-FCanvasUVTri* convertToTri(TArray<uint8_t> rgb, double x1, double y1, double x2, double y2, double x3, double y3) {
+FCanvasUVTri* convertToTri(TArray<uint8_t> rgb, double x1, double y1, double x2, double y2, double x3, double y3, double minX, double maxX, double minY, double maxY, double width, double height) {
     FCanvasUVTri* result = new FCanvasUVTri();
 
     FVector2D* v0 = new FVector2D();
     
-    v0->X = (x1 + 180) / 360 * 16384;
-    v0->Y = (y1 + 90) / 180 * 16384;
+    v0->X = (x1 - minX) / (maxX - minX) * width;
+    v0->Y = (y1 - minY) / (maxY - minY) * height;
     result->V0_Pos = *v0;
 
     FVector2D* v1 = new FVector2D();
-    v1->X = (x2 + 180) / 360 * 16384;
-    v1->Y = (y2 + 90) / 180 * 16384;
+    v1->X = (x2 - minX) / (maxX - minX) * width;
+    v1->Y = (y2 - minY) / (maxY - minY) * height;
     result->V1_Pos = *v1;
 
     FVector2D* v2 = new FVector2D();
-    v2->X = (x3 + 180) / 360 * 16384;
-    v2->Y = (y3 + 90) / 180 * 16384;
+    v2->X = (x3 - minX) / (maxX - minX) * width;
+    v2->Y = (y3 - minY) / (maxY - minY) * height;
     result->V2_Pos = *v2;
 
     FLinearColor* color = new FLinearColor(1.f * rgb[0]/255, 1.f * rgb[1] / 255, 1.f * rgb[2] / 255, 1.f);
@@ -134,92 +161,233 @@ FCanvasUVTri* convertToTri(TArray<uint8_t> rgb, double x1, double y1, double x2,
     return result;
 }
 
+static UPointDataEntry getPointData(FString aString) {
+    TArray<FString> stringArray = {};
+    aString.ParseIntoArray(stringArray, TEXT(","), false);
+
+    UPointDataEntry point = {};
+    point.x = FCString::Atod(*stringArray[0]);
+    point.y = FCString::Atod(*stringArray[1]);
+    point.neighbors = {};
+    for (int j = 2; j < stringArray.Num(); j++) {
+        point.neighbors.Add(FCString::Atoi(*stringArray[j]));
+    }
+
+    return point;
+}
+
+static UEdgeDataEntry getEdgeData(FString aString) {
+    TArray<FString> stringArray = {};
+    aString.ParseIntoArray(stringArray, TEXT(","), false);
+
+    UEdgeDataEntry edge = {};
+    edge.p1 = FCString::Atoi(*stringArray[0]);
+    edge.p2 = FCString::Atoi(*stringArray[1]);
+    edge.t1 = FCString::Atoi(*stringArray[2]);
+    if (stringArray.Num() > 3) {
+        edge.t2 = FCString::Atoi(*stringArray[3]);
+    }
+    if (stringArray.Num() > 4) {
+        edge.riverData = FCString::Atoi(*stringArray[4]);
+    }
+    else {
+        edge.riverData = -1;
+    }
+
+    return edge;
+}
+
+static UTriangleDataEntry getTriangleData(FString aString, int terrainData) {
+    TArray<FString> stringArray = {};
+    aString.ParseIntoArray(stringArray, TEXT(","), false);
+
+    UTriangleDataEntry triangle = {};
+    triangle.e1 = FCString::Atoi(*stringArray[0]);
+    triangle.e2 = FCString::Atoi(*stringArray[1]);
+    triangle.e3 = FCString::Atoi(*stringArray[2]);
+    triangle.b1 = FCString::Atoi(*stringArray[3]) == 1;
+    triangle.b2 = FCString::Atoi(*stringArray[4]) == 1;
+    triangle.b3 = FCString::Atoi(*stringArray[5]) == 1;
+    triangle.terrainData = terrainData;
+
+    return triangle;
+}
+
+static int getTerrain(FString aString, int defaultValue) {
+    TArray<FString> stringArray = {};
+    aString.ParseIntoArray(stringArray, TEXT(","), false);
+    if (stringArray.Num() > 6) {
+        return FCString::Atoi(*stringArray[6]);
+    }
+    return defaultValue;
+}
+
+int getMaxZoomLevel(FString ZoomLevelsPath) {
+    TArray<FString> ZoomLevelNames = {};
+    IFileManager::Get().FindFiles(ZoomLevelNames, *ZoomLevelsPath, false, true);
+    int maxLevel = 0;
+    for (FString s : ZoomLevelNames) {
+        TArray<FString> stringArray = {};
+        s.ParseIntoArray(stringArray, TEXT("_"), false);
+        if (stringArray.Num() > 1) {
+            int level = FCString::Atoi(*stringArray[1]);
+            if (level > maxLevel) maxLevel = level;
+        }
+    }
+    return maxLevel;
+}
+
+TArray<int> getWidthAndHeight(FString ZoomLevelsPath) {
+    TArray<FString> ZoomLevelNames = {};
+    IFileManager::Get().FindFiles(ZoomLevelNames, *ZoomLevelsPath, false, true);
+    int width = 0;
+    int height = 0;
+    for (FString s : ZoomLevelNames) {
+        TArray<FString> stringArray = {};
+        s.ParseIntoArray(stringArray, TEXT("_"), false);
+        if (stringArray.Num() > 1) {
+            int x = FCString::Atoi(*stringArray[0]);
+            int y = FCString::Atoi(*stringArray[1]);
+            if (x > width) width = x;
+            if (y > height) height = y;
+        }
+    }
+    return { width , height };
+}
+
 void UMapLowZoom::Initialize() {
     TriangleData = {};
     EdgeData = {};
     PointData = {};
 
-    FString fPath1 = FPaths::ProjectContentDir() + TEXT("Data/Earth/Polygons/Scale_8/Points.txt");
-    TArray<FString> take1;
-    FFileHelper::LoadANSITextFileToStrings(*fPath1, NULL, take1);
+    // zoom levels
+    int maxLevel = getMaxZoomLevel(FPaths::ProjectContentDir() + TEXT("Data/Earth/Polygons/*"));
+    UE_LOG(LogTemp, Log, TEXT("Number of zoom levels: %d"), maxLevel);
 
-    for (int i = 0; i < take1.Num(); i++) {
-        FString aString = take1[i];
-        TArray<FString> stringArray = {};
-        aString.ParseIntoArray(stringArray, TEXT(","), false);
+    for (int level = 0; level < maxLevel; level++) {
+        TArray < TArray < TArray <UTriangleDataEntry> > > TriangleDataForZoomLevel = {};
+        TArray < TArray < TArray <UEdgeDataEntry> > > EdgeDataForZoomLevel = {};
+        TArray < TArray < TArray <UPointDataEntry> > > PointDataForZoomLevel = {};
 
-        UPointDataEntry point = {};
-        point.x = FCString::Atod(*stringArray[0]);
-        point.y = FCString::Atod(*stringArray[1]);
-        point.neighbors = {};
-        for (int j = 2; j < stringArray.Num(); j++) {
-            point.neighbors.Add(FCString::Atoi(*stringArray[j]));
+        TArray<int> wh = getWidthAndHeight(FPaths::ProjectContentDir() + TEXT("Data/Earth/Polygons/Level_") + FString::FromInt((level + 1)) + "/*");
+        int w = wh[0] + 1;
+        int h = wh[1] + 1;
+
+        UE_LOG(LogTemp, Log, TEXT("Zoom level %d: width = %d, height = %d"), maxLevel, w, h);
+
+        for (int x = 0; x < w; x++) {
+            TArray < TArray <UTriangleDataEntry> > TriangleDataForZoomLevelX = {};
+            TArray < TArray <UEdgeDataEntry> > EdgeDataForZoomLevelX = {};
+            TArray < TArray <UPointDataEntry> > PointDataForZoomLevelX = {};
+            for (int y = 0; y < h; y++) {
+                TArray <UTriangleDataEntry> TriangleDataForZoomLevelXY = {};
+                TArray <UEdgeDataEntry> EdgeDataForZoomLevelXY = {};
+                TArray <UPointDataEntry> PointDataForZoomLevelXY = {};
+
+                FString basePath = FPaths::ProjectContentDir() + TEXT("Data/Earth/Polygons/Level_") + FString::FromInt((level + 1)) + TEXT("/") + FString::FromInt(x) + TEXT("_") + FString::FromInt(y) + TEXT("/");
+
+                FString fPath1 = basePath + TEXT("Triangles.txt");
+                TArray<FString> take1;
+                FFileHelper::LoadANSITextFileToStrings(*fPath1, NULL, take1);
+
+                int terrainData = 0;
+                for (int i = 0; i < take1.Num(); i++) {
+                    terrainData = getTerrain(take1[i], terrainData);
+                    TriangleDataForZoomLevelXY.Add(getTriangleData(take1[i], terrainData));
+                }
+
+                FString fPath2 = basePath + TEXT("Edges.txt");
+                TArray<FString> take2;
+                FFileHelper::LoadANSITextFileToStrings(*fPath2, NULL, take2);
+
+                for (int i = 0; i < take2.Num(); i++) {
+                    EdgeDataForZoomLevelXY.Add(getEdgeData(take2[i]));
+                }
+
+                FString fPath3 = basePath + TEXT("Points.txt");
+                TArray<FString> take3;
+                FFileHelper::LoadANSITextFileToStrings(*fPath3, NULL, take3);
+
+                for (int i = 0; i < take3.Num(); i++) {
+                    PointDataForZoomLevelXY.Add(getPointData(take3[i]));
+                }
+
+                UE_LOG(LogTemp, Log, TEXT("Number of triangles, edges, points (zoom level: %d, x: %d, y: %d): %d, %d, %d"), level, x, y, TriangleDataForZoomLevelXY.Num(), EdgeDataForZoomLevelXY.Num(), PointDataForZoomLevelXY.Num());
+
+                TriangleDataForZoomLevelX.Add(TriangleDataForZoomLevelXY);
+                EdgeDataForZoomLevelX.Add(EdgeDataForZoomLevelXY);
+                PointDataForZoomLevelX.Add(PointDataForZoomLevelXY);
+            }
+            TriangleDataForZoomLevel.Add(TriangleDataForZoomLevelX);
+            EdgeDataForZoomLevel.Add(EdgeDataForZoomLevelX);
+            PointDataForZoomLevel.Add(PointDataForZoomLevelX);
         }
 
-        PointData.Add(point);
+        TriangleData.Add(TriangleDataForZoomLevel);
+        EdgeData.Add(EdgeDataForZoomLevel);
+        PointData.Add(PointDataForZoomLevel);
     }
 
-    UE_LOG(LogTemp, Log, TEXT("Number of points: %d, %d"), PointData.Num(), take1.Num());
+    /*FString SearchPath = FPaths::Combine("Data/Earth/Polygons", TEXT("*"));
+    TArray<FString> OutFolderNames = {};
+    IFileManager::Get().FindFiles(OutFolderNames, *SearchPath, false, true);
 
-    FString fPath2 = FPaths::ProjectContentDir() + TEXT("Data/Earth/Polygons/Scale_8/Edges.txt");
-    TArray<FString> take2;
-    FFileHelper::LoadANSITextFileToStrings(*fPath2, NULL, take2);
+    for (const FString& zoomCategoryPath : OutFolderNames) {
 
-    for (int i = 0; i < take2.Num(); i++) {
-        FString aString = take2[i];
-        TArray<FString> stringArray = {};
-        aString.ParseIntoArray(stringArray, TEXT(","), false);
+        TArray <UTriangleDataEntry> LevelTriangleData = {};
+        TArray <UEdgeDataEntry> LevelEdgeData = {};
+        TArray <UPointDataEntry> LevelPointData = {};
 
-        UEdgeDataEntry edge = {};
-        edge.p1 = FCString::Atoi(*stringArray[0]);
-        edge.p2 = FCString::Atoi(*stringArray[1]);
-        edge.t1 = FCString::Atoi(*stringArray[2]);
-        if (stringArray.Num() > 3) {
-            edge.t2 = FCString::Atoi(*stringArray[3]);
-        }
-        if (stringArray.Num() > 4) {
-            edge.riverData = FCString::Atoi(*stringArray[4]);
-        } else {
-            edge.riverData = -1;
+        FString fPath3 = FPaths::ProjectContentDir() + TEXT("Data/Earth/Polygons/Level_1/0_0/Triangles.txt");
+        TArray<FString> take3;
+        FFileHelper::LoadANSITextFileToStrings(*fPath3, NULL, take3);
+
+        int terrainData = 0;
+        for (int i = 0; i < take3.Num(); i++) {
+            terrainData = getTerrain(take3[i], terrainData);
+            LevelTriangleData.Add(getTriangleData(take3[i], terrainData));
         }
 
-        EdgeData.Add(edge);
-    }
+        UE_LOG(LogTemp, Log, TEXT("Number of triangles: %d, %d"), TriangleData.Num(), take3.Num());
+        TriangleData.Add(LevelTriangleData);
 
-    UE_LOG(LogTemp, Log, TEXT("Number of edges: %d, %d"), EdgeData.Num(), take2.Num());
+        FString fPath2 = FPaths::ProjectContentDir() + TEXT("Data/Earth/Polygons/Level_1/0_0/Edges.txt");
+        TArray<FString> take2;
+        FFileHelper::LoadANSITextFileToStrings(*fPath2, NULL, take2);
 
-    FString fPath3 = FPaths::ProjectContentDir() + TEXT("Data/Earth/Polygons/Scale_8/Triangles.txt");
-    TArray<FString> take3;
-    FFileHelper::LoadANSITextFileToStrings(*fPath3, NULL, take3);
-
-    int terrainData = 0;
-
-    for (int i = 0; i < take3.Num(); i++) {
-        FString aString = take3[i];
-        TArray<FString> stringArray = {};
-        aString.ParseIntoArray(stringArray, TEXT(","), false);
-
-        if (stringArray.Num() >  6) {
-            terrainData = FCString::Atoi(*stringArray[6]);
+        for (int i = 0; i < take2.Num(); i++) {
+            LevelEdgeData.Add(getEdgeData(take2[i]));
         }
-        UTriangleDataEntry triangle = {};
-        triangle.e1 = FCString::Atoi(*stringArray[0]);
-        triangle.e2 = FCString::Atoi(*stringArray[1]);
-        triangle.e3 = FCString::Atoi(*stringArray[2]);
-        triangle.b1 = FCString::Atoi(*stringArray[3]) == 1;
-        triangle.b2 = FCString::Atoi(*stringArray[4]) == 1;
-        triangle.b3 = FCString::Atoi(*stringArray[5]) == 1;
-        triangle.terrainData = terrainData;
 
-        TriangleData.Add(triangle);
-    }
+        UE_LOG(LogTemp, Log, TEXT("Number of edges: %d, %d"), EdgeData.Num(), take2.Num());
+        EdgeData.Add(LevelEdgeData);
 
-    UE_LOG(LogTemp, Log, TEXT("Number of triangles: %d, %d"), TriangleData.Num(), take3.Num());
+        FString fPath1 = FPaths::ProjectContentDir() + TEXT("Data/Earth/Polygons/Level_1/0_0/Points.txt");
+        TArray<FString> take1;
+        FFileHelper::LoadANSITextFileToStrings(*fPath1, NULL, take1);
+
+        for (int i = 0; i < take1.Num(); i++) {
+            LevelPointData.Add(getPointData(take1[i]));
+        }
+
+        UE_LOG(LogTemp, Log, TEXT("Number of points: %d, %d"), PointData.Num(), take1.Num());
+        PointData.Add(LevelPointData);
+    }*/
 }
 
-TArray<FCanvasUVTri> UMapLowZoom::GetTriangles(UTerrain* terrain, int mode) {
+TArray<FCanvasUVTri> UMapLowZoom::GetTriangles(UTerrain* terrain, int mode, int zoomCategory, double minLat, double minLon, double maxLat, double maxLon, int width, int height) {
     TArray<FCanvasUVTri> result = {};
     if (mode == 0) return result;
+
+    int x = (int) FMath::RoundToInt32(minLon / (maxLon - minLon));
+    int y = (int) FMath::RoundToInt32(minLat / (maxLat - minLat));
+
+    double minX = 360 * minLon - 180;
+    double maxX = 360 * maxLon - 180;
+    double minY = 180 * minLat - 90;
+    double maxY = 180 * maxLat - 90;
+
+    UE_LOG(LogTemp, Log, TEXT("Min/max X and Y : %f, %f ; %f, %f, x and y: %i, %i"), minX, maxX, minY, maxY, x, y);
 
     if (mode == 8) {
         TArray<TArray<uint8_t>> colors;
@@ -241,61 +409,63 @@ TArray<FCanvasUVTri> UMapLowZoom::GetTriangles(UTerrain* terrain, int mode) {
             colors.Swap(i, j);
         }
 
-        for (int i = 0; i < TriangleData.Num(); i++) {
-            UPointDataEntry p1 = getFirstPoint(TriangleData[i].b1, TriangleData[i].e1);
-            UPointDataEntry p2 = getFirstPoint(TriangleData[i].b2, TriangleData[i].e2);
-            UPointDataEntry p3 = getFirstPoint(TriangleData[i].b3, TriangleData[i].e3);
-            result.Add(*convertToTri(colors[i % colors.Num()], p1.x, p1.y, p2.x, p2.y, p3.x, p3.y));
+        for (int i = 0; i < TriangleData[zoomCategory][x][y].Num(); i++) {
+            UPointDataEntry p1 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b1, TriangleData[zoomCategory][x][y][i].e1, zoomCategory, x, y);
+            UPointDataEntry p2 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b2, TriangleData[zoomCategory][x][y][i].e2, zoomCategory, x, y);
+            UPointDataEntry p3 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b3, TriangleData[zoomCategory][x][y][i].e3, zoomCategory, x, y);
+            result.Add(*convertToTri(colors[i % colors.Num()], p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, minX, maxX, minY, maxY, width, height));
         }
         return result;
     }
 
-    for (int i = 0; i < TriangleData.Num(); i++) {
-        UPointDataEntry p1 = getFirstPoint(TriangleData[i].b1, TriangleData[i].e1);
-        UPointDataEntry p2 = getFirstPoint(TriangleData[i].b2, TriangleData[i].e2);
-        UPointDataEntry p3 = getFirstPoint(TriangleData[i].b3, TriangleData[i].e3);
-        result.Add(*convertToTri(terrain->GetColor(TriangleData[i].terrainData, mode), p1.x, p1.y, p2.x, p2.y, p3.x, p3.y));
+    for (int i = 0; i < TriangleData[zoomCategory][x][y].Num(); i++) {
+        UPointDataEntry p1 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b1, TriangleData[zoomCategory][x][y][i].e1, zoomCategory, x, y);
+        UPointDataEntry p2 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b2, TriangleData[zoomCategory][x][y][i].e2, zoomCategory, x, y);
+        UPointDataEntry p3 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b3, TriangleData[zoomCategory][x][y][i].e3, zoomCategory, x, y);
+        result.Add(*convertToTri(terrain->GetColor(TriangleData[zoomCategory][x][y][i].terrainData, mode), p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, minX, maxX, minY, maxY, width, height));
+        if(TriangleData[zoomCategory][x][y].Num() < 12000) UE_LOG(LogTemp, Log, TEXT("Triangle: %f, %f  %f, %f  %f, %f ; %f, %f"), p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, (maxLon - minLon) * width, (maxLat - minLat) * height);
     }
+    UE_LOG(LogTemp, Log, TEXT("Num render triangles: %d"), result.Num());
     return result;
 }
 
-TArray<FCanvasUVTri> UMapLowZoom::GetMaterialTriangles(UTerrain* terrain, int mode) {
+TArray<FCanvasUVTri> UMapLowZoom::GetMaterialTriangles(UTerrain* terrain, int mode, int zoomCategory, int x, int y) {
     TArray<FCanvasUVTri> result = {};
     if (mode > 0) return result;
 
-    for (int i = 0; i < TriangleData.Num(); i++) {
-        UPointDataEntry p1 = getFirstPoint(TriangleData[i].b1, TriangleData[i].e1);
-        UPointDataEntry p2 = getFirstPoint(TriangleData[i].b2, TriangleData[i].e2);
-        UPointDataEntry p3 = getFirstPoint(TriangleData[i].b3, TriangleData[i].e3);
-        result.Add(*convertToTri(terrain->GetColor(TriangleData[i].terrainData, mode), p1.x, p1.y, p2.x, p2.y, p3.x, p3.y));
+    for (int i = 0; i < TriangleData[zoomCategory][x][y].Num(); i++) {
+        UPointDataEntry p1 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b1, TriangleData[zoomCategory][x][y][i].e1, zoomCategory, x, y);
+        UPointDataEntry p2 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b2, TriangleData[zoomCategory][x][y][i].e2, zoomCategory, x, y);
+        UPointDataEntry p3 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b3, TriangleData[zoomCategory][x][y][i].e3, zoomCategory, x, y);
+        result.Add(*convertToTri(terrain->GetColor(TriangleData[zoomCategory][x][y][i].terrainData, mode), p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, -180, 180, -90, 90, 16384, 16384));
     }
 
     return result;
 }
 
-TArray<FLineDisplayData> UMapLowZoom::GetBorders(int mode) {
+TArray<FLineDisplayData> UMapLowZoom::GetBorders(int mode, int zoomCategory, int x, int y) {
     if (mode != 6) return {};
     TArray<FLineDisplayData> result = {};
-    for (UEdgeDataEntry& edgeData : EdgeData) {
+    for (UEdgeDataEntry& edgeData : EdgeData[zoomCategory][x][y]) {
         if (edgeData.t2 >= 0) {
-            bool i1 = TriangleData[edgeData.t1].terrainData % 16 == 0;
-            bool i2 = TriangleData[edgeData.t2].terrainData % 16 == 0;
+            bool i1 = TriangleData[zoomCategory][x][y][edgeData.t1].terrainData % 16 == 0;
+            bool i2 = TriangleData[zoomCategory][x][y][edgeData.t2].terrainData % 16 == 0;
             if (i1 != i2) {
-                double x1 = (PointData[edgeData.p1].x + 180) / 360 * 16384;
-                double y1 = (PointData[edgeData.p1].y + 90) / 180 * 16384;
-                double x2 = (PointData[edgeData.p2].x + 180) / 360 * 16384;
-                double y2 = (PointData[edgeData.p2].y + 90) / 180 * 16384;
+                double x1 = (PointData[zoomCategory][x][y][edgeData.p1].x + 180) / 360 * 16384;
+                double y1 = (PointData[zoomCategory][x][y][edgeData.p1].y + 90) / 180 * 16384;
+                double x2 = (PointData[zoomCategory][x][y][edgeData.p2].x + 180) / 360 * 16384;
+                double y2 = (PointData[zoomCategory][x][y][edgeData.p2].y + 90) / 180 * 16384;
                 result.Add(FLineDisplayData{ FVector2D{ x1, y1 }, FVector2D{ x2, y2 } });
             }
         }
         else  if (edgeData.t2 < -1) {
-            bool i1 = TriangleData[edgeData.t1].terrainData % 16 == 0;
+            bool i1 = TriangleData[zoomCategory][x][y][edgeData.t1].terrainData % 16 == 0;
             bool i2 = (-edgeData.t2-2) % 16 == 0;
             if (i1 != i2) {
-                double x1 = (PointData[edgeData.p1].x + 180) / 360 * 16384;
-                double y1 = (PointData[edgeData.p1].y + 90) / 180 * 16384;
-                double x2 = (PointData[edgeData.p2].x + 180) / 360 * 16384;
-                double y2 = (PointData[edgeData.p2].y + 90) / 180 * 16384;
+                double x1 = (PointData[zoomCategory][x][y][edgeData.p1].x + 180) / 360 * 16384;
+                double y1 = (PointData[zoomCategory][x][y][edgeData.p1].y + 90) / 180 * 16384;
+                double x2 = (PointData[zoomCategory][x][y][edgeData.p2].x + 180) / 360 * 16384;
+                double y2 = (PointData[zoomCategory][x][y][edgeData.p2].y + 90) / 180 * 16384;
                 result.Add(FLineDisplayData{ FVector2D{ x1, y1 }, FVector2D{ x2, y2 } });
             }
         }
@@ -304,16 +474,16 @@ TArray<FLineDisplayData> UMapLowZoom::GetBorders(int mode) {
     return result;
 }
 
-TArray<FLineDisplayData> UMapLowZoom::GetRivers(int mode) {
+TArray<FLineDisplayData> UMapLowZoom::GetRivers(int mode, int zoomCategory, int x, int y) {
     if (mode != 6) return {};
     int s = 1;
     TArray<FLineDisplayData> result = {};
-    for (UEdgeDataEntry& edgeData : EdgeData) {
+    for (UEdgeDataEntry& edgeData : EdgeData[zoomCategory][x][y]) {
         if (edgeData.riverData >= 0) {
-            double x1 = (PointData[edgeData.p1].x + 180) / 360 * 16384;
-            double y1 = (PointData[edgeData.p1].y + 90) / 180 * 16384;
-            double x2 = (PointData[edgeData.p2].x + 180) / 360 * 16384;
-            double y2 = (PointData[edgeData.p2].y + 90) / 180 * 16384;
+            double x1 = (PointData[zoomCategory][x][y][edgeData.p1].x + 180) / 360 * 16384;
+            double y1 = (PointData[zoomCategory][x][y][edgeData.p1].y + 90) / 180 * 16384;
+            double x2 = (PointData[zoomCategory][x][y][edgeData.p2].x + 180) / 360 * 16384;
+            double y2 = (PointData[zoomCategory][x][y][edgeData.p2].y + 90) / 180 * 16384;
             result.Add(FLineDisplayData{ FVector2D{ x1, y1 }, FVector2D{ x2, y2 } });
         }
     }
@@ -321,20 +491,20 @@ TArray<FLineDisplayData> UMapLowZoom::GetRivers(int mode) {
     return result;
 }
 
-TArray<FCanvasUVTri> UMapLowZoom::GetProvinceTriangles(TArray<UProvince> provinces, int mode) {
+TArray<FCanvasUVTri> UMapLowZoom::GetProvinceTriangles(TArray<UProvince> provinces, int mode, int zoomCategory, int x, int y) {
     TArray<FCanvasUVTri> result = {};
 
-    for (int i = 0; i < provinces.Num(); i++) {
-        for (int j = 0; j < provinces[i].Triangles.Num(); j++) {
-            int k = provinces[i].Triangles[j];
-            UPointDataEntry p1 = getFirstPoint(TriangleData[k].b1, TriangleData[k].e1);
-            UPointDataEntry p2 = getFirstPoint(TriangleData[k].b2, TriangleData[k].e2);
-            UPointDataEntry p3 = getFirstPoint(TriangleData[k].b3, TriangleData[k].e3);
-            {
-                result.Add(*convertToTri({255, 0, 0}, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y));
-            }
-        }
-    }
+    //for (int i = 0; i < provinces.Num(); i++) {
+    //    for (int j = 0; j < provinces[i].Triangles.Num(); j++) {
+    //        int k = provinces[i].Triangles[j];
+    //        UPointDataEntry p1 = getFirstPoint(TriangleData[zoomCategory][x][y][k].b1, TriangleData[zoomCategory][x][y][k].e1);
+    //        UPointDataEntry p2 = getFirstPoint(TriangleData[zoomCategory][x][y][k].b2, TriangleData[zoomCategory][x][y][k].e2);
+    //        UPointDataEntry p3 = getFirstPoint(TriangleData[zoomCategory][x][y][k].b3, TriangleData[zoomCategory][x][y][k].e3);
+    //        {
+    //            result.Add(*convertToTri({255, 0, 0}, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y));
+    //        }
+    //    }
+    //}
     
     return result;
 }

@@ -44,29 +44,36 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Initialization")
 	void SetWorldCreatorSettings();
 
+
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
-	int GetTerrainDataAtCoordinate(double x, double y);
+	int GetTerrainDataAtCoordinate(int zoomCategory, double x, double y);
+
+	UFUNCTION(BlueprintCallable, Category = "RenderMap")
+	int GetTriangleIDAtCoordinate(int zoomCategory, double x, double y);
 
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
 	FString GetTerrainText(int v);
 
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
-	TArray<FCanvasUVTri> GetTriangles(int mode);
+	TArray<FCanvasUVTri> GetTriangles(int mode, int zoomCategory, double minLat, double minLon, double maxLat, double maxLon, int width, int height);
 
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
-	TArray<FCanvasUVTri> GetMaterialTriangles(int mode);
+	TArray<FCanvasUVTri> GetMaterialTriangles(int mode, int zoomCategory, int x, int y);
 
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
-	TArray<FLineDisplayData> GetBorders(int mode);
+	TArray<FLineDisplayData> GetBorders(int mode, int zoomCategory, int x, int y);
 
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
-	TArray<FLineDisplayData> GetRivers(int mode);
+	TArray<FLineDisplayData> GetRivers(int mode, int zoomCategory, int x, int y);
 
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
-	TArray<FCanvasUVTri> GetProvinceTriangles(int mode);
+	TArray<FCanvasUVTri> GetProvinceTriangles(int mode, int zoomCategory, int x, int y);
 
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
-	int GetTriangleIDAtCoordinate(double x, double y);
+	TArray<int> GetSubregionIndices(int zoomCategory, double lat, double lon, double latDelta, double lonDelta);
+
+	UFUNCTION(BlueprintCallable, Category = "RenderMap")
+	int GetNumSubregions(int zoomCategory, bool isX);
 
 private:
 	void initializeTerrain();

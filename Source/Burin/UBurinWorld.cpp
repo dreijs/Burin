@@ -56,34 +56,42 @@ void UBurinWorld::Initialize()
 	initializeMap();
 }
 
-int UBurinWorld::GetTerrainDataAtCoordinate(double x, double y) {
-	return MapLowZoom->GetTerrainDataAtCoordinate(Terrain, x, y);
+int UBurinWorld::GetTerrainDataAtCoordinate(int zoomCategory, double x, double y) {
+	return MapLowZoom->GetTerrainDataAtCoordinate(Terrain, zoomCategory, x, y);
 }
 
-int UBurinWorld::GetTriangleIDAtCoordinate(double x, double y) {
-	return MapLowZoom->GetTriangleIDAtCoordinate(x, y);
+int UBurinWorld::GetTriangleIDAtCoordinate(int zoomCategory, double x, double y) {
+	return MapLowZoom->GetTriangleIDAtCoordinate(zoomCategory, x, y);
 }
 
 FString UBurinWorld::GetTerrainText(int v) {
 	return MapLowZoom->GetTerrainText(Terrain, v);
 }
 
-TArray<FCanvasUVTri> UBurinWorld::GetTriangles(int mode) {
-	return MapLowZoom->GetTriangles(Terrain, mode);
+TArray<FCanvasUVTri> UBurinWorld::GetTriangles(int mode, int zoomCategory, double minLat, double minLon, double maxLat, double maxLon, int width, int height) {
+	return MapLowZoom->GetTriangles(Terrain, mode, zoomCategory, minLat, minLon, maxLat, maxLon, width, height);
 }
 
-TArray<FCanvasUVTri> UBurinWorld::GetMaterialTriangles(int mode) {
-	return MapLowZoom->GetMaterialTriangles(Terrain, mode);
+TArray<FCanvasUVTri> UBurinWorld::GetMaterialTriangles(int mode, int zoomCategory, int x, int y) {
+	return MapLowZoom->GetMaterialTriangles(Terrain, mode, zoomCategory, x, y);
 }
 
-TArray<FLineDisplayData> UBurinWorld::GetBorders(int mode) {
-	return MapLowZoom->GetBorders(mode);
+TArray<FLineDisplayData> UBurinWorld::GetBorders(int mode, int zoomCategory, int x, int y) {
+	return MapLowZoom->GetBorders(mode, zoomCategory, x, y);
 }
 
-TArray<FLineDisplayData> UBurinWorld::GetRivers(int mode) {
-	return MapLowZoom->GetRivers(mode);
+TArray<FLineDisplayData> UBurinWorld::GetRivers(int mode, int zoomCategory, int x, int y) {
+	return MapLowZoom->GetRivers(mode, zoomCategory, x, y);
 }
 
-TArray<FCanvasUVTri> UBurinWorld::GetProvinceTriangles(int mode) {
-	return MapLowZoom->GetProvinceTriangles(Provinces, mode);
+TArray<FCanvasUVTri> UBurinWorld::GetProvinceTriangles(int mode, int zoomCategory, int x, int y) {
+	return MapLowZoom->GetProvinceTriangles(Provinces, mode, zoomCategory, x, y);
+}
+
+TArray<int> UBurinWorld::GetSubregionIndices(int zoomCategory, double lat, double lon, double latDelta, double lonDelta) {
+	return MapLowZoom->GetSubregionIndices( zoomCategory, lat, lon, latDelta, lonDelta);
+}
+
+int UBurinWorld::GetNumSubregions(int zoomCategory, bool isX) {
+	return MapLowZoom->GetNumSubregions(zoomCategory, isX);
 }

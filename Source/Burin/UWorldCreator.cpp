@@ -30,7 +30,7 @@ UProvince UWorldCreator::CreateProvince(UBurinWorld* world, FString name, double
 	province.Longitude = longitude;
 
 	province.Triangles = {};
-	province.Triangles.Add(world->GetTriangleIDAtCoordinate(latitude, longitude));
+	province.Triangles.Add(world->GetTriangleIDAtCoordinate(0, latitude, longitude));
 	
 	return province;
 }
