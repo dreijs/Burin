@@ -62,18 +62,22 @@ static bool isPointInCoordTriangle(double xp, double yp, double x1, double y1, d
     );
 }
 
-double bound(double x) {
-    if (x >= 1) return 1;
-    if (x <= 0) return 0;
-    return x;
-}
+//double bound(double x, double l, double r) {
+//    if (x >= r) return 1;
+//    if (x <= l) return 0;
+//    return x;
+//}
 
 TArray<int> UMapLowZoom::GetSubregionIndices(int zoomCategory, double lat, double lon, double latDelta, double lonDelta) {
-    int minX = static_cast<int>(std::floor(bound((lon - lonDelta + 180) / 360) * TriangleData[zoomCategory].Num()));
-    int maxY = static_cast<int>(std::floor(bound((90 - (lat - latDelta)) / 180) * TriangleData[zoomCategory][minX].Num()));
-    int maxX = static_cast<int>(std::floor(bound((lon + lonDelta + 180) / 360) * TriangleData[zoomCategory].Num()));
-    int minY = static_cast<int>(std::floor(bound((90 - (lat + latDelta)) / 180) * TriangleData[zoomCategory][minX].Num()));
-    return { minX, minY, maxX, maxY};
+    int n = TriangleData[zoomCategory].Num();
+    int minX = static_cast<int>(std::floor((lon - lonDelta + 180) / 360 * n));
+    int maxX = static_cast<int>(std::floor((lon + lonDelta + 180) / 360 * n));
+    int m = TriangleData[zoomCategory][0].Num();
+    int minY = static_cast<int>(std::floor((90 - (lat + latDelta)) / 180 * m));
+    int maxY = static_cast<int>(std::floor((90 - (lat - latDelta)) / 180 * m));
+    if (minY < 0) minY = 0;
+    if (maxY > m - 1) maxY = m - 1;
+    return { minX, minY, maxX, maxY };
 }
 
 int UMapLowZoom::GetNumSubregions(int zoomCategory, bool isX) {
@@ -375,15 +379,26 @@ void UMapLowZoom::Initialize() {
     }*/
 }
 
+
+int floorMod(int A, int B) {
+    return ((A % B) + B) % B;
+}
+
 TArray<FCanvasUVTri> UMapLowZoom::GetTriangles(UTerrain* terrain, int mode, int zoomCategory, double minLat, double minLon, double maxLat, double maxLon, int width, int height) {
     TArray<FCanvasUVTri> result = {};
     if (mode == 0) return result;
 
-    int x = (int) FMath::RoundToInt32(minLon / (maxLon - minLon));
-    int y = (int) FMath::RoundToInt32(minLat / (maxLat - minLat));
+    int xBase = (int)FMath::RoundToInt32(minLon / (maxLon - minLon));
+    int yBase = (int)FMath::RoundToInt32(minLat / (maxLat - minLat));
+    int x = floorMod(xBase, TriangleData[zoomCategory].Num());
+    int y = floorMod(yBase, TriangleData[zoomCategory][0].Num());
 
     double minX = 360 * minLon - 180;
     double maxX = 360 * maxLon - 180;
+    if (xBase < 0) minX += 360;
+    if (xBase < 0) maxX += 360;
+    if (xBase >= TriangleData[zoomCategory].Num()) minX -= 360;
+    if (xBase >= TriangleData[zoomCategory].Num()) maxX -= 360;
     double minY = 180 * minLat - 90;
     double maxY = 180 * maxLat - 90;
 
@@ -423,7 +438,7 @@ TArray<FCanvasUVTri> UMapLowZoom::GetTriangles(UTerrain* terrain, int mode, int 
         UPointDataEntry p2 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b2, TriangleData[zoomCategory][x][y][i].e2, zoomCategory, x, y);
         UPointDataEntry p3 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b3, TriangleData[zoomCategory][x][y][i].e3, zoomCategory, x, y);
         result.Add(*convertToTri(terrain->GetColor(TriangleData[zoomCategory][x][y][i].terrainData, mode), p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, minX, maxX, minY, maxY, width, height));
-        if(TriangleData[zoomCategory][x][y].Num() < 12000) UE_LOG(LogTemp, Log, TEXT("Triangle: %f, %f  %f, %f  %f, %f ; %f, %f"), p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, (maxLon - minLon) * width, (maxLat - minLat) * height);
+        //if(TriangleData[zoomCategory][x][y].Num() < 12000) UE_LOG(LogTemp, Log, TEXT("Triangle: %f, %f  %f, %f  %f, %f ; %f, %f"), p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, (maxLon - minLon) * width, (maxLat - minLat) * height);
     }
     UE_LOG(LogTemp, Log, TEXT("Num render triangles: %d"), result.Num());
     return result;
