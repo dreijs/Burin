@@ -23,7 +23,7 @@ public:
 
 	FString GetTerrainText(UTerrain* terrain, int v);
 
-	TArray<FCanvasUVTri> GetTriangles(UTerrain* terrain, int mode, int zoomCategory, double minLat, double minLon, double maxLat, double maxLon, int width, int height);
+	TArray<FCanvasUVTri> GetTriangles(UTerrain* terrain, int mode, int zoomCategory, double minLat, double minLon, double maxLat, double maxLon, int offsetX, int offsetY, int width, int height);
 	TArray<FCanvasUVTri> GetMaterialTriangles(UTerrain* terrain, int mode, int zoomCategory, int x, int y);
 	TArray<FLineDisplayData> GetBorders(int mode, int zoomCategory, int x, int y);
 	TArray<FLineDisplayData> GetRivers(int mode, int zoomCategory, int x, int y);

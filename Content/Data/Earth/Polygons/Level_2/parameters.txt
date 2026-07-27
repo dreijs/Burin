@@ -1,0 +1,11 @@
+map name: EARTH_1_CE
+scale: 2
+minRegionSize: 400.0
+distortFactor: 0.025
+maxDouglasPeuckerDist: 10.0
+maxDouglasPeuckerSize: 5.0
+maxRiverDPDist: 100000.0
+w: 8
+h: 4
+level: 2
+trace: VISUAL_REGIONS

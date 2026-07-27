@@ -1,6 +1,6 @@
 map name: EARTH_1_CE
 scale: 2
-minRegionSize: 125.0
+minRegionSize: 100.0
 distortFactor: 0.0125
 maxDouglasPeuckerDist: 5.0
 maxDouglasPeuckerSize: 2.5

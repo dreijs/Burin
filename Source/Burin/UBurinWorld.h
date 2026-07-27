@@ -55,7 +55,8 @@ public:
 	FString GetTerrainText(int v);
 
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
-	TArray<FCanvasUVTri> GetTriangles(int mode, int zoomCategory, double minLat, double minLon, double maxLat, double maxLon, int width, int height);
+
+	TArray<FCanvasUVTri> GetTriangles(int mode, int zoomCategory, double minLat, double minLon, double maxLat, double maxLon, int offsetX, int offsetY, int width, int height);
 
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
 	TArray<FCanvasUVTri> GetMaterialTriangles(int mode, int zoomCategory, int x, int y);

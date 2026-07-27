@@ -68,8 +68,8 @@ FString UBurinWorld::GetTerrainText(int v) {
 	return MapLowZoom->GetTerrainText(Terrain, v);
 }
 
-TArray<FCanvasUVTri> UBurinWorld::GetTriangles(int mode, int zoomCategory, double minLat, double minLon, double maxLat, double maxLon, int width, int height) {
-	return MapLowZoom->GetTriangles(Terrain, mode, zoomCategory, minLat, minLon, maxLat, maxLon, width, height);
+TArray<FCanvasUVTri> UBurinWorld::GetTriangles(int mode, int zoomCategory, double minLat, double minLon, double maxLat, double maxLon, int offsetX, int offsetY, int width, int height) {
+	return MapLowZoom->GetTriangles(Terrain, mode, zoomCategory, minLat, minLon, maxLat, maxLon, offsetX, offsetY, width, height);
 }
 
 TArray<FCanvasUVTri> UBurinWorld::GetMaterialTriangles(int mode, int zoomCategory, int x, int y) {

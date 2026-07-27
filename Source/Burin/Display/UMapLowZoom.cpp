@@ -120,23 +120,23 @@ int UMapLowZoom::GetTriangleIDAtCoordinate(int zoomCategory, double lon, double 
     return -1;
 }
 
-FCanvasUVTri* convertToTri(TArray<uint8_t> rgb, double x1, double y1, double x2, double y2, double x3, double y3, double minX, double maxX, double minY, double maxY, double width, double height) {
+FCanvasUVTri* convertToTri(TArray<uint8_t> rgb, double x1, double y1, double x2, double y2, double x3, double y3, double minX, double maxX, double minY, double maxY, int offsetX, int offsetY, double width, double height) {
     FCanvasUVTri* result = new FCanvasUVTri();
 
     FVector2D* v0 = new FVector2D();
     
-    v0->X = (x1 - minX) / (maxX - minX) * width;
-    v0->Y = (y1 - minY) / (maxY - minY) * height;
+    v0->X = (x1 - minX) / (maxX - minX) * width + offsetX;
+    v0->Y = (y1 - minY) / (maxY - minY) * height + offsetY;
     result->V0_Pos = *v0;
 
     FVector2D* v1 = new FVector2D();
-    v1->X = (x2 - minX) / (maxX - minX) * width;
-    v1->Y = (y2 - minY) / (maxY - minY) * height;
+    v1->X = (x2 - minX) / (maxX - minX) * width + offsetX;
+    v1->Y = (y2 - minY) / (maxY - minY) * height + offsetY;
     result->V1_Pos = *v1;
 
     FVector2D* v2 = new FVector2D();
-    v2->X = (x3 - minX) / (maxX - minX) * width;
-    v2->Y = (y3 - minY) / (maxY - minY) * height;
+    v2->X = (x3 - minX) / (maxX - minX) * width + offsetX;
+    v2->Y = (y3 - minY) / (maxY - minY) * height + offsetY;
     result->V2_Pos = *v2;
 
     FLinearColor* color = new FLinearColor(1.f * rgb[0]/255, 1.f * rgb[1] / 255, 1.f * rgb[2] / 255, 1.f);
@@ -331,52 +331,6 @@ void UMapLowZoom::Initialize() {
         EdgeData.Add(EdgeDataForZoomLevel);
         PointData.Add(PointDataForZoomLevel);
     }
-
-    /*FString SearchPath = FPaths::Combine("Data/Earth/Polygons", TEXT("*"));
-    TArray<FString> OutFolderNames = {};
-    IFileManager::Get().FindFiles(OutFolderNames, *SearchPath, false, true);
-
-    for (const FString& zoomCategoryPath : OutFolderNames) {
-
-        TArray <UTriangleDataEntry> LevelTriangleData = {};
-        TArray <UEdgeDataEntry> LevelEdgeData = {};
-        TArray <UPointDataEntry> LevelPointData = {};
-
-        FString fPath3 = FPaths::ProjectContentDir() + TEXT("Data/Earth/Polygons/Level_1/0_0/Triangles.txt");
-        TArray<FString> take3;
-        FFileHelper::LoadANSITextFileToStrings(*fPath3, NULL, take3);
-
-        int terrainData = 0;
-        for (int i = 0; i < take3.Num(); i++) {
-            terrainData = getTerrain(take3[i], terrainData);
-            LevelTriangleData.Add(getTriangleData(take3[i], terrainData));
-        }
-
-        UE_LOG(LogTemp, Log, TEXT("Number of triangles: %d, %d"), TriangleData.Num(), take3.Num());
-        TriangleData.Add(LevelTriangleData);
-
-        FString fPath2 = FPaths::ProjectContentDir() + TEXT("Data/Earth/Polygons/Level_1/0_0/Edges.txt");
-        TArray<FString> take2;
-        FFileHelper::LoadANSITextFileToStrings(*fPath2, NULL, take2);
-
-        for (int i = 0; i < take2.Num(); i++) {
-            LevelEdgeData.Add(getEdgeData(take2[i]));
-        }
-
-        UE_LOG(LogTemp, Log, TEXT("Number of edges: %d, %d"), EdgeData.Num(), take2.Num());
-        EdgeData.Add(LevelEdgeData);
-
-        FString fPath1 = FPaths::ProjectContentDir() + TEXT("Data/Earth/Polygons/Level_1/0_0/Points.txt");
-        TArray<FString> take1;
-        FFileHelper::LoadANSITextFileToStrings(*fPath1, NULL, take1);
-
-        for (int i = 0; i < take1.Num(); i++) {
-            LevelPointData.Add(getPointData(take1[i]));
-        }
-
-        UE_LOG(LogTemp, Log, TEXT("Number of points: %d, %d"), PointData.Num(), take1.Num());
-        PointData.Add(LevelPointData);
-    }*/
 }
 
 
@@ -384,7 +338,7 @@ int floorMod(int A, int B) {
     return ((A % B) + B) % B;
 }
 
-TArray<FCanvasUVTri> UMapLowZoom::GetTriangles(UTerrain* terrain, int mode, int zoomCategory, double minLat, double minLon, double maxLat, double maxLon, int width, int height) {
+TArray<FCanvasUVTri> UMapLowZoom::GetTriangles(UTerrain* terrain, int mode, int zoomCategory, double minLat, double minLon, double maxLat, double maxLon, int offsetX, int offsetY, int width, int height) {
     TArray<FCanvasUVTri> result = {};
     if (mode == 0) return result;
 
@@ -428,7 +382,7 @@ TArray<FCanvasUVTri> UMapLowZoom::GetTriangles(UTerrain* terrain, int mode, int 
             UPointDataEntry p1 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b1, TriangleData[zoomCategory][x][y][i].e1, zoomCategory, x, y);
             UPointDataEntry p2 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b2, TriangleData[zoomCategory][x][y][i].e2, zoomCategory, x, y);
             UPointDataEntry p3 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b3, TriangleData[zoomCategory][x][y][i].e3, zoomCategory, x, y);
-            result.Add(*convertToTri(colors[i % colors.Num()], p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, minX, maxX, minY, maxY, width, height));
+            result.Add(*convertToTri(colors[i % colors.Num()], p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, minX, maxX, minY, maxY, offsetX, offsetY, width, height));
         }
         return result;
     }
@@ -437,7 +391,7 @@ TArray<FCanvasUVTri> UMapLowZoom::GetTriangles(UTerrain* terrain, int mode, int 
         UPointDataEntry p1 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b1, TriangleData[zoomCategory][x][y][i].e1, zoomCategory, x, y);
         UPointDataEntry p2 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b2, TriangleData[zoomCategory][x][y][i].e2, zoomCategory, x, y);
         UPointDataEntry p3 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b3, TriangleData[zoomCategory][x][y][i].e3, zoomCategory, x, y);
-        result.Add(*convertToTri(terrain->GetColor(TriangleData[zoomCategory][x][y][i].terrainData, mode), p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, minX, maxX, minY, maxY, width, height));
+        result.Add(*convertToTri(terrain->GetColor(TriangleData[zoomCategory][x][y][i].terrainData, mode), p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, minX, maxX, minY, maxY, offsetX, offsetY, width, height));
         //if(TriangleData[zoomCategory][x][y].Num() < 12000) UE_LOG(LogTemp, Log, TEXT("Triangle: %f, %f  %f, %f  %f, %f ; %f, %f"), p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, (maxLon - minLon) * width, (maxLat - minLat) * height);
     }
     UE_LOG(LogTemp, Log, TEXT("Num render triangles: %d"), result.Num());
@@ -452,7 +406,7 @@ TArray<FCanvasUVTri> UMapLowZoom::GetMaterialTriangles(UTerrain* terrain, int mo
         UPointDataEntry p1 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b1, TriangleData[zoomCategory][x][y][i].e1, zoomCategory, x, y);
         UPointDataEntry p2 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b2, TriangleData[zoomCategory][x][y][i].e2, zoomCategory, x, y);
         UPointDataEntry p3 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b3, TriangleData[zoomCategory][x][y][i].e3, zoomCategory, x, y);
-        result.Add(*convertToTri(terrain->GetColor(TriangleData[zoomCategory][x][y][i].terrainData, mode), p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, -180, 180, -90, 90, 16384, 16384));
+        result.Add(*convertToTri(terrain->GetColor(TriangleData[zoomCategory][x][y][i].terrainData, mode), p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, -180, 180, -90, 90, 0, 0, 16384, 16384));
     }
 
     return result;
