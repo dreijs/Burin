@@ -120,49 +120,76 @@ int UMapLowZoom::GetTriangleIDAtCoordinate(int zoomCategory, double lon, double 
     return -1;
 }
 
-FCanvasUVTri* convertToTri(TArray<uint8_t> rgb, double x1, double y1, double x2, double y2, double x3, double y3, double minX, double maxX, double minY, double maxY, int offsetX, int offsetY, double width, double height) {
-    FCanvasUVTri* result = new FCanvasUVTri();
+static FVector2D toScreen(double x, double y, double minX, double maxX, double minY, double maxY,
+    int offsetX, int offsetY, double width, double height) {
+    return FVector2D((x - minX) / (maxX - minX) * width + offsetX,
+        (y - minY) / (maxY - minY) * height + offsetY);
+}
 
-    FVector2D* v0 = new FVector2D();
-    
-    v0->X = (x1 - minX) / (maxX - minX) * width + offsetX;
-    v0->Y = (y1 - minY) / (maxY - minY) * height + offsetY;
-    result->V0_Pos = *v0;
+static FCanvasUVTri makeTri(const FLinearColor& color,
+    const FVector2D& A, const FVector2D& AUV,
+    const FVector2D& B, const FVector2D& BUV,
+    const FVector2D& C, const FVector2D& CUV) {
+    FCanvasUVTri tri;
+    tri.V0_Pos = A; tri.V0_UV = AUV; tri.V0_Color = color;
+    tri.V1_Pos = B; tri.V1_UV = BUV; tri.V1_Color = color;
+    tri.V2_Pos = C; tri.V2_UV = CUV; tri.V2_Color = color;
+    return tri;
+}
 
-    FVector2D* v1 = new FVector2D();
-    v1->X = (x2 - minX) / (maxX - minX) * width + offsetX;
-    v1->Y = (y2 - minY) / (maxY - minY) * height + offsetY;
-    result->V1_Pos = *v1;
+static void addDebugTriangles(TArray<FCanvasUVTri>& result, double x1, double y1, double x2, double y2, double d) {
 
-    FVector2D* v2 = new FVector2D();
-    v2->X = (x3 - minX) / (maxX - minX) * width + offsetX;
-    v2->Y = (y3 - minY) / (maxY - minY) * height + offsetY;
-    result->V2_Pos = *v2;
+}
+static void convertEdgeToTriAndAdd(TArray<FCanvasUVTri>& result,
+    double x1, double y1, double x2, double y2, double d, double minX, double maxX, double minY, double maxY, int offsetX, int offsetY, double width, double height) {
+    // Project first, then thicken: d is a screen-space width, and the offsets only translate the quad.
+    const FVector2D A = toScreen(x1, y1, minX, maxX, minY, maxY, offsetX, offsetY, width, height);
+    const FVector2D B = toScreen(x2, y2, minX, maxX, minY, maxY, offsetX, offsetY, width, height);
 
-    FLinearColor* color = new FLinearColor(1.f * rgb[0]/255, 1.f * rgb[1] / 255, 1.f * rgb[2] / 255, 1.f);
+    const double Dx = B.X - A.X;
+    const double Dy = B.Y - A.Y;
+    const double Len = FMath::Sqrt(Dx * Dx + Dy * Dy);
 
-    result->V0_Color = *color;
-    result->V1_Color = *color;
-    result->V2_Color = *color;
+    double Ux = 1.0, Uy = 0.0;
+    if (Len > UE_DOUBLE_SMALL_NUMBER)
+    {
+        Ux = Dx / Len;
+        Uy = Dy / Len;
+    }
 
-    double ss = 0.0075;
+    const double H = 0.5 * d;
+    const FVector2D N(-Uy * H, Ux * H);
 
-    FVector2D* uv0 = new FVector2D();
-    uv0->X = ss * 20;
-    uv0->Y = ss * 20;
-    result->V0_UV = *uv0;
+    const FVector2D P0 = A - N;
+    const FVector2D P1 = B - N;
+    const FVector2D P2 = B + N;
+    const FVector2D P3 = A + N;
 
-    FVector2D* uv1 = new FVector2D();
-    uv1->X = ss * 22.5;
-    uv1->Y = ss * 20;
-    result->V1_UV = *uv1;
+    const FLinearColor color(0, 0, 0, 1.f);
 
-    FVector2D* uv2 = new FVector2D();
-    uv2->X = ss * 25;
-    uv2->Y = ss * 25;
-    result->V2_UV = *uv2;
+    const FVector2D UV0(0.0, 0.0);
+    const FVector2D UV1(1.0, 0.0);
+    const FVector2D UV2(1.0, 1.0);
+    const FVector2D UV3(0.0, 1.0);
 
-    return result;
+    result.Add(makeTri(color, P0, UV0, P1, UV1, P2, UV2));
+    result.Add(makeTri(color, P0, UV0, P2, UV2, P3, UV3));
+}
+
+static FCanvasUVTri convertToTri(const TArray<uint8_t>& rgb,
+    double x1, double y1, double x2, double y2, double x3, double y3, double minX, double maxX, double minY, double maxY, int offsetX, int offsetY, double width, double height) {
+    const FVector2D P0 = toScreen(x1, y1, minX, maxX, minY, maxY, offsetX, offsetY, width, height);
+    const FVector2D P1 = toScreen(x2, y2, minX, maxX, minY, maxY, offsetX, offsetY, width, height);
+    const FVector2D P2 = toScreen(x3, y3, minX, maxX, minY, maxY, offsetX, offsetY, width, height);
+
+    const FLinearColor color(rgb[0] / 255.f, rgb[1] / 255.f, rgb[2] / 255.f, 1.f);
+
+    const double ss = 0.0075;
+    const FVector2D UV0(ss * 20, ss * 20);
+    const FVector2D UV1(ss * 22.5, ss * 20);
+    const FVector2D UV2(ss * 25, ss * 25);
+
+    return makeTri(color, P0, UV0, P1, UV1, P2, UV2);
 }
 
 static UPointDataEntry getPointData(FString aString) {
@@ -333,10 +360,11 @@ void UMapLowZoom::Initialize() {
     }
 }
 
-
 int floorMod(int A, int B) {
     return ((A % B) + B) % B;
 }
+
+
 
 TArray<FCanvasUVTri> UMapLowZoom::GetTriangles(UTerrain* terrain, int mode, int zoomCategory, double minLat, double minLon, double maxLat, double maxLon, int offsetX, int offsetY, int width, int height) {
     TArray<FCanvasUVTri> result = {};
@@ -382,8 +410,9 @@ TArray<FCanvasUVTri> UMapLowZoom::GetTriangles(UTerrain* terrain, int mode, int 
             UPointDataEntry p1 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b1, TriangleData[zoomCategory][x][y][i].e1, zoomCategory, x, y);
             UPointDataEntry p2 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b2, TriangleData[zoomCategory][x][y][i].e2, zoomCategory, x, y);
             UPointDataEntry p3 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b3, TriangleData[zoomCategory][x][y][i].e3, zoomCategory, x, y);
-            result.Add(*convertToTri(colors[i % colors.Num()], p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, minX, maxX, minY, maxY, offsetX, offsetY, width, height));
+            result.Add(convertToTri(colors[i % colors.Num()], p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, minX, maxX, minY, maxY, offsetX, offsetY, width, height));
         }
+
         return result;
     }
 
@@ -391,12 +420,54 @@ TArray<FCanvasUVTri> UMapLowZoom::GetTriangles(UTerrain* terrain, int mode, int 
         UPointDataEntry p1 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b1, TriangleData[zoomCategory][x][y][i].e1, zoomCategory, x, y);
         UPointDataEntry p2 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b2, TriangleData[zoomCategory][x][y][i].e2, zoomCategory, x, y);
         UPointDataEntry p3 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b3, TriangleData[zoomCategory][x][y][i].e3, zoomCategory, x, y);
-        result.Add(*convertToTri(terrain->GetColor(TriangleData[zoomCategory][x][y][i].terrainData, mode), p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, minX, maxX, minY, maxY, offsetX, offsetY, width, height));
-        //if(TriangleData[zoomCategory][x][y].Num() < 12000) UE_LOG(LogTemp, Log, TEXT("Triangle: %f, %f  %f, %f  %f, %f ; %f, %f"), p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, (maxLon - minLon) * width, (maxLat - minLat) * height);
+        result.Add(convertToTri(terrain->GetColor(TriangleData[zoomCategory][x][y][i].terrainData, mode), p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, minX, maxX, minY, maxY, offsetX, offsetY, width, height));
     }
+
+    if (mode == 7) addBordersAsTriangles(result, zoomCategory, x, y, minX, maxX, minY, maxY, offsetX, offsetY, width, height);
+
     UE_LOG(LogTemp, Log, TEXT("Num render triangles: %d"), result.Num());
     return result;
 }
+
+TArray<FCanvasUVTri>& UMapLowZoom::addBordersAsTriangles(TArray<FCanvasUVTri>& result, int zoomCategory, int x, int y, double minX, double maxX, double minY, double maxY, int offsetX, int offsetY, int width, int height) {
+    int c = 0;
+    for (UEdgeDataEntry& edgeData : EdgeData[zoomCategory][x][y]) {
+        const double x1 = PointData[zoomCategory][x][y][edgeData.p1].x;
+        const double y1 = PointData[zoomCategory][x][y][edgeData.p1].y;
+        const double x2 = PointData[zoomCategory][x][y][edgeData.p2].x;
+        const double y2 = PointData[zoomCategory][x][y][edgeData.p2].y;
+
+        if (edgeData.t2 >= 0) {
+            bool i1 = TriangleData[zoomCategory][x][y][edgeData.t1].terrainData % 16 == 0;
+            bool i2 = TriangleData[zoomCategory][x][y][edgeData.t2].terrainData % 16 == 0;
+            if (i1 != i2) {
+                convertEdgeToTriAndAdd(result, x1, y1, x2, y2, 5, minX, maxX, minY, maxY, offsetX, offsetY, width, height);
+                c += 2;
+            }
+        }
+        else  if (edgeData.t2 < -1) {
+            bool i1 = TriangleData[zoomCategory][x][y][edgeData.t1].terrainData % 16 == 0;
+            bool i2 = (-edgeData.t2 - 2) % 16 == 0;
+            if (i1 != i2) {
+                convertEdgeToTriAndAdd(result, x1, y1, x2, y2, 5, minX, maxX, minY, maxY, offsetX, offsetY, width, height);
+                c += 2;
+            }
+        }
+        if (edgeData.riverData >= 0) {
+            bool i1 = true;
+            bool i2 = true;
+            if (edgeData.t1 >= 0) i1 = TriangleData[zoomCategory][x][y][edgeData.t1].terrainData % 16 != 0;
+            if (edgeData.t2 >= 0) i2 = TriangleData[zoomCategory][x][y][edgeData.t2].terrainData % 16 != 0;
+            if (i1 && i2) {
+                convertEdgeToTriAndAdd(result, x1, y1, x2, y2, 5, minX, maxX, minY, maxY, offsetX, offsetY, width, height);
+                c += 2;
+            }
+        }
+    }
+    UE_LOG(LogTemp, Log, TEXT("Number of border lines: %d"), c);
+    return result;
+}
+
 
 TArray<FCanvasUVTri> UMapLowZoom::GetMaterialTriangles(UTerrain* terrain, int mode, int zoomCategory, int x, int y) {
     TArray<FCanvasUVTri> result = {};
@@ -406,7 +477,7 @@ TArray<FCanvasUVTri> UMapLowZoom::GetMaterialTriangles(UTerrain* terrain, int mo
         UPointDataEntry p1 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b1, TriangleData[zoomCategory][x][y][i].e1, zoomCategory, x, y);
         UPointDataEntry p2 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b2, TriangleData[zoomCategory][x][y][i].e2, zoomCategory, x, y);
         UPointDataEntry p3 = getFirstPoint(TriangleData[zoomCategory][x][y][i].b3, TriangleData[zoomCategory][x][y][i].e3, zoomCategory, x, y);
-        result.Add(*convertToTri(terrain->GetColor(TriangleData[zoomCategory][x][y][i].terrainData, mode), p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, -180, 180, -90, 90, 0, 0, 16384, 16384));
+        result.Add(convertToTri(terrain->GetColor(TriangleData[zoomCategory][x][y][i].terrainData, mode), p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, -180, 180, -90, 90, 0, 0, 16384, 16384));
     }
 
     return result;
@@ -459,6 +530,8 @@ TArray<FLineDisplayData> UMapLowZoom::GetRivers(int mode, int zoomCategory, int 
     UE_LOG(LogTemp, Log, TEXT("Number of river lines: %d"), result.Num());
     return result;
 }
+
+
 
 TArray<FCanvasUVTri> UMapLowZoom::GetProvinceTriangles(TArray<UProvince> provinces, int mode, int zoomCategory, int x, int y) {
     TArray<FCanvasUVTri> result = {};

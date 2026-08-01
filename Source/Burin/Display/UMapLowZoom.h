@@ -49,4 +49,5 @@ private:
 	//TArray <UPointDataEntry> PointData;
 
 	UPointDataEntry getFirstPoint(bool b, int edge, int zoomCategory, int x, int y);
+	TArray<FCanvasUVTri>& addBordersAsTriangles(TArray<FCanvasUVTri>& result, int zoomCategory, int x, int y, double minX, double maxX, double minY, double maxY, int offsetX, int offsetY, int width, int height);
 };
