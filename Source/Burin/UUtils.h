@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UObject/Object.h"
 #include "UUtils.generated.h"
 
 UCLASS(Blueprintable)
@@ -11,13 +12,10 @@ class BURIN_API UUtils : public UObject
 	GENERATED_BODY()
 
 public:
-	UUtils();
-	~UUtils();
-
 	static FString ExtractStringFromXMLContentLine(FString aString);
-	static TArray<uint8_t> ExtractUInt8ArrayFromXMLContentLine(FString aString);
-	static TArray<double> ExtractFloatArrayFromXMLContentLine(FString aString);
-
-private:
-	void InitializeTerrain();
+	static bool ExtractBoolFromXMLContentLine(FString aString);
+	static int32 ExtractIntFromXMLContentLine(FString aString);
+	static double ExtractDoubleFromXMLContentLine(FString aString);
+	static TArray<uint8> ExtractUInt8ArrayFromXMLContentLine(FString aString);
+	static TArray<double> ExtractDoubleArrayFromXMLContentLine(FString aString);
 };

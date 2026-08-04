@@ -3,14 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Data/Earth/UTerrainDataEntry.h"
-#include "Data/Earth/UTerrain.h"
-#include "Data/History/Polities/UPolities.h"
-#include "Data/History/Places/UPlaces.h"
-#include "Concepts/Provinces/UProvince.h"
-#include "Concepts/Provinces/UArea.h"
+#include "UObject/Object.h"
+#include "Engine/Canvas.h"
+#include "Data/Earth/FTerrainDataEntry.h"
+#include "Data/Earth/FTerrain.h"
+#include "Data/History/Polities/FPolities.h"
+#include "Data/History/Places/FPlaces.h"
+#include "Concepts/Polities/FPolity.h"
+#include "Concepts/Provinces/FPlace.h"
+#include "Concepts/Provinces/FArea.h"
 #include "UWorldCreatorSettings.h"
-#include "Display/UMapLowZoom.h"
+#include "Display/FLineDisplayData.h"
+#include "Display/FMapLowZoom.h"
 
 #include "UBurinWorld.generated.h"
 
@@ -20,20 +24,21 @@ class BURIN_API UBurinWorld : public UObject
 	GENERATED_BODY()
 
 public:
-	UBurinWorld();
-	~UBurinWorld();
+	// Created once by Initialize(), released when this object is garbage collected.
+	TUniquePtr<FTerrain> Terrain;
+	TUniquePtr<FPolities> HistoricalPolities;
+	TUniquePtr<FPlaces> HistoricalPlaces;
+	TUniquePtr<FMapLowZoom> MapLowZoom;
 
-	UTerrain* Terrain;
-	UPolities* HistoricalPolities;
-	UPlaces* HistoricalPlaces;
+	UPROPERTY()
+	TObjectPtr<UWorldCreatorSettings> Settings = nullptr;
 
-	UWorldCreatorSettings* Settings;
+	TArray<FArea> Areas;
+	TArray<FPlace> Places;
+	TArray<FPolity> Polities;
 
-	UMapLowZoom* MapLowZoom;
-
-	TArray<UArea> Areas;
-	TArray<UProvince> Provinces;
-	TArray<UPolity> Polities;
+	UFUNCTION(BlueprintPure, Category = "Initialization")
+	bool IsInitialized() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Initialization")
 	void Initialize();
@@ -46,39 +51,41 @@ public:
 
 
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
-	int GetTerrainDataAtCoordinate(int zoomCategory, double x, double y);
+	int32 GetTerrainDataAtCoordinate(int32 zoomCategory, double x, double y);
 
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
-	int GetTriangleIDAtCoordinate(int zoomCategory, double x, double y);
+	int32 GetTriangleIDAtCoordinate(int32 zoomCategory, double x, double y);
 
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
-	FString GetTerrainText(int v);
+	FString GetTerrainText(int32 v);
 
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
-
-	TArray<FCanvasUVTri> GetTriangles(int mode, int zoomCategory, double minLat, double minLon, double maxLat, double maxLon, int offsetX, int offsetY, int width, int height);
-
-	UFUNCTION(BlueprintCallable, Category = "RenderMap")
-	TArray<FCanvasUVTri> GetMaterialTriangles(int mode, int zoomCategory, int x, int y);
+	TArray<FCanvasUVTri> GetTriangles(int32 mode, int32 zoomCategory, double minLat, double minLon, double maxLat, double maxLon, int32 offsetX, int32 offsetY, int32 width, int32 height);
 
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
-	TArray<FLineDisplayData> GetBorders(int mode, int zoomCategory, int x, int y);
+	TArray<FCanvasUVTri> GetMaterialTriangles(int32 mode, int32 zoomCategory, int32 x, int32 y);
 
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
-	TArray<FLineDisplayData> GetRivers(int mode, int zoomCategory, int x, int y);
+	TArray<FLineDisplayData> GetBorders(int32 mode, int32 zoomCategory, int32 x, int32 y);
 
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
-	TArray<FCanvasUVTri> GetProvinceTriangles(int mode, int zoomCategory, int x, int y);
+	TArray<FLineDisplayData> GetRivers(int32 mode, int32 zoomCategory, int32 x, int32 y);
 
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
-	TArray<int> GetSubregionIndices(int zoomCategory, double lat, double lon, double latDelta, double lonDelta);
+	TArray<FCanvasUVTri> GetProvinceTriangles(int32 mode, int32 zoomCategory, int32 x, int32 y);
 
 	UFUNCTION(BlueprintCallable, Category = "RenderMap")
-	int GetNumSubregions(int zoomCategory, bool isX);
+	TArray<int32> GetSubregionIndices(int32 zoomCategory, double lat, double lon, double latDelta, double lonDelta);
+
+	UFUNCTION(BlueprintCallable, Category = "RenderMap")
+	int32 GetNumSubregions(int32 zoomCategory, bool isX);
 
 private:
-	void initializeTerrain();
-	void initializeHistory();
-	void initializeMap();
-	
+	// Logs and returns false if the accessors below are called before Initialize().
+	bool EnsureInitialized(const TCHAR* callerName) const;
+
+	void InitializeTerrain();
+	void InitializeHistory();
+	void InitializeMap();
+
 };

@@ -3,33 +3,59 @@
 	<place>
 		<name>Men-Nefer</name>
 		<commonname>Memphis</commonname>
-		<location>29.849444,31.255000</location>
+		<latitude>29.849444</latitude>
+		<longitude>31.255000</longitude>
 		<history>
 			<item>
 				<year>-3000</year>
 				<owner>Egypt</owner>
+				<population>6000</population>
+			</item>
+			<item>
+				<year>-2250</year>
+				<population>30000</population>
+			</item>
+			<item>
+				<year>-1500</year>
+				<population>100000</population>
 			</item>
 		</history>
 	</place>
 	<place>
 		<name>Per-Wadjet</name>
 		<commonname>Buto</commonname>
-		<location>31.196389,30.744722</location>
+		<latitude>31.196389</latitude>
+		<longitude>30.744722</longitude>
 		<history>
 			<item>
 				<year>-3000</year>
 				<owner>Egypt</owner>
+				<population>1000</population>
+			</item>
+			<item>
+				<year>-2000</year>
+				<population>3000</population>
 			</item>
 		</history>
 	</place>
 	<place>
 		<name>Waset</name>
 		<commonname>Luxor</commonname>
-		<location>25.696667,32.644444</location>
+		<latitude>25.696667</latitude>
+		<longitude>32.644444</longitude>
 		<history>
 			<item>
-				<year>-3200</year>
+				<year>-3000</year>
 				<owner>Egypt</owner>
+				<population>1000</population>
+			</item>
+			<item>
+				<year>-2000</year>
+				<population>40000</population>
+			</item>
+			<item>
+				<year>-1500</year>
+				<population>80000</population>
 			</item>
 		</history>
 	</place>

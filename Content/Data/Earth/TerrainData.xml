@@ -697,6 +697,18 @@
 		</conditions>
 	</terraintype>
 	<terraintype>
+		<name>Polar Desert</name>
+		<displaycolor0>
+			<rgb>180,180,180</rgb>
+		</displaycolor0>
+		<conditions>
+			<condition>
+				<conditionelement>vegetation,polar desert</conditionelement>
+				<conditionelement>elevation,level 13</conditionelement>
+			</condition>
+		</conditions>
+	</terraintype>
+	<terraintype>
 		<name>Subarctic Wetlands</name>
 		<displaycolor0>
 			<rgb>60,89,97</rgb>
@@ -796,18 +808,6 @@
 		<conditions>
 			<condition>
 				<conditionelement>feature,wetlands</conditionelement>
-			</condition>
-		</conditions>
-	</terraintype>
-	<terraintype>
-		<name>Polar Desert</name>
-		<displaycolor0>
-			<rgb>180,180,180</rgb>
-		</displaycolor0>
-		<conditions>
-			<condition>
-				<conditionelement>vegetation,polar desert</conditionelement>
-				<conditionelement>elevation,level 13</conditionelement>
 			</condition>
 		</conditions>
 	</terraintype>
@@ -1453,7 +1453,7 @@
 	<terraintype>
 		<name>Semiarid Bushland</name>
 		<displaycolor0>
-			<rgb>165,160,125</rgb>
+			<rgb>170,155,100</rgb>
 		</displaycolor0>
 		<conditions>
 			<condition>

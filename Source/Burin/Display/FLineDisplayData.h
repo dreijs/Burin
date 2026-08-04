@@ -7,7 +7,7 @@
 #include "FLineDisplayData.generated.h"
 
 /**
- * 
+ *
  */
 USTRUCT(BlueprintType)
 struct BURIN_API FLineDisplayData
@@ -16,12 +16,16 @@ struct BURIN_API FLineDisplayData
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RenderMap")
-	FVector2D v1; // Initialize with a default value
+	FVector2D V1 = FVector2D::ZeroVector;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "RenderMap")
-	FVector2D v2;
+	FVector2D V2 = FVector2D::ZeroVector;
 
-	FLineDisplayData(FVector2D vv1, FVector2D vv2);
-	FLineDisplayData();
-	~FLineDisplayData();
+	FLineDisplayData() = default;
+
+	FLineDisplayData(const FVector2D& InV1, const FVector2D& InV2)
+		: V1(InV1)
+		, V2(InV2)
+	{
+	}
 };

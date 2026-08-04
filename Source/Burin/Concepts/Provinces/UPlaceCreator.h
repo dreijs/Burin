@@ -4,10 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
-#include "UWorldCreatorSettings.generated.h"
+#include "UProvinceCreator.generated.h"
 
 UCLASS(Blueprintable)
-class BURIN_API UWorldCreatorSettings : public UObject
+class BURIN_API UPlaceCreator : public UObject
 {
 	GENERATED_BODY()
 };

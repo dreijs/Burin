@@ -3,7 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Concepts/Provinces/UProvince.h"
+#include "UObject/Object.h"
+#include "Concepts/Provinces/FArea.h"
+#include "Concepts/Provinces/FPlace.h"
 #include "UWorldCreatorSettings.h"
 #include "UBurinWorld.h"
 
@@ -15,12 +17,10 @@ class BURIN_API UWorldCreator : public UObject
 	GENERATED_BODY()
 
 public:
-	UWorldCreator();
-	~UWorldCreator();
-
-	static UArea CreateArea(FString name, double latitude, double longitude);
+	static FArea CreateArea(FString name, double latitude, double longitude);
 	static void DestroyArea(FString name);
-	static UProvince CreateProvince(UBurinWorld* world, FString name, double latitude, double longitude);
+	static void CreateHistoricalPlace(UBurinWorld* world, FPlaceDataEntry entry);
+	static void CreatePlace(UBurinWorld* world, FString name, double latitude, double longitude);
 	static void DestroyProvince(FString name);
 
 	static void CreateRandomWorld(UBurinWorld* world);

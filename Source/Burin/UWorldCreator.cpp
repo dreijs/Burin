@@ -3,16 +3,8 @@
 
 #include "UWorldCreator.h"
 
-UWorldCreator::UWorldCreator()
-{
-}
-
-UWorldCreator::~UWorldCreator()
-{
-}
-
-UArea UWorldCreator::CreateArea(FString name, double latitude, double longitude) {
-	UArea area;
+FArea UWorldCreator::CreateArea(FString name, double latitude, double longitude) {
+	FArea area;
 	//province.
 	return area;
 }
@@ -21,22 +13,31 @@ void UWorldCreator::DestroyArea(FString name) {
 
 }
 
-UProvince UWorldCreator::CreateProvince(UBurinWorld* world, FString name, double latitude, double longitude) {
-	UProvince province;
+void UWorldCreator::CreateHistoricalPlace(UBurinWorld* world, FPlaceDataEntry entry) {
+	CreatePlace(
+		world,
+		entry.Name,
+		entry.Latitude,
+		entry.Longitude
+	);
+}
 
-	province.Name = name;
-	province.CommonName = name;
-	province.Latitude = latitude;
-	province.Longitude = longitude;
+void UWorldCreator::CreatePlace(UBurinWorld* world, FString name, double latitude, double longitude) {
+	FPlace place;
 
-	province.Triangles = {};
-	province.Triangles.Add(world->GetTriangleIDAtCoordinate(0, latitude, longitude));
-	
-	return province;
+	place.Name = name;
+	place.CommonName = name;
+	place.Latitude = latitude;
+	place.Longitude = longitude;
+
+	place.Triangles = {};
+	place.Triangles.Add(world->GetTriangleIDAtCoordinate(0, latitude, longitude));
+
+	world->Places.Add(place);
 }
 
 void UWorldCreator::DestroyProvince(FString name) {
-	
+
 }
 
 void UWorldCreator::CreateRandomWorld(UBurinWorld* world) {
@@ -44,10 +45,10 @@ void UWorldCreator::CreateRandomWorld(UBurinWorld* world) {
 }
 
 void UWorldCreator::CreateHistoricalWorld(UBurinWorld* world) {
-	world->Provinces = {};
+	world->Places = {};
 	world->Polities = {};
-	for (int i = 0; i < world->HistoricalPlaces->PlaceData.Num(); i++) {
-		//UProvince province = CreateProvince(world, world->HistoricalPlaces->PlaceData[i].name, world->HistoricalPlaces->PlaceData[i].latitude, world->HistoricalPlaces->PlaceData[i].longitude);
+	for (int32 i = 0; i < world->HistoricalPlaces->HistoricalPlaceData.Num(); i++) {
+		CreateHistoricalPlace(world, world->HistoricalPlaces->HistoricalPlaceData[i]);
 		//world->Provinces.Add(province);
 	}
 }

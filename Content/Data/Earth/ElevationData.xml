@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<root>
+<terraintypes>
 	<terraintype>
 		<name>Water</name>
 		<color>
@@ -84,4 +84,4 @@
 			<rgb>85,17,0</rgb>
 		</color>
 	</terraintype>
-</root>
+</terraintypes>
