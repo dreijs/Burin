@@ -21,16 +21,23 @@ void FPolities::InitializeHistoricalPolities() {
 		if (aString.Contains("<polity>")) {
 			entry = {};
 		}
-		if (aString.Contains("<name>")) { entry.Name = UUtils::ExtractStringFromXMLContentLine(aString); }
+		if (aString.Contains("<id>")) { entry.Id = UUtils::ExtractStringFromXMLContentLine(aString); }
 		if (aString.Contains("<mapcolor1>")) { entry.MapColor1 = UUtils::ExtractUInt8ArrayFromXMLContentLine(aString); }
 		if (aString.Contains("<mapcolor2>")) { entry.MapColor2 = UUtils::ExtractUInt8ArrayFromXMLContentLine(aString); }
 		if (aString.Contains("<mapcolor3>")) { entry.MapColor3 = UUtils::ExtractUInt8ArrayFromXMLContentLine(aString); }
 		if (aString.Contains("<history>")) { entry.History = {}; }
 		if (aString.Contains("</polity>")) {
-			HistoricalPolityMap.Add(entry.Name, HistoricalPolityData.Num());
+			HistoricalPolityMap.Add(entry.Id, HistoricalPolityData.Num());
 			HistoricalPolityData.Add(entry);
 		}
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("Number of polity data entries: %d"), HistoricalPolityData.Num());
+}
+
+int32 FPolities::FindPolityIndex(const FString& id) const {
+	if (const int32* index = HistoricalPolityMap.Find(id)) {
+		return *index;
+	}
+	return INDEX_NONE;
 }

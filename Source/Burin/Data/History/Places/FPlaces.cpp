@@ -3,23 +3,38 @@
 #include "FPlaces.h"
 #include "FPlaceDataEntry.h"
 #include "Burin/UUtils.h"
+#include "Burin/Data/History/Polities/FPolities.h"
 
-TArray<FPlaceHistoryItemEntry> processHistory(const TArray<FString>& strings) {
+TArray<FPlaceHistoryItemEntry> processHistory(const TArray<FString>& strings, const FPolities& polities) {
 	TArray<FPlaceHistoryItemEntry> result = {};
 	FPlaceHistoryItemEntry entry;
-	
+
 	for (int32 i = 0; i < strings.Num(); i++) {
 		const FString& aString = strings[i];
-		if (aString.Contains("<place>")) {
+		if (aString.Contains("<item>")) {
 			entry = {};
 		}
 
 		if (aString.Contains("<year>")) { entry.year = UUtils::ExtractIntFromXMLContentLine(aString); }
 		if (aString.Contains("<destroyed>")) { entry.destroyed = UUtils::ExtractBoolFromXMLContentLine(aString); }
 		if (aString.Contains("<population>")) { entry.population = UUtils::ExtractIntFromXMLContentLine(aString); }
+		if (aString.Contains("<owner>")) {
+			entry.Owner = UUtils::ExtractStringFromXMLContentLine(aString);
+
+			// "null" (unclaimed/founding placeholder) and "ruined" (destroyed) are sentinels,
+			// not real polities, so they're not expected to resolve.
+			if (entry.Owner.Equals(TEXT("null"), ESearchCase::IgnoreCase) || entry.Owner.Equals(TEXT("ruined"), ESearchCase::IgnoreCase)) {
+				entry.OwnerPolityIndex = INDEX_NONE;
+			} else {
+				entry.OwnerPolityIndex = polities.FindPolityIndex(entry.Owner);
+				if (entry.OwnerPolityIndex == INDEX_NONE) {
+					UE_LOG(LogTemp, Warning, TEXT("Place history references unknown owner polity: %s"), *entry.Owner);
+				}
+			}
+		}
 
 
-		if (aString.Contains("</place>")) {
+		if (aString.Contains("</item>")) {
 			result.Add(entry);
 		}
 	}
@@ -27,7 +42,7 @@ TArray<FPlaceHistoryItemEntry> processHistory(const TArray<FString>& strings) {
 	return result;
 }
 
-void FPlaces::InitializeHistoricalPlaces() {
+void FPlaces::InitializeHistoricalPlaces(const FPolities& polities) {
 	HistoricalPlaceData = {};
 	HistoricalPlaceMap = {};
 
@@ -46,7 +61,7 @@ void FPlaces::InitializeHistoricalPlaces() {
 	for (int32 i = 0; i < take.Num(); i++) {
 		const FString& aString = take[i];
 
-		if (aString.Contains("</history>")) { entry.History = processHistory(historyString); history = false; historyString = {}; }
+		if (aString.Contains("</history>")) { entry.History = processHistory(historyString, polities); history = false; historyString = {}; }
 		if (history) {
 			historyString.Add(aString);
 		} else {

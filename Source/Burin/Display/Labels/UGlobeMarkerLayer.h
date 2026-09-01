@@ -20,7 +20,7 @@ enum class EGlobeLabelSource : uint8
 	/** Terrain->GeographicLabelData: continents, deserts, mountain ranges. */
 	GeographicFeatures,
 
-	/** HistoricalPlaces->HistoricalPlaceData: ancient cities and settlements. */
+	/** World->Places: settlements that exist as of UBurinWorld::CurrentYear. */
 	HistoricalPlaces
 };
 

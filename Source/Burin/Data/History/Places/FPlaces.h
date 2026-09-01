@@ -5,13 +5,15 @@
 #include "CoreMinimal.h"
 #include "FPlaceDataEntry.h"
 
+class FPolities;
+
 class BURIN_API FPlaces
 {
 public:
 
 	TArray<FPlaceDataEntry> HistoricalPlaceData;
 
-	void InitializeHistoricalPlaces();
+	void InitializeHistoricalPlaces(const FPolities& polities);
 
 private:
 	TMap<FString, int32> HistoricalPlaceMap;

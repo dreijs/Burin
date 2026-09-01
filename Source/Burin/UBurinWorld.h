@@ -18,6 +18,8 @@
 
 #include "UBurinWorld.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCurrentYearChanged, int32, NewYear);
+
 UCLASS(Blueprintable)
 class BURIN_API UBurinWorld : public UObject
 {
@@ -37,6 +39,9 @@ public:
 	TArray<FPlace> Places;
 	TArray<FPolity> Polities;
 
+	// The year Places/Polities were last loaded for. Set by SetCurrentYear().
+	int32 CurrentYear = 0;
+
 	UFUNCTION(BlueprintPure, Category = "Initialization")
 	bool IsInitialized() const;
 
@@ -45,6 +50,17 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Initialization")
 	void InitializeProvinces();
+
+	UFUNCTION(BlueprintPure, Category = "History")
+	int32 GetCurrentYear() const { return CurrentYear; }
+
+	/** Resets Places and Polities, then reloads them from HistoricalPlaceData/HistoricalPolityData, keeping only the entries that exist in `year`. Broadcasts OnCurrentYearChanged afterward. */
+	UFUNCTION(BlueprintCallable, Category = "History")
+	void SetCurrentYear(int32 year);
+
+	/** Fired at the end of SetCurrentYear(), after Places/Polities have been rebuilt. Anything that renders them (world sphere, world map, marker layers, ...) should bind here and refresh itself, rather than being called manually by whoever triggered the year change. */
+	UPROPERTY(BlueprintAssignable, Category = "History")
+	FOnCurrentYearChanged OnCurrentYearChanged;
 
 	UFUNCTION(BlueprintCallable, Category = "Initialization")
 	void SetWorldCreatorSettings();

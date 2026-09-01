@@ -8,8 +8,7 @@
 #include "Burin/UBurinWorld.h"
 #include "Burin/Data/Earth/FTerrain.h"
 #include "Burin/Data/Earth/FGeographicLabel.h"
-#include "Burin/Data/History/Places/FPlaces.h"
-#include "Burin/Data/History/Places/FPlaceDataEntry.h"
+#include "Burin/Concepts/Provinces/FPlace.h"
 
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/CanvasPanel.h"
@@ -32,6 +31,26 @@ namespace
 		const uint8 alpha = (bytes.Num() >= 4) ? bytes[3] : 255;
 		return FLinearColor(FColor(bytes[0], bytes[1], bytes[2], alpha));
 	}
+
+	// Source data carries line breaks as the literal two characters \n, since the XML loader
+	// reads a tag's content as a single line. Whitespace around the break is trimmed so the
+	// centred lines don't sit off-centre.
+	FString ExpandLineBreaks(const FString& text)
+	{
+		if (!text.Contains(TEXT("\\n")))
+		{
+			return text;
+		}
+
+		TArray<FString> lines;
+		text.ParseIntoArray(lines, TEXT("\\n"), false);
+		for (FString& line : lines)
+		{
+			line.TrimStartAndEndInline();
+		}
+
+		return FString::Join(lines, TEXT("\n"));
+	}
 }
 
 UGlobeMarkerLayer::UGlobeMarkerLayer(const FObjectInitializer& objectInitializer)
@@ -39,7 +58,7 @@ UGlobeMarkerLayer::UGlobeMarkerLayer(const FObjectInitializer& objectInitializer
 {
 	// Indexed by zoom level; value is the highest importance still displayed at that zoom.
 	// -1 and 0 blank zoom levels entirely, since importance values start at 1.
-	MaxImportanceByZoomLevel = { -1, -1, -1, -1, 30, 100, 200 };
+	MaxImportanceByZoomLevel = { 0, 1, 2, 3, 4, 5 };
 }
 
 void UGlobeMarkerLayer::SetZoomLevel(int32 zoomLevel)
@@ -86,7 +105,7 @@ void UGlobeMarkerLayer::InitializeLayer(AActor* globeActor, UBurinWorld* world, 
 		for (const FGeographicLabel& label : labels)
 		{
 			FMarkerSeed seed;
-			seed.Name = label.Name;
+			seed.Name = ExpandLineBreaks(label.Name);
 			seed.Latitude = label.Latitude;
 			seed.Longitude = label.Longitude;
 			seed.Importance = label.Importance;
@@ -98,19 +117,15 @@ void UGlobeMarkerLayer::InitializeLayer(AActor* globeActor, UBurinWorld* world, 
 
 	case EGlobeLabelSource::HistoricalPlaces:
 	{
-		if (!world->HistoricalPlaces.IsValid())
-		{
-			UE_LOG(LogTemp, Warning, TEXT("UGlobeMarkerLayer: HistoricalPlaces is not initialized; no place markers created."));
-			return;
-		}
-
-		const TArray<FPlaceDataEntry>& places = world->HistoricalPlaces->HistoricalPlaceData;
+		// Places is rebuilt by UBurinWorld::SetCurrentYear(), so this always reflects
+		// whichever settlements exist as of the world's current year.
+		const TArray<FPlace>& places = world->Places;
 		seeds.Reserve(places.Num());
-		for (const FPlaceDataEntry& place : places)
+		for (const FPlace& place : places)
 		{
 			FMarkerSeed seed;
 			// CommonName is the display form where one exists; Name is the canonical fallback.
-			seed.Name = place.CommonName.IsEmpty() ? place.Name : place.CommonName;
+			seed.Name = ExpandLineBreaks(place.CommonName.IsEmpty() ? place.Name : place.CommonName);
 			seed.Latitude = place.Latitude;
 			seed.Longitude = place.Longitude;
 			seed.Importance = PlaceImportance;	// places carry no importance of their own yet

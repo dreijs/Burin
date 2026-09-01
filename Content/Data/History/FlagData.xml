@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<root>
-	<flag>
-		
-	</flag>
-</root>
+<features>
+	<feature>
+		<name>Eye of Horus</name>
+	</feature>
+</features>

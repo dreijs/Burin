@@ -13,6 +13,9 @@ public:
 
 	void InitializeHistoricalPolities();
 
+	/** Index into HistoricalPolityData for the given polity id, or INDEX_NONE if there's no such polity. */
+	int32 FindPolityIndex(const FString& id) const;
+
 private:
 	TMap<FString, int32> HistoricalPolityMap;
 };

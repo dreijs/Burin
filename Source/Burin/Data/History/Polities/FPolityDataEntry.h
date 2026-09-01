@@ -7,7 +7,7 @@
 
 struct FPolityDataEntry
 {
-	FString Name;
+	FString Id;
 	TArray<uint8> MapColor1;
 	TArray<uint8> MapColor2;
 	TArray<uint8> MapColor3;

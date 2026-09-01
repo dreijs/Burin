@@ -5,6 +5,7 @@
 #include "Data/Earth/FTerrainDataEntry.h"
 #include "Data/Earth/FTerrain.h"
 #include "UWorldCreator.h"
+#include "Engine/Engine.h"
 
 bool UBurinWorld::IsInitialized() const
 {
@@ -43,7 +44,7 @@ void UBurinWorld::InitializeHistory() {
 	HistoricalPlaces = MakeUnique<FPlaces>();
 
 	HistoricalPolities->InitializeHistoricalPolities();
-	HistoricalPlaces->InitializeHistoricalPlaces();
+	HistoricalPlaces->InitializeHistoricalPlaces(*HistoricalPolities);
 }
 
 void UBurinWorld::InitializeMap() {
@@ -60,7 +61,26 @@ void UBurinWorld::InitializeProvinces()
 {
 	if (!EnsureInitialized(TEXT("InitializeProvinces"))) return;
 
-	UWorldCreator::CreateHistoricalWorld(this);
+	UWorldCreator::CreateHistoricalWorld(this, CurrentYear);
+}
+
+void UBurinWorld::SetCurrentYear(int32 year)
+{
+	if (!EnsureInitialized(TEXT("SetCurrentYear"))) return;
+
+	UE_LOG(LogTemp, Log, TEXT("SetCurrentYear(%d) on world '%s': master lists hold %d places, %d polities before rebuild"),
+		year, *GetName(), HistoricalPlaces->HistoricalPlaceData.Num(), HistoricalPolities->HistoricalPolityData.Num());
+
+	CurrentYear = year;
+	UWorldCreator::CreateHistoricalWorld(this, CurrentYear);
+
+	UE_LOG(LogTemp, Log, TEXT("SetCurrentYear(%d): loaded %d places, %d polities"), CurrentYear, Places.Num(), Polities.Num());
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Year %d: %d places, %d polities"), CurrentYear, Places.Num(), Polities.Num()));
+	}
+
+	OnCurrentYearChanged.Broadcast(CurrentYear);
 }
 
 void UBurinWorld::Initialize()
@@ -74,6 +94,8 @@ void UBurinWorld::Initialize()
 	InitializeTerrain();
 	InitializeHistory();
 	InitializeMap();
+
+	UE_LOG(LogTemp, Log, TEXT("UBurinWorld::Initialize complete on world '%s'"), *GetName());
 }
 
 int32 UBurinWorld::GetTerrainDataAtCoordinate(int32 zoomCategory, double x, double y) {

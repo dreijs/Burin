@@ -5,6 +5,7 @@
 #include "FLineDisplayData.h"
 #include "CanvasTypes.h" // Required for FCanvas
 #include "Engine/Canvas.h" // Required for UCanvas static functions
+#include "Async/ParallelFor.h"
 #include <cstdlib> // Required for srand/rand
 #include <Burin/Concepts/Provinces/fplace.h>
 
@@ -276,7 +277,12 @@ void FMapLowZoom::Initialize() {
     int32 maxLevel = getMaxZoomLevel(FPaths::ProjectContentDir() + TEXT("Data/Earth/Polygons/*"));
     UE_LOG(LogTemp, Log, TEXT("Number of zoom levels: %d"), maxLevel);
 
-    for (int32 level = 0; level < maxLevel; level++) {
+    // Each level is independent (own files, own slot below), so levels load in parallel.
+    TriangleData.SetNum(maxLevel);
+    EdgeData.SetNum(maxLevel);
+    PointData.SetNum(maxLevel);
+
+    ParallelFor(maxLevel, [this](int32 level) {
         TArray < TArray < TArray <FTriangleDataEntry> > > TriangleDataForZoomLevel = {};
         TArray < TArray < TArray <FEdgeDataEntry> > > EdgeDataForZoomLevel = {};
         TArray < TArray < TArray <FPointDataEntry> > > PointDataForZoomLevel = {};
@@ -285,7 +291,7 @@ void FMapLowZoom::Initialize() {
         int32 w = wh[0] + 1;
         int32 h = wh[1] + 1;
 
-        UE_LOG(LogTemp, Log, TEXT("Zoom level %d: width = %d, height = %d"), maxLevel, w, h);
+        UE_LOG(LogTemp, Log, TEXT("Zoom level %d: width = %d, height = %d"), level, w, h);
 
         for (int32 x = 0; x < w; x++) {
             TArray < TArray <FTriangleDataEntry> > TriangleDataForZoomLevelX = {};
@@ -301,6 +307,7 @@ void FMapLowZoom::Initialize() {
                 FString fPath1 = basePath + TEXT("Triangles.txt");
                 TArray<FString> take1;
                 FFileHelper::LoadANSITextFileToStrings(*fPath1, NULL, take1);
+                TriangleDataForZoomLevelXY.Reserve(take1.Num());
 
                 int32 terrainData = 0;
                 for (int32 i = 0; i < take1.Num(); i++) {
@@ -311,6 +318,7 @@ void FMapLowZoom::Initialize() {
                 FString fPath2 = basePath + TEXT("Edges.txt");
                 TArray<FString> take2;
                 FFileHelper::LoadANSITextFileToStrings(*fPath2, NULL, take2);
+                EdgeDataForZoomLevelXY.Reserve(take2.Num());
 
                 for (int32 i = 0; i < take2.Num(); i++) {
                     EdgeDataForZoomLevelXY.Add(getEdgeData(take2[i]));
@@ -319,6 +327,7 @@ void FMapLowZoom::Initialize() {
                 FString fPath3 = basePath + TEXT("Points.txt");
                 TArray<FString> take3;
                 FFileHelper::LoadANSITextFileToStrings(*fPath3, NULL, take3);
+                PointDataForZoomLevelXY.Reserve(take3.Num());
 
                 for (int32 i = 0; i < take3.Num(); i++) {
                     PointDataForZoomLevelXY.Add(getPointData(take3[i]));
@@ -326,19 +335,21 @@ void FMapLowZoom::Initialize() {
 
                 UE_LOG(LogTemp, Log, TEXT("Number of triangles, edges, points (zoom level: %d, x: %d, y: %d): %d, %d, %d"), level, x, y, TriangleDataForZoomLevelXY.Num(), EdgeDataForZoomLevelXY.Num(), PointDataForZoomLevelXY.Num());
 
-                TriangleDataForZoomLevelX.Add(TriangleDataForZoomLevelXY);
-                EdgeDataForZoomLevelX.Add(EdgeDataForZoomLevelXY);
-                PointDataForZoomLevelX.Add(PointDataForZoomLevelXY);
+                TriangleDataForZoomLevelX.Add(MoveTemp(TriangleDataForZoomLevelXY));
+                EdgeDataForZoomLevelX.Add(MoveTemp(EdgeDataForZoomLevelXY));
+                PointDataForZoomLevelX.Add(MoveTemp(PointDataForZoomLevelXY));
             }
-            TriangleDataForZoomLevel.Add(TriangleDataForZoomLevelX);
-            EdgeDataForZoomLevel.Add(EdgeDataForZoomLevelX);
-            PointDataForZoomLevel.Add(PointDataForZoomLevelX);
+            TriangleDataForZoomLevel.Add(MoveTemp(TriangleDataForZoomLevelX));
+            EdgeDataForZoomLevel.Add(MoveTemp(EdgeDataForZoomLevelX));
+            PointDataForZoomLevel.Add(MoveTemp(PointDataForZoomLevelX));
         }
 
-        TriangleData.Add(TriangleDataForZoomLevel);
-        EdgeData.Add(EdgeDataForZoomLevel);
-        PointData.Add(PointDataForZoomLevel);
-    }
+        // Each thread only ever writes its own `level` slot, which was pre-sized
+        // above via SetNum() before ParallelFor started, so this is race-free.
+        TriangleData[level] = MoveTemp(TriangleDataForZoomLevel);
+        EdgeData[level] = MoveTemp(EdgeDataForZoomLevel);
+        PointData[level] = MoveTemp(PointDataForZoomLevel);
+    });
 }
 
 static int32 floorMod(int32 A, int32 B) {

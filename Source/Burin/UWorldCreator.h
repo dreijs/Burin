@@ -19,10 +19,11 @@ class BURIN_API UWorldCreator : public UObject
 public:
 	static FArea CreateArea(FString name, double latitude, double longitude);
 	static void DestroyArea(FString name);
-	static void CreateHistoricalPlace(UBurinWorld* world, FPlaceDataEntry entry);
-	static void CreatePlace(UBurinWorld* world, FString name, double latitude, double longitude);
+	static void CreateHistoricalPlace(UBurinWorld* world, FPlaceDataEntry entry, int32 ownerPolityIndex);
+	static void CreateHistoricalPolity(UBurinWorld* world, FPolityDataEntry entry);
+	static void CreatePlace(UBurinWorld* world, FString name, double latitude, double longitude, FPolity controller = FPolity());
 	static void DestroyProvince(FString name);
 
 	static void CreateRandomWorld(UBurinWorld* world);
-	static void CreateHistoricalWorld(UBurinWorld* world);
+	static void CreateHistoricalWorld(UBurinWorld* world, int32 year);
 };
