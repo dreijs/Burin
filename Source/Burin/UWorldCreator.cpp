@@ -28,46 +28,63 @@ static FPolity ToFPolity(const FPolityDataEntry& entry) {
 	return polity;
 }
 
-static void CreateIndependentPlace(UBurinWorld* world, const FPlaceDataEntry& entry) {
-	// An unclaimed ("null" owner) place governs itself: it gets its own single-place polity,
-	// named after the place, rather than an empty/default Controller.
-	FPolity independentPolity;
-	independentPolity.Name = entry.Name;
-
-	world->Polities.Add(independentPolity);
-	UWorldCreator::CreatePlace(world, entry.Name, entry.Latitude, entry.Longitude, independentPolity);
+// An independent place is its own polity, and the data carries no map colour for it -- most of the
+// early map is independent (48 of the 71 places existing in 2500 BC), so leaving them on FPolity's
+// default black would paint most of the world black. Derive a colour from the name instead, so the
+// same place keeps the same colour across every year and every run.
+//
+// This is a placeholder: 256 hues over dozens of independents will occasionally give two neighbours
+// similar colours. Assigning evenly spaced hues by index would avoid that, but the colours would
+// then shift whenever the set of places changes from year to year, which reads worse on a map you
+// scrub through time with.
+static FColor MakeIndependentMapColor(const FString& name) {
+	const uint8 hue = static_cast<uint8>(FCrc::StrCrc32(*name) % 256);
+	return FLinearColor::MakeFromHSV8(hue, 140, 225).ToFColor(true);
 }
 
-void UWorldCreator::CreateHistoricalPlace(UBurinWorld* world, FPlaceDataEntry entry, int32 ownerPolityIndex) {
-	FPolity controller;
-	if (ownerPolityIndex != INDEX_NONE) {
-		controller = ToFPolity(world->HistoricalPolities->HistoricalPolityData[ownerPolityIndex]);
-	}
+static void CreateIndependentPlace(UBurinWorld* world, const FPlaceDataEntry& entry) {
+	// An unclaimed ("null" owner) place governs itself: it gets its own single-place polity,
+	// named after the place, rather than an unresolved controller.
+	FPolity independentPolity;
+	independentPolity.Name = entry.Name;
+	independentPolity.MapColor1 = MakeIndependentMapColor(entry.Name);
 
+	const int32 controllerIndex = world->Polities.Add(independentPolity);
+	UWorldCreator::CreatePlace(world, entry.Name, entry.Latitude, entry.Longitude, controllerIndex);
+}
+
+void UWorldCreator::CreateHistoricalPlace(UBurinWorld* world, const FPlaceDataEntry& entry, int32 controllerIndex) {
 	CreatePlace(
 		world,
 		entry.Name,
 		entry.Latitude,
 		entry.Longitude,
-		controller
+		controllerIndex
 	);
 }
 
-void UWorldCreator::CreateHistoricalPolity(UBurinWorld* world, FPolityDataEntry entry) {
-	world->Polities.Add(ToFPolity(entry));
+int32 UWorldCreator::CreateHistoricalPolity(UBurinWorld* world, const FPolityDataEntry& entry) {
+	return world->Polities.Add(ToFPolity(entry));
 }
 
-void UWorldCreator::CreatePlace(UBurinWorld* world, FString name, double latitude, double longitude, FPolity controller) {
+void UWorldCreator::CreatePlace(UBurinWorld* world, FString name, double latitude, double longitude, int32 controllerIndex) {
 	FPlace place;
 
 	place.Name = name;
 	place.CommonName = name;
 	place.Latitude = latitude;
 	place.Longitude = longitude;
-	place.Controller = controller;
+	place.ControllerIndex = controllerIndex;
 
+	// FindSeedTriangleForPlace() handles the mesh's southward y axis and the offshore-coastal
+	// fallback. The domain itself is grown later, once every place for the year exists, by
+	// UBurinWorld::BuildPlaceDomains().
+	place.SeedTriangle = world->FindSeedTriangleForPlace(latitude, longitude);
 	place.Triangles = {};
-	place.Triangles.Add(world->GetTriangleIDAtCoordinate(0, longitude, latitude));
+
+	if (place.SeedTriangle == INDEX_NONE) {
+		UE_LOG(LogTemp, Warning, TEXT("Place '%s' at (%f, %f) has no land triangle within reach at level 1; it gets no domain."), *name, latitude, longitude);
+	}
 
 	world->Places.Add(place);
 }
@@ -80,6 +97,20 @@ void UWorldCreator::CreateRandomWorld(UBurinWorld* world) {
 
 }
 
+// One place that exists in the requested year, held between the two passes below so that
+// polities can be created before the places that index them.
+struct FLivePlace
+{
+	// Index into FPlaces::HistoricalPlaceData.
+	int32 EntryIndex = INDEX_NONE;
+
+	// Index into FPolities::HistoricalPolityData, or INDEX_NONE if the place is independent or
+	// its owner id didn't resolve to a known polity.
+	int32 OwnerPolityIndex = INDEX_NONE;
+
+	bool bIndependent = false;
+};
+
 void UWorldCreator::CreateHistoricalWorld(UBurinWorld* world, int32 year) {
 	world->Places = {};
 	world->Polities = {};
@@ -87,6 +118,7 @@ void UWorldCreator::CreateHistoricalWorld(UBurinWorld* world, int32 year) {
 	// Polities carry no "dissolved" marker of their own, so a polity is only loaded if some
 	// existing place is owned by it this year, rather than checking the polity's own history.
 	TSet<int32> ownerPolityIndices;
+	TArray<FLivePlace> livePlaces;
 
 	for (int32 i = 0; i < world->HistoricalPlaces->HistoricalPlaceData.Num(); i++) {
 		const FPlaceDataEntry& entry = world->HistoricalPlaces->HistoricalPlaceData[i];
@@ -97,20 +129,46 @@ void UWorldCreator::CreateHistoricalWorld(UBurinWorld* world, int32 year) {
 		// ExistsInYear() guarantees this is non-null and its Owner isn't "ruined".
 		const FPlaceHistoryItemEntry* current = entry.GetHistoryItemForYear(year);
 
-		if (current->Owner.Equals(TEXT("null"), ESearchCase::IgnoreCase)) {
+		FLivePlace live;
+		live.EntryIndex = i;
+		live.bIndependent = current->Owner.Equals(TEXT("null"), ESearchCase::IgnoreCase);
+		live.OwnerPolityIndex = live.bIndependent ? INDEX_NONE : current->OwnerPolityIndex;
+		livePlaces.Add(live);
+
+		if (live.OwnerPolityIndex != INDEX_NONE) {
+			ownerPolityIndices.Add(live.OwnerPolityIndex);
+		}
+	}
+
+	// Historical polities are appended first, in HistoricalPolityData order, so a polity's slot
+	// in world->Polities depends only on which other historical polities exist this year -- not
+	// on how many independent places happen to precede it in the place list.
+	TArray<int32> historicalToWorldPolity;
+	historicalToWorldPolity.Init(INDEX_NONE, world->HistoricalPolities->HistoricalPolityData.Num());
+
+	for (int32 i = 0; i < world->HistoricalPolities->HistoricalPolityData.Num(); i++) {
+		if (ownerPolityIndices.Contains(i)) {
+			historicalToWorldPolity[i] = CreateHistoricalPolity(world, world->HistoricalPolities->HistoricalPolityData[i]);
+		}
+	}
+
+	for (const FLivePlace& live : livePlaces) {
+		const FPlaceDataEntry& entry = world->HistoricalPlaces->HistoricalPlaceData[live.EntryIndex];
+
+		if (live.bIndependent) {
 			CreateIndependentPlace(world, entry);
 			continue;
 		}
 
-		CreateHistoricalPlace(world, entry, current->OwnerPolityIndex);
-		if (current->OwnerPolityIndex != INDEX_NONE) {
-			ownerPolityIndices.Add(current->OwnerPolityIndex);
-		}
+		// An owner id that didn't match any known polity leaves the place with no controller;
+		// FPlaces::InitializeHistoricalPlaces already warned about it when the data was loaded.
+		const int32 controllerIndex = (live.OwnerPolityIndex != INDEX_NONE)
+			? historicalToWorldPolity[live.OwnerPolityIndex]
+			: INDEX_NONE;
+
+		CreateHistoricalPlace(world, entry, controllerIndex);
 	}
 
-	for (int32 i = 0; i < world->HistoricalPolities->HistoricalPolityData.Num(); i++) {
-		if (ownerPolityIndices.Contains(i)) {
-			CreateHistoricalPolity(world, world->HistoricalPolities->HistoricalPolityData[i]);
-		}
-	}
+	// Every place for the year exists now, so the domains can be grown against each other.
+	world->BuildPlaceDomains();
 }

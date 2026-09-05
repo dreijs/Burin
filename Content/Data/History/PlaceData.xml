@@ -5942,14 +5942,15 @@
 		<longitude>33.8549</longitude>
 		<history>
 			<item>
+				<year>-450</year>
+				<owner>null</owner>
+				<template>town</template>
+			</item>
+			<item>
 				<year>-350</year>
 				<owner>null</owner>
 				<template>small town</template>
 				<template>small port</template>
-			</item>
-			<item>
-				<year>-450</year>
-				<template>town</template>
 			</item>
 			<item>
 				<year>-106</year>

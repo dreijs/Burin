@@ -5,6 +5,7 @@ distortFactor: 0.025
 maxDouglasPeuckerDist: 10.0
 maxDouglasPeuckerSize: 5.0
 maxRiverDPDist: 100000.0
+targetTrianglesPerGridCell: 12
 w: 8
 h: 4
 level: 2

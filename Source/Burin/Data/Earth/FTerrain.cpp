@@ -295,6 +295,12 @@ TArray<uint8> FTerrain::GetColor(int32 terrainCode, int32 mode) {
 		return SoilData[soil].Color;
 	}
 	if (mode == 5) {
+		// Water first, as modes 3 and 4 do. Without this, water is coloured by its feature digit --
+		// OCEAN, SEA, INNER_SEA and LAKE are features like any other -- so an enclosed sea reads as a
+		// different colour from the open ocean beside it, and any land mistakenly carrying a water
+		// feature reads as sea. That is how a stray ocean seed in the Black Sea stayed invisible in
+		// every other mode while painting a four-degree blob across the Caucasus in this one.
+		if (elevation == 0) return ElevationData[0].Color;
 		return FeatureData[feature].Color;
 	}
 	if (mode == 7) {
