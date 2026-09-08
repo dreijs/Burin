@@ -9,4 +9,4 @@ targetTrianglesPerGridCell: 12
 w: 1
 h: 1
 level: 1
-trace: NONE
+trace: VISUAL_REGIONS

@@ -58,7 +58,7 @@ UGlobeMarkerLayer::UGlobeMarkerLayer(const FObjectInitializer& objectInitializer
 {
 	// Indexed by zoom level; value is the highest importance still displayed at that zoom.
 	// -1 and 0 blank zoom levels entirely, since importance values start at 1.
-	MaxImportanceByZoomLevel = { 0, 1, 2, 3, 4, 5 };
+	MaxImportanceByZoomLevel = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 }
 
 void UGlobeMarkerLayer::SetZoomLevel(int32 zoomLevel)
@@ -78,9 +78,52 @@ int32 UGlobeMarkerLayer::GetMaxImportanceForZoomLevel(int32 zoomLevel) const
 	return MaxImportanceByZoomLevel[index];
 }
 
-void UGlobeMarkerLayer::InitializeLayer(AActor* globeActor, UBurinWorld* world, EGlobeLabelSource source)
+void UGlobeMarkerLayer::SetProjectionMode(EGlobeMarkerProjection projection)
+{
+	ProjectionMode = projection;
+}
+
+void UGlobeMarkerLayer::SetMapView(double centreLatitude, double centreLongitude, FVector mapOrigin, FVector eastPerDegree, FVector northPerDegree)
+{
+	MapCentreLatitude = centreLatitude;
+	MapCentreLongitude = centreLongitude;
+	MapOrigin = mapOrigin;
+	MapEastPerDegree = eastPerDegree;
+	MapNorthPerDegree = northPerDegree;
+}
+
+bool UGlobeMarkerLayer::GetMarkerWorldPosition(const FLiveMarker& marker, const FTransform& globeTransform, double radius,
+	const FVector& toCamera, double horizonCos, FVector& outWorldPosition) const
+{
+	if (ProjectionMode == EGlobeMarkerProjection::FlatMap)
+	{
+		// Wrapped, so a view sitting on the antimeridian keeps the markers just across it beside
+		// itself instead of a whole map away. FRotator::NormalizeAxis does exactly this.
+		const double deltaLongitude = FRotator::NormalizeAxis(marker.Longitude - MapCentreLongitude);
+		const double deltaLatitude = marker.Latitude - MapCentreLatitude;
+
+		outWorldPosition = MapOrigin + MapEastPerDegree * deltaLongitude + MapNorthPerDegree * deltaLatitude;
+		return true;	// a flat map has no far side; the off-screen test does the rest
+	}
+
+	const FVector worldDirection = globeTransform.TransformVectorNoScale(marker.LocalDirection);
+	if (FVector::DotProduct(worldDirection, toCamera) <= horizonCos)
+	{
+		return false;	// behind the globe
+	}
+
+	outWorldPosition = globeTransform.GetLocation() + worldDirection * radius;
+	return true;
+}
+
+void UGlobeMarkerLayer::SetGlobeActor(AActor* globeActor)
 {
 	GlobeActor = globeActor;
+}
+
+void UGlobeMarkerLayer::InitializeLayer(UBurinWorld* world, EGlobeLabelSource source)
+{
+	LayerSource = source;
 
 	if (world == nullptr)
 	{
@@ -110,6 +153,9 @@ void UGlobeMarkerLayer::InitializeLayer(AActor* globeActor, UBurinWorld* world, 
 			seed.Longitude = label.Longitude;
 			seed.Importance = label.Importance;
 			seed.Color = (label.Color.Num() >= 3) ? LabelColorToLinear(label.Color) : DefaultLabelColor;
+
+			// A geographic feature has no owner, so its dot carries its own label colour.
+			seed.MarkerColor = seed.Color;
 			seeds.Add(MoveTemp(seed));
 		}
 		break;
@@ -130,6 +176,14 @@ void UGlobeMarkerLayer::InitializeLayer(AActor* globeActor, UBurinWorld* world, 
 			seed.Longitude = place.Longitude;
 			seed.Importance = PlaceImportance;	// places carry no importance of their own yet
 			seed.Color = DefaultLabelColor;
+
+			// Whoever holds the place as of the world's current year. ControllerIndex is already
+			// interned against UBurinWorld::Polities by the place loader, so this is a lookup rather
+			// than a search -- and it is INDEX_NONE for a place whose owner did not resolve to a
+			// known polity, which keeps its dot white rather than black.
+			seed.MarkerColor = world->Polities.IsValidIndex(place.ControllerIndex)
+				? FLinearColor(world->Polities[place.ControllerIndex].MapColor2)
+				: FLinearColor::White;
 			seeds.Add(MoveTemp(seed));
 		}
 		break;
@@ -183,9 +237,11 @@ void UGlobeMarkerLayer::BuildMarkers(const TArray<FMarkerSeed>& labels)
 		marker.TextColor = label.Color;
 		marker.Importance = label.Importance;
 		marker.LocalDirection = UGeoCoordinateLibrary::LatLonToUnitVector(label.Latitude, label.Longitude, LongitudeOffsetDeg, bFlipLongitude, bFlipLatitude);
+		marker.Latitude = label.Latitude;
+		marker.Longitude = label.Longitude;
 		marker.Widget = widget;
 
-		widget->OnMarkerInitialized(label.Name, marker.TextColor, label.Importance);
+		widget->OnMarkerInitialized(label.Name, marker.TextColor, label.MarkerColor, label.Importance, LayerSource);
 		widget->SetVisibility(ESlateVisibility::Collapsed);
 
 		marker.Slot = MarkerCanvas->AddChildToCanvas(widget);
@@ -201,23 +257,11 @@ void UGlobeMarkerLayer::BuildMarkers(const TArray<FMarkerSeed>& labels)
 		Markers.Add(MoveTemp(marker));
 	}
 
+	// Nothing here checks for a globe actor any more. InitializeLayer() is not given one -- the
+	// sphere hands it over separately, and quite legitimately later than this -- so a complaint
+	// raised here would fire on every correctly built layer. NativeTick() reports it instead, where
+	// the answer is the one that matters: whether there was an actor at the moment it was needed.
 	const double radius = GetEffectiveRadius();
-	if (!GlobeActor.IsValid())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("UGlobeMarkerLayer: no globe actor was passed to InitializeLayer. No markers will be drawn."));
-	}
-	else if (radius <= 0.0)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("UGlobeMarkerLayer: globe actor '%s' has no renderable component with usable bounds. Set GlobeRadiusOverride. No markers will be drawn."), *GlobeActor->GetName());
-
-		for (const UActorComponent* component : GlobeActor->GetComponents())
-		{
-			if (component != nullptr)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("UGlobeMarkerLayer:   '%s' is a %s"), *component->GetName(), *component->GetClass()->GetName());
-			}
-		}
-	}
 
 	UE_LOG(LogTemp, Log, TEXT("[%s] UGlobeMarkerLayer: built %d markers, globe radius %.1f uu."), *GetName(), Markers.Num(), radius);
 
@@ -298,15 +342,50 @@ void UGlobeMarkerLayer::NativeTick(const FGeometry& myGeometry, float deltaTime)
 	Super::NativeTick(myGeometry, deltaTime);
 
 	APlayerController* playerController = GetOwningPlayer();
-	const AActor* globe = GlobeActor.Get();
-	if (playerController == nullptr || globe == nullptr || Markers.Num() == 0)
+	if (playerController == nullptr || Markers.Num() == 0)
 	{
 		return;
 	}
 
-	const double radius = GetEffectiveRadius();
-	if (radius <= 0.0)
+	// The globe actor and its radius belong to the Globe projection. The flat map has neither, and
+	// requiring them there would make a map layer that silently never ticks.
+	const bool bOnGlobe = (ProjectionMode == EGlobeMarkerProjection::Globe);
+
+	// SetMapView() not called, or called with nothing in it. Worth saying, because the symptom is
+	// every marker stacked on the origin rather than an empty screen -- which reads as a placement
+	// bug rather than as a step that was never wired up.
+	if (!bOnGlobe && MapEastPerDegree.IsNearlyZero() && MapNorthPerDegree.IsNearlyZero())
 	{
+		if (LastTally.Shown != 0)
+		{
+			LastTally = FTickTally();
+			LastTally.Shown = 0;
+			UE_LOG(LogTemp, Warning, TEXT("[%s] UGlobeMarkerLayer: ticking in FlatMap mode with no map view. Call SetMapView() from whatever positions the tiles, every frame the view moves."), *GetName());
+		}
+		return;
+	}
+
+	const AActor* globe = GlobeActor.Get();
+	if (bOnGlobe && globe == nullptr)
+	{
+		if (LastTally.Shown != 0)
+		{
+			LastTally = FTickTally();
+			LastTally.Shown = 0;
+			UE_LOG(LogTemp, Warning, TEXT("[%s] UGlobeMarkerLayer: ticking in Globe mode with no globe actor, so nothing is drawn. Call SetGlobeActor() before the first tick, or SetProjectionMode(FlatMap)."), *GetName());
+		}
+		return;
+	}
+
+	const double radius = bOnGlobe ? GetEffectiveRadius() : 0.0;
+	if (bOnGlobe && radius <= 0.0)
+	{
+		if (LastTally.Shown != 0)
+		{
+			LastTally = FTickTally();
+			LastTally.Shown = 0;
+			UE_LOG(LogTemp, Warning, TEXT("[%s] UGlobeMarkerLayer: globe actor '%s' gives a radius of 0, so nothing is drawn. Set GlobeRadiusOverride."), *GetName(), *globe->GetName());
+		}
 		return;
 	}
 
@@ -314,16 +393,23 @@ void UGlobeMarkerLayer::NativeTick(const FGeometry& myGeometry, float deltaTime)
 	FRotator cameraRotation;
 	playerController->GetPlayerViewPoint(cameraLocation, cameraRotation);
 
-	const FTransform globeTransform = globe->GetActorTransform();
+	const FTransform globeTransform = (globe != nullptr) ? globe->GetActorTransform() : FTransform::Identity;
 	const FVector centre = globeTransform.GetLocation();
 	const double cameraDistance = FVector::Dist(cameraLocation, centre);
 
 	// Cosine of the horizon half-angle: markers whose surface normal falls below this are
 	// on the far side of the globe and must be hidden.
-	const double horizonCos = (cameraDistance > radius) ? (radius / cameraDistance) : -1.0;
+	const double horizonCos = (bOnGlobe && cameraDistance > radius) ? (radius / cameraDistance) : -1.0;
 	const FVector toCamera = (cameraLocation - centre).GetSafeNormal();
 
 	const int32 maxImportance = GetMaxImportanceForZoomLevel(CurrentZoomLevel);
+
+	FTickTally tally;
+	tally.Shown = 0;
+	tally.GatedByZoom = 0;
+	tally.BehindGlobe = 0;
+	tally.OffScreen = 0;
+	tally.ZoomLevel = CurrentZoomLevel;
 
 	const float viewportScale = UWidgetLayoutLibrary::GetViewportScale(this);
 	FVector2D viewportSize = UWidgetLayoutLibrary::GetViewportSize(this);
@@ -345,22 +431,23 @@ void UGlobeMarkerLayer::NativeTick(const FGeometry& myGeometry, float deltaTime)
 		if (marker.Importance > maxImportance)
 		{
 			marker.Widget->SetVisibility(ESlateVisibility::Collapsed);
+			tally.GatedByZoom++;
 			continue;
 		}
 
-		const FVector worldDirection = globeTransform.TransformVectorNoScale(marker.LocalDirection);
-		if (FVector::DotProduct(worldDirection, toCamera) <= horizonCos)
+		FVector worldPosition;
+		if (!GetMarkerWorldPosition(marker, globeTransform, radius, toCamera, horizonCos, worldPosition))
 		{
 			marker.Widget->SetVisibility(ESlateVisibility::Collapsed);
+			tally.BehindGlobe++;
 			continue;	// behind the globe
 		}
-
-		const FVector worldPosition = centre + worldDirection * radius;
 
 		FVector2D screenPosition;
 		if (!UWidgetLayoutLibrary::ProjectWorldLocationToWidgetPosition(playerController, worldPosition, screenPosition, false))
 		{
 			marker.Widget->SetVisibility(ESlateVisibility::Collapsed);
+			tally.OffScreen++;
 			continue;	// behind the camera plane
 		}
 
@@ -368,6 +455,7 @@ void UGlobeMarkerLayer::NativeTick(const FGeometry& myGeometry, float deltaTime)
 			|| screenPosition.X > viewportSize.X + OffScreenMargin || screenPosition.Y > viewportSize.Y + OffScreenMargin)
 		{
 			marker.Widget->SetVisibility(ESlateVisibility::Collapsed);
+			tally.OffScreen++;
 			continue;	// off screen
 		}
 
@@ -377,6 +465,15 @@ void UGlobeMarkerLayer::NativeTick(const FGeometry& myGeometry, float deltaTime)
 
 		marker.Widget->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 		marker.Widget->SetRenderTranslation(screenPosition);
+		tally.Shown++;
+	}
+
+	if (tally != LastTally)
+	{
+		LastTally = tally;
+		UE_LOG(LogTemp, Log, TEXT("[%s] UGlobeMarkerLayer: %d of %d shown at zoom level %d (importance ceiling %d); %d gated by zoom, %d behind the globe, %d off screen."),
+			*GetName(), tally.Shown, Markers.Num(), CurrentZoomLevel, maxImportance,
+			tally.GatedByZoom, tally.BehindGlobe, tally.OffScreen);
 	}
 
 	ApplyDeclutter();

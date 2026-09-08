@@ -65,6 +65,13 @@ static int32 floorMod(int32 A, int32 B) {
     return ((A % B) + B) % B;
 }
 
+// Water is elevation index 0, which is the low nibble of the packed terrain code; see
+// FTerrain::GetTerrain() for the rest of the packing. Kept up here with the other one-liners
+// because the vertex blending below needs it hundreds of lines before its old home.
+static bool isWaterTerrain(int32 terrainData) {
+    return terrainData % 16 == 0;
+}
+
 // ---- global triangle ids ----
 //
 // Tile (tileX, tileY) owns the block of ids starting at TriangleBases[level][tileX * h + tileY].
@@ -152,6 +159,203 @@ int32 FMapLowZoom::NumGlobalTriangles(int32 zoomCategory) {
     return TriangleBases[zoomCategory].Num() >= 1 ? TriangleBases[zoomCategory].Last() : 0;
 }
 
+void FMapLowZoom::EnsureCoverageGrid(int32 renderTargetWidth, int32 renderTargetHeight) {
+    int32 finest = INDEX_NONE;
+    for (int32 level = 0; level < TriangleData.Num(); level++) {
+        if (HasZoomLevelData(level)) finest = level;
+    }
+    if (finest == INDEX_NONE) {
+        return;
+    }
+
+    const int32 w = TriangleData[finest].Num();
+    const int32 h = TriangleData[finest][0].Num();
+
+    if (CoverageWidth == w && CoverageHeight == h && Coverage.Num() == w * h
+        && CoverageTargetWidth == renderTargetWidth && CoverageTargetHeight == renderTargetHeight) {
+        return;
+    }
+
+    CoverageWidth = w;
+    CoverageHeight = h;
+    CoverageTargetWidth = renderTargetWidth;
+    CoverageTargetHeight = renderTargetHeight;
+    Coverage.Init(INDEX_NONE, w * h);
+}
+
+void FMapLowZoom::ResetCoverage() {
+    for (int32& cell : Coverage) {
+        cell = INDEX_NONE;
+    }
+}
+
+FMapDrawCall FMapLowZoom::MakeDrawCall(int32 zoomCategory, int32 tileX, int32 tileY, int32 renderTargetWidth, int32 renderTargetHeight) const {
+    const int32 w = TriangleData[zoomCategory].Num();
+    const int32 h = TriangleData[zoomCategory][0].Num();
+
+    FMapDrawCall call;
+    call.ZoomCategory = zoomCategory;
+    call.TileX = tileX;
+    call.TileY = tileY;
+
+    // Both edges of the rectangle, then the size as their difference. Rounding a width per tile
+    // instead would let a tile boundary fall a pixel short of its neighbour's, and a seam of stale
+    // pixels between two tiles is exactly the kind of thing that reads as a rendering artefact.
+    const int32 x0 = tileX * renderTargetWidth / w;
+    const int32 x1 = (tileX + 1) * renderTargetWidth / w;
+    const int32 y0 = tileY * renderTargetHeight / h;
+    const int32 y1 = (tileY + 1) * renderTargetHeight / h;
+
+    call.OffsetX = x0;
+    call.OffsetY = y0;
+    call.Width = x1 - x0;
+    call.Height = y1 - y0;
+
+    // The fractions GetTerrainTriangles() takes. Feeding these back with this category makes its own tile
+    // arithmetic land on this same tile, which is the property that keeps the box and the
+    // rectangle describing the same ground.
+    call.MinFracX = static_cast<double>(tileX) / w;
+    call.MaxFracX = static_cast<double>(tileX + 1) / w;
+    call.MinFracY = static_cast<double>(tileY) / h;
+    call.MaxFracY = static_cast<double>(tileY + 1) / h;
+
+    return call;
+}
+
+void FMapLowZoom::EnsureTileCovered(int32 zoomCategory, int32 tileX, int32 tileY, int32 renderTargetWidth, int32 renderTargetHeight, TArray<FMapDrawCall>& outCalls, int32 depth) {
+    if (!HasTileData(zoomCategory, tileX, tileY) || Coverage.Num() == 0 || depth > 8) {
+        return;
+    }
+
+    const int32 w = TriangleData[zoomCategory].Num();
+    const int32 h = TriangleData[zoomCategory][0].Num();
+
+    // The patch of the record this tile owns.
+    const int32 cx0 = tileX * CoverageWidth / w;
+    const int32 cx1 = (tileX + 1) * CoverageWidth / w;
+    const int32 cy0 = tileY * CoverageHeight / h;
+    const int32 cy1 = (tileY + 1) * CoverageHeight / h;
+
+    int32 finestPresent = INDEX_NONE;
+    bool bAllAtThisCategory = true;
+    for (int32 cx = cx0; cx < cx1; cx++) {
+        for (int32 cy = cy0; cy < cy1; cy++) {
+            const int32 painted = Coverage[cx * CoverageHeight + cy];
+            finestPresent = FMath::Max(finestPresent, painted);
+            if (painted != zoomCategory) bAllAtThisCategory = false;
+        }
+    }
+
+    if (bAllAtThisCategory) {
+        return; // already exactly this, nothing to do
+    }
+
+    if (finestPresent > zoomCategory && HasZoomLevelData(finestPresent)) {
+        // Finer paint is already down over part of this ground. Painting the coarse tile would
+        // throw it away, so complete the region at the finer category instead: the tiles of that
+        // category covering this one, each of which decides for itself whether it needs drawing.
+        // Recursion rather than one level, so ground painted two categories finer survives too.
+        const int32 wF = TriangleData[finestPresent].Num();
+        const int32 hF = TriangleData[finestPresent][0].Num();
+
+        const int32 fx0 = tileX * wF / w;
+        const int32 fx1 = FMath::Max((tileX + 1) * wF / w, fx0 + 1);
+        const int32 fy0 = tileY * hF / h;
+        const int32 fy1 = FMath::Max((tileY + 1) * hF / h, fy0 + 1);
+
+        // Completing is only worth it while it stays small. One category step is 2x2 tiles and two
+        // steps 4x4, which are worth drawing to keep detail that is still on screen -- but zooming
+        // all the way out asks a single whole-world tile to be completed, and that is 128 tiles of
+        // level 3 covering a globe where none of the detail is visible anyway. Past this many, take
+        // the coarse repaint and let the fine tiles be redrawn if the camera ever returns.
+        const int32 maxCompletionTiles = 16;
+        if ((fx1 - fx0) * (fy1 - fy0) <= maxCompletionTiles) {
+            for (int32 fx = fx0; fx < fx1; fx++) {
+                for (int32 fy = fy0; fy < fy1; fy++) {
+                    EnsureTileCovered(finestPresent, fx, fy, renderTargetWidth, renderTargetHeight, outCalls, depth + 1);
+                }
+            }
+            return;
+        }
+        // else fall through and repaint coarse, overwriting the finer paint on purpose
+    }
+
+    outCalls.Add(MakeDrawCall(zoomCategory, tileX, tileY, renderTargetWidth, renderTargetHeight));
+
+    for (int32 cx = cx0; cx < cx1; cx++) {
+        for (int32 cy = cy0; cy < cy1; cy++) {
+            Coverage[cx * CoverageHeight + cy] = zoomCategory;
+        }
+    }
+}
+
+FMapDrawCall FMapLowZoom::MakeTileDrawCall(int32 zoomCategory, int32 tileX, int32 tileY, int32 renderTargetWidth, int32 renderTargetHeight) const {
+    if (!HasZoomLevelData(zoomCategory) || renderTargetWidth <= 0 || renderTargetHeight <= 0) {
+        return FMapDrawCall();
+    }
+
+    const int32 w = TriangleData[zoomCategory].Num();
+    const int32 h = TriangleData[zoomCategory][0].Num();
+
+    // A target this size per tile is a target of the whole world, so MakeDrawCall() lays the tile
+    // out on it exactly as it does for the sphere. Only the rectangle then moves: this target holds
+    // the one tile, so it starts at the origin and fills it.
+    FMapDrawCall call = MakeDrawCall(zoomCategory, tileX, tileY, renderTargetWidth * w, renderTargetHeight * h);
+    call.OffsetX = 0;
+    call.OffsetY = 0;
+
+    return call;
+}
+
+TArray<FMapDrawCall> FMapLowZoom::PlanDraws(int32 mapMode, int32 zoomCategory, double y, double x, double yDelta, double xDelta, int32 renderTargetWidth, int32 renderTargetHeight) {
+    TArray<FMapDrawCall> calls;
+    if (!HasZoomLevelData(zoomCategory) || renderTargetWidth <= 0 || renderTargetHeight <= 0) {
+        return calls;
+    }
+
+    EnsureCoverageGrid(renderTargetWidth, renderTargetHeight);
+    if (Coverage.Num() == 0) {
+        return calls;
+    }
+
+    // A different map mode repaints the same ground in different colours, so nothing already on the
+    // target counts any more. Noticed here rather than left to the caller: the record knows which
+    // mode it describes, and the caller forgetting to say so is invisible -- every tile reads as
+    // already painted and the map simply keeps showing the mode before last.
+    if (mapMode != CoverageMapMode) {
+        UE_LOG(LogTemp, Log, TEXT("PlanDraws: map mode %d -> %d, discarding coverage"), CoverageMapMode, mapMode);
+        ResetCoverage();
+        CoverageMapMode = mapMode;
+    }
+
+    const TArray<int32> range = GetSubregionIndices(zoomCategory, y, x, yDelta, xDelta);
+    if (range.Num() != 4) {
+        return calls;
+    }
+
+    const int32 w = TriangleData[zoomCategory].Num();
+    const int32 h = TriangleData[zoomCategory][0].Num();
+
+    // GetSubregionIndices leaves x unwrapped so a view across the antimeridian stays one range;
+    // wrap each index here and stop after a full turn, so a view wider than the globe cannot ask
+    // for the same tile twice.
+    const int32 lastX = FMath::Min(range[2], range[0] + w - 1);
+    const int32 firstY = FMath::Clamp(range[1], 0, h - 1);
+    const int32 lastY = FMath::Clamp(range[3], 0, h - 1);
+
+    for (int32 rawX = range[0]; rawX <= lastX; rawX++) {
+        const int32 tileX = floorMod(rawX, w);
+        for (int32 tileY = firstY; tileY <= lastY; tileY++) {
+            EnsureTileCovered(zoomCategory, tileX, tileY, renderTargetWidth, renderTargetHeight, calls, 0);
+        }
+    }
+
+    //UE_LOG(LogTemp, Log, TEXT("PlanDraws: level %d, tiles x %d..%d y %d..%d of %dx%d, target %dx%d -> %d draw call(s)"),
+        //zoomCategory, range[0], lastX, firstY, lastY, w, h, renderTargetWidth, renderTargetHeight, calls.Num());
+
+    return calls;
+}
+
 TArray<int32> FMapLowZoom::GetSubregionIndices(int32 zoomCategory, double y, double x, double yDelta, double xDelta) {
     if (!HasZoomLevelData(zoomCategory)) {
         return {};
@@ -159,6 +363,25 @@ TArray<int32> FMapLowZoom::GetSubregionIndices(int32 zoomCategory, double y, dou
 
     const int32 n = TriangleData[zoomCategory].Num();
     const int32 m = TriangleData[zoomCategory][0].Num();
+
+    // A view that is not a finite number is not a view, and one such value poisons everything it
+    // touches from then on: NaN compares false against every bound, so it survives clamping, and a
+    // camera that stores it never recovers by moving. The usual source is a projection that
+    // diverges at the pole -- a Mercator factor is ln(tan(45 + lat/2)), which is infinite at lat 90
+    // -- so it is exactly a scroll to the top of the map that produces one. Refuse it loudly here,
+    // where the value is still identifiable, rather than let it come back as a stuck tile range.
+    if (!FMath::IsFinite(y) || !FMath::IsFinite(x) || !FMath::IsFinite(yDelta) || !FMath::IsFinite(xDelta)) {
+        UE_LOG(LogTemp, Error, TEXT("GetSubregionIndices: view is not finite (y %f, x %f, yDelta %f, xDelta %f). ")
+                                    TEXT("Something upstream divided by cos(latitude) or took tan at the pole; the caller keeps this value until it is overwritten."),
+            y, x, yDelta, xDelta);
+        return {};
+    }
+
+    // Half a turn is the whole map either way, so anything larger is a view that has run away
+    // rather than one that is genuinely wide.
+    yDelta = FMath::Clamp(yDelta, 0.0, 90.0);
+    xDelta = FMath::Clamp(xDelta, 0.0, 180.0);
+    y = FMath::Clamp(y, -90.0, 90.0);
 
     // Mesh space, the same as every other coordinate function here: x is longitude, y is negated
     // latitude, and a tile row is (y + 90) / 180 * m.
@@ -169,12 +392,22 @@ TArray<int32> FMapLowZoom::GetSubregionIndices(int32 zoomCategory, double y, dou
     // 4 and 8 rows.
     //
     // X is deliberately left unwrapped: a view straddling the antimeridian returns indices outside
-    // [0, n) and the caller wraps them, the way GetTriangles() does with floorMod().
+    // [0, n) and the caller wraps them, the way GetTerrainTriangles() does with floorMod().
     const int32 minX = FMath::FloorToInt32((x - xDelta + 180) / 360 * n);
     const int32 maxX = FMath::FloorToInt32((x + xDelta + 180) / 360 * n);
 
     const int32 minY = FMath::Clamp(FMath::FloorToInt32((y - yDelta + 90) / 180 * m), 0, m - 1);
     const int32 maxY = FMath::Clamp(FMath::FloorToInt32((y + yDelta + 90) / 180 * m), 0, m - 1);
+
+    if (minX != LastSubregionRange[0] || minY != LastSubregionRange[1]
+        || maxX != LastSubregionRange[2] || maxY != LastSubregionRange[3]) {
+        UE_LOG(LogTemp, Log, TEXT("GetSubregionIndices: level %d (%dx%d), view y %.3f x %.3f +- %.3f/%.3f -> tiles x %d..%d y %d..%d"),
+            zoomCategory, n, m, y, x, yDelta, xDelta, minX, maxX, minY, maxY);
+        LastSubregionRange[0] = minX;
+        LastSubregionRange[1] = minY;
+        LastSubregionRange[2] = maxX;
+        LastSubregionRange[3] = maxY;
+    }
 
     return { minX, minY, maxX, maxY };
 }
@@ -186,6 +419,376 @@ int32 FMapLowZoom::GetNumSubregions(int32 zoomCategory, bool isX) {
 
     if (isX) return TriangleData[zoomCategory].Num();
     return TriangleData[zoomCategory][0].Num();
+}
+
+// How far a blended colour is allowed to travel along one triangle, in mesh degrees.
+//
+// Blending softens a boundary by spreading colour across the triangles that touch it, which only
+// means anything while the distance it travels is short. The ear clipper does not guarantee that:
+// the worst triangle at level 1 spans 360 degrees of longitude at y 89.83 -- one wrapping the whole
+// globe, half a degree tall -- and half a dozen more exceed 180. Interpolating across those does
+// not soften a boundary, it paints a gradient across a hemisphere, and on the sphere they all
+// converge at the pole and read as a radial fan.
+//
+// Measured on the longest EDGE rather than the bounding box, which is the distance the colour
+// actually travels. The two disagree in exactly the case that matters: a compact triangle 20
+// degrees across is fine to blend, while a sliver 360 degrees long and half a degree tall is not,
+// and a bounding-box rule cannot tell them apart -- it rejects both. At level 1 that difference is
+// 227 polar triangles drawn flat rather than 1,177, five times fewer, with every fan-causing sliver
+// still caught: their longest edge is their full width, far past any threshold worth setting.
+static constexpr double MaxBlendEdgeDegrees = 30.0;
+
+static double segmentLengthDegrees(double ax, double ay, double bx, double by) {
+    return FMath::Sqrt((ax - bx) * (ax - bx) + (ay - by) * (ay - by));
+}
+
+// The longest of a triangle's three edges, in mesh degrees. Deliberately not wrapped at the
+// antimeridian: an unwrapped length is the distance the colour covers in the render target, and
+// covering the target from edge to edge is precisely what disqualifies it.
+static double triangleLongestEdgeDegrees(const FPointDataEntry& a, const FPointDataEntry& b, const FPointDataEntry& c) {
+    return FMath::Max3(segmentLengthDegrees(a.X, a.Y, b.X, b.Y),
+                       segmentLengthDegrees(b.X, b.Y, c.X, c.Y),
+                       segmentLengthDegrees(c.X, c.Y, a.X, a.Y));
+}
+
+// Smoothing weight by latitude.
+//
+// The equirectangular mesh degenerates towards the poles: meridians converge, so the polygons there
+// are slivers and the vertex graph stops corresponding to what is near what on the ground. Colour
+// smoothed through it travels along the mesh rather than across the landscape, which is what the
+// radial streaks over Antarctica are. Below 60 degrees the mesh is well enough shaped to trust;
+// past 80 it is not trusted at all, and between the two the weight tapers so there is no visible
+// line where the behaviour changes.
+static double smoothingWeightAt(double meshY) {
+    const double latitude = FMath::Abs(meshY);
+    if (latitude <= 60.0) return 1.0;
+    if (latitude >= 80.0) return 0.0;
+    return 1.0 - (latitude - 60.0) / 20.0;
+}
+
+void FMapLowZoom::SetProbeCoordinate(double latitude, double longitude) {
+    ProbeLatitude = latitude;
+    ProbeLongitude = longitude;
+}
+
+void FMapLowZoom::SetVertexBlendSettings(double blendRadiusDegrees, double hillshadeStrength) {
+    const double clampedRadius = FMath::Clamp(blendRadiusDegrees, 0.0, 10.0);
+    const double clampedStrength = FMath::Clamp(hillshadeStrength, 0.0, 2.0);
+    if (FMath::IsNearlyEqual(clampedRadius, BlendRadiusDegrees) && FMath::IsNearlyEqual(clampedStrength, HillshadeStrength)) {
+        return;
+    }
+    BlendRadiusDegrees = clampedRadius;
+    HillshadeStrength = clampedStrength;
+
+    // Every sampled point is a function of both, so none of them are answers any more.
+    BlendGrids = {};
+}
+
+void FMapLowZoom::EnsureBlendGrid(int32 zoomCategory) {
+    BlendGrids.SetNum(FMath::Max(BlendGrids.Num(), TriangleData.Num()));
+    FBlendGrid& grid = BlendGrids[zoomCategory];
+    if (grid.NumRows > 0) {
+        return;
+    }
+
+    // Finer meshes get a finer grid, down to a floor. The blur is set by BlendRadiusDegrees rather
+    // than by this, so the spacing only decides how much detail survives being resampled, and
+    // sampling far finer than the blur buys nothing at all.
+    //
+    // The floor matters because the point count grows fourfold per level: without it, level 4 wants
+    // 10.5 million points and level 5 wants 42 million, which is over half a gigabyte of colour,
+    // elevation and shade for a field whose smallest real feature is the blend radius. At a tenth of
+    // a degree -- 11 km, several times finer than any useful radius -- the whole grid is 4.1 million
+    // points however deep the camera goes.
+    grid.Spacing = FMath::Max(1.0 / static_cast<double>(1 << FMath::Clamp(zoomCategory, 0, 6)), 0.1);
+
+    grid.NumRows = FMath::Max(3, FMath::RoundToInt32(180.0 / grid.Spacing) + 1);
+    grid.RowStep = 180.0 / static_cast<double>(grid.NumRows - 1);
+
+    grid.ColumnCount.Reset(grid.NumRows);
+    grid.RowStart.Reset(grid.NumRows + 1);
+
+    int32 running = 0;
+    for (int32 j = 0; j < grid.NumRows; j++) {
+        // Mesh y is a negated latitude, and cosine is even, so the sign does not matter here.
+        const double meshY = -90.0 + j * grid.RowStep;
+        const double shrink = FMath::Max(FMath::Cos(FMath::DegreesToRadians(meshY)), 0.02);
+        const int32 columns = FMath::Max(1, FMath::RoundToInt32(360.0 * shrink / grid.Spacing));
+
+        grid.RowStart.Add(running);
+        grid.ColumnCount.Add(columns);
+        running += columns;
+    }
+    grid.RowStart.Add(running);
+
+    grid.Colour.Init(FVector3f::ZeroVector, running);
+    grid.Elevation.Init(0.f, running);
+    grid.Shade.Init(1.f, running);
+    grid.State.Init(0, running);
+
+    UE_LOG(LogTemp, Log, TEXT("EnsureBlendGrid: level %d, spacing %.3f deg, %d rows, %d points"),
+        zoomCategory, grid.Spacing, grid.NumRows, running);
+}
+
+void FMapLowZoom::EnsureBlendGridRegion(FTerrain* terrain, int32 zoomCategory, double minX, double maxX, double minY, double maxY) {
+    if (terrain == nullptr || !HasZoomLevelData(zoomCategory)) {
+        return;
+    }
+    EnsureBlendGrid(zoomCategory);
+    FBlendGrid& grid = BlendGrids[zoomCategory];
+    if (grid.NumRows <= 0) {
+        return;
+    }
+
+    // A point on the edge of the region needs its neighbours to have elevations before its slope
+    // can be worked out, so sample a ring wider than asked for.
+    const double margin = grid.Spacing * 2.0 + BlendRadiusDegrees;
+    const int32 firstRow = FMath::Clamp(FMath::FloorToInt32((minY - margin + 90.0) / grid.RowStep), 0, grid.NumRows - 1);
+    const int32 lastRow = FMath::Clamp(FMath::CeilToInt32((maxY + margin + 90.0) / grid.RowStep), 0, grid.NumRows - 1);
+
+    // Thirteen samples: the point itself, six at the blend radius and six at half of it, offset so
+    // the two rings interleave. Enough to average a neighbourhood rather than pick one triangle out
+    // of it, and few enough that filling a level-3 tile is a hundred thousand lookups.
+    // Every point uses the same thirteen directions, which makes neighbouring points sample almost
+    // the same ground in almost the same arrangement -- their errors line up, and lined-up error is
+    // what a regular pattern is. Each point's rings are turned by an angle derived from its own
+    // index instead, so the errors are independent. Derived rather than random: the same grid point
+    // must sample identically whichever tile asks for it first, or lazily filled regions would
+    // disagree along their join.
+    struct FSampleOffset { double X; double Y; };
+
+    int32 sampled = 0;
+
+    for (int32 j = firstRow; j <= lastRow; j++) {
+        const double meshY = -90.0 + j * grid.RowStep;
+        const int32 columns = grid.ColumnCount[j];
+        const double columnStep = 360.0 / static_cast<double>(columns);
+
+        // The blend radius is a ground distance, so it covers more longitude the closer to a pole.
+        const double shrink = FMath::Max(FMath::Cos(FMath::DegreesToRadians(meshY)), 0.02);
+        const double radiusX = BlendRadiusDegrees / shrink;
+        const double radiusY = BlendRadiusDegrees;
+
+        const int32 firstColumn = FMath::FloorToInt32((minX - margin + 180.0) / columnStep);
+        const int32 lastColumn = FMath::Min(FMath::CeilToInt32((maxX + margin + 180.0) / columnStep), firstColumn + columns - 1);
+
+        for (int32 rawColumn = firstColumn; rawColumn <= lastColumn; rawColumn++) {
+            const int32 i = floorMod(rawColumn, columns);
+            const int32 index = grid.RowStart[j] + i;
+            if (grid.State[index] != 0) {
+                continue; // already sampled, by this tile or a neighbouring one
+            }
+
+            const double meshX = -180.0 + i * columnStep;
+
+            // A turn of the sampling pattern, fixed for this grid point. GetTypeHash over the index
+            // gives a value that is scattered but repeatable.
+            const double turn = 2.0 * PI * static_cast<double>(GetTypeHash(index) & 0xFFFF) / 65536.0;
+
+            // A sunflower spiral rather than two rings: successive samples are a golden angle apart
+            // and their radius grows as the square root of the index, which spreads them evenly over
+            // the disc by area. Two rings put a third of the samples at the centre and left gaps
+            // between the spokes, so each point's average carried more of its own arrangement than
+            // of the ground -- and that error, differing between neighbours, is what was still
+            // reading as a grid after the interpolation was smoothed.
+            constexpr int32 sampleCount = 25;
+            const double goldenAngle = PI * (3.0 - FMath::Sqrt(5.0));
+
+            FSampleOffset offsets[sampleCount];
+            for (int32 k = 0; k < sampleCount; k++) {
+                const double radius = FMath::Sqrt((k + 0.5) / static_cast<double>(sampleCount));
+                const double angle = turn + k * goldenAngle;
+                offsets[k] = { radius * FMath::Cos(angle), radius * FMath::Sin(angle) };
+            }
+
+            FVector3f colourSum = FVector3f::ZeroVector;
+            float elevationSum = 0.f;
+            int32 hits = 0;
+
+            for (const FSampleOffset& offset : offsets) {
+                double sampleX = meshX + offset.X * radiusX;
+                const double sampleY = FMath::Clamp(meshY + offset.Y * radiusY, -90.0, 90.0);
+                if (sampleX > 180.0) sampleX -= 360.0;
+                else if (sampleX < -180.0) sampleX += 360.0;
+
+                int32 sampleTileX = 0, sampleTileY = 0;
+                const int32 local = GetTriangleIDAtCoordinate(zoomCategory, sampleX, sampleY, sampleTileX, sampleTileY);
+                if (local < 0) {
+                    continue;
+                }
+                const FTriangleDataEntry& tri = TriangleData[zoomCategory][sampleTileX][sampleTileY][local];
+                if (isWaterTerrain(tri.TerrainData)) {
+                    continue; // only land is averaged, so a coastline stays a hard line
+                }
+                const TArray<uint8> rgb = terrain->GetColor(tri.TerrainData, 0);
+                if (rgb.Num() < 3) {
+                    continue;
+                }
+                // To linear here, at the one place a palette byte enters the pipeline. Everything
+                // downstream -- this average, the hillshade multiply, the interpolation between grid
+                // points -- is arithmetic on light, and only linear values make that arithmetic mean
+                // what it says.
+                const FLinearColor linear(FColor(rgb[0], rgb[1], rgb[2]));
+                colourSum += FVector3f(linear.R, linear.G, linear.B);
+                elevationSum += static_cast<float>(tri.TerrainData % 16);
+                hits++;
+            }
+
+            if (hits == 0) {
+                grid.State[index] = 2; // all water, or off the mesh
+                continue;
+            }
+
+            const float inverse = 1.f / static_cast<float>(hits);
+            const FVector3f mean = colourSum * inverse;
+            grid.Colour[index] = mean;
+            grid.Elevation[index] = elevationSum * inverse;
+            grid.State[index] = 1;
+            sampled++;
+        }
+    }
+
+    if (sampled == 0) {
+        return;
+    }
+
+    // ---- shading ----
+    //
+    // Mountains read from orbit through light and shadow rather than through colour, and a flat fill
+    // has no way to say that. The elevation averaged above is a height field on a regular grid, so
+    // its slope is an ordinary finite difference between neighbours -- no plane fits, no triangles a
+    // thousandth of a degree wide dividing a rise by nothing.
+    if (HillshadeStrength > 0.0) {
+        const float exaggeration = 0.12f;
+        const float maxSlopeLevelsPerDegree = 12.f;
+        const FVector3f lightDirection = FVector3f(-1.f, -1.f, 1.f).GetSafeNormal();
+        const float flatResponse = lightDirection.Z;
+
+        auto ElevationAt = [&grid](int32 row, double meshX, float fallback) -> float {
+            if (row < 0 || row >= grid.NumRows) return fallback;
+            const int32 columns = grid.ColumnCount[row];
+            const int32 i = floorMod(FMath::RoundToInt32((meshX + 180.0) / (360.0 / columns)), columns);
+            const int32 index = grid.RowStart[row] + i;
+            return (grid.State[index] == 1) ? grid.Elevation[index] : fallback;
+        };
+
+        for (int32 j = firstRow; j <= lastRow; j++) {
+            const double meshY = -90.0 + j * grid.RowStep;
+            const int32 columns = grid.ColumnCount[j];
+            const double columnStep = 360.0 / static_cast<double>(columns);
+            const double shrink = FMath::Max(FMath::Cos(FMath::DegreesToRadians(meshY)), 0.02);
+
+            const int32 firstColumn = FMath::FloorToInt32((minX - margin + 180.0) / columnStep);
+            const int32 lastColumn = FMath::Min(FMath::CeilToInt32((maxX + margin + 180.0) / columnStep), firstColumn + columns - 1);
+
+            for (int32 rawColumn = firstColumn; rawColumn <= lastColumn; rawColumn++) {
+                const int32 i = floorMod(rawColumn, columns);
+                const int32 index = grid.RowStart[j] + i;
+                if (grid.State[index] != 1) {
+                    continue;
+                }
+
+                const double meshX = -180.0 + i * columnStep;
+                const float here = grid.Elevation[index];
+
+                const int32 west = grid.RowStart[j] + floorMod(i - 1, columns);
+                const int32 east = grid.RowStart[j] + floorMod(i + 1, columns);
+                const float westHeight = (grid.State[west] == 1) ? grid.Elevation[west] : here;
+                const float eastHeight = (grid.State[east] == 1) ? grid.Elevation[east] : here;
+
+                const float northHeight = ElevationAt(j - 1, meshX, here);
+                const float southHeight = ElevationAt(j + 1, meshX, here);
+
+                // Per degree of ground, so the shrinking columns near a pole do not read as cliffs.
+                FVector2f gradient(
+                    static_cast<float>((eastHeight - westHeight) / (2.0 * columnStep * shrink)),
+                    static_cast<float>((southHeight - northHeight) / (2.0 * grid.RowStep)));
+
+                const float slope = gradient.Size();
+                if (slope > maxSlopeLevelsPerDegree) {
+                    gradient *= maxSlopeLevelsPerDegree / slope;
+                }
+
+                const FVector3f normal = FVector3f(-gradient.X * exaggeration, -gradient.Y * exaggeration, 1.f).GetSafeNormal();
+                const float response = FVector3f::DotProduct(normal, lightDirection);
+
+                // Relative to level ground, so flat terrain keeps exactly the palette's colour and
+                // only slopes move. Clamped so a cliff cannot drive a colour to black or white.
+                const float relief = (response - flatResponse) / FMath::Max(flatResponse, UE_KINDA_SMALL_NUMBER);
+                grid.Shade[index] = FMath::Clamp(1.f + static_cast<float>(HillshadeStrength) * relief, 0.45f, 1.7f);
+            }
+        }
+    }
+
+    UE_LOG(LogTemp, Verbose, TEXT("EnsureBlendGridRegion: level %d, %d points sampled"), zoomCategory, sampled);
+}
+
+bool FMapLowZoom::SampleBlendGrid(int32 zoomCategory, double x, double y, FLinearColor& outColour, float& outShade) const {
+    if (!BlendGrids.IsValidIndex(zoomCategory)) {
+        return false;
+    }
+    const FBlendGrid& grid = BlendGrids[zoomCategory];
+    if (grid.NumRows <= 0) {
+        return false;
+    }
+
+    // Smoothstep rather than a straight fraction. Linear interpolation is continuous but its slope
+    // is not: the rate of change jumps at every grid line, and a discontinuity in slope along a
+    // regular lattice is exactly what reads as a visible grid. Easing the weights makes the field
+    // smooth across the nodes as well as at them, which removes the creases without blurring
+    // anything -- the values at the nodes are untouched.
+    auto ease = [](float t) { return t * t * (3.f - 2.f * t); };
+
+    const double rowF = FMath::Clamp((y + 90.0) / grid.RowStep, 0.0, static_cast<double>(grid.NumRows - 1));
+    const int32 row0 = FMath::Clamp(FMath::FloorToInt32(rowF), 0, grid.NumRows - 1);
+    const int32 row1 = FMath::Min(row0 + 1, grid.NumRows - 1);
+    const float rowT = ease(static_cast<float>(rowF - row0));
+
+    // Bilinear, but skipping any of the four that found no land -- otherwise a coastal triangle
+    // would be dragged toward a grid point sitting in the sea, which holds no colour at all.
+    FVector3f colourTotal = FVector3f::ZeroVector;
+    float shadeTotal = 0.f;
+    float weightTotal = 0.f;
+
+    const int32 rows[2] = { row0, row1 };
+    const float rowWeights[2] = { 1.f - rowT, rowT };
+
+    for (int32 r = 0; r < 2; r++) {
+        if (rowWeights[r] <= 0.f && r == 1) continue;
+        const int32 j = rows[r];
+        const int32 columns = grid.ColumnCount[j];
+        const double columnStep = 360.0 / static_cast<double>(columns);
+        const double columnF = (x + 180.0) / columnStep;
+        const int32 column0 = FMath::FloorToInt32(columnF);
+        const float columnT = ease(static_cast<float>(columnF - column0));
+
+        const int32 indices[2] = { grid.RowStart[j] + floorMod(column0, columns),
+                                   grid.RowStart[j] + floorMod(column0 + 1, columns) };
+        const float columnWeights[2] = { 1.f - columnT, columnT };
+
+        for (int32 c = 0; c < 2; c++) {
+            const int32 index = indices[c];
+            if (grid.State[index] != 1) {
+                continue;
+            }
+            const float weight = rowWeights[r] * columnWeights[c];
+            if (weight <= 0.f) {
+                continue;
+            }
+            colourTotal += grid.Colour[index] * weight;
+            shadeTotal += grid.Shade[index] * weight;
+            weightTotal += weight;
+        }
+    }
+
+    if (weightTotal <= UE_SMALL_NUMBER) {
+        return false;
+    }
+
+    const FVector3f mean = colourTotal / weightTotal;
+    outColour = FLinearColor(mean.X, mean.Y, mean.Z, 1.f);
+    outShade = shadeTotal / weightTotal;
+    return true;
 }
 
 FPointDataEntry FMapLowZoom::GetFirstPoint(bool b, int32 edge, int32 zoomCategory, int32 tileX, int32 tileY) {
@@ -313,9 +916,6 @@ static bool segmentsLieAlong(const FPointDataEntry& a, const FPointDataEntry& b,
         || distancePointToSegment(cdx, cdy, a.X, a.Y, b.X, b.Y) < toleranceDegrees;
 }
 
-static bool isWaterTerrain(int32 terrainData) {
-    return terrainData % 16 == 0;
-}
 
 // A mesh-degree point expressed in kilometres relative to an origin. The origin's y is a negated
 // latitude, but cosine is even, so cos(y) is the right longitude foreshortening either way.
@@ -575,19 +1175,44 @@ static FCanvasUVTri convertToTri(const FLinearColor& color,
     return makeTri(color, P0, UV0, P1, UV1, P2, UV2);
 }
 
+// The same, with a colour per corner rather than one for the triangle. FCanvasUVTri has carried
+// three vertex colours all along and makeTri() was writing the same one into all three; the canvas
+// interpolates between them, so this costs nothing extra to draw.
+// Takes linear colours, because its callers have them. It used to take FColor, which meant the
+// blended path packed a linear value into bytes with ToFColor(false) and this unpacked it with
+// FLinearColor(FColor) -- a constructor that applies the sRGB curve. A value that had never been
+// sRGB was being decoded as though it had, on top of losing eight bits to the round trip.
+static FCanvasUVTri convertToTri(const FLinearColor& c1, const FLinearColor& c2, const FLinearColor& c3,
+    double x1, double y1, double x2, double y2, double x3, double y3, double minX, double maxX, double minY, double maxY, int32 offsetX, int32 offsetY, double width, double height) {
+    const FVector2D P0 = toScreen(x1, y1, minX, maxX, minY, maxY, offsetX, offsetY, width, height);
+    const FVector2D P1 = toScreen(x2, y2, minX, maxX, minY, maxY, offsetX, offsetY, width, height);
+    const FVector2D P2 = toScreen(x3, y3, minX, maxX, minY, maxY, offsetX, offsetY, width, height);
+
+    const double ss = 0.0075;
+
+    FCanvasUVTri tri;
+    tri.V0_Pos = P0; tri.V0_UV = FVector2D(ss * 20, ss * 20);   tri.V0_Color = c1;
+    tri.V1_Pos = P1; tri.V1_UV = FVector2D(ss * 22.5, ss * 20); tri.V1_Color = c2;
+    tri.V2_Pos = P2; tri.V2_UV = FVector2D(ss * 25, ss * 25);   tri.V2_Color = c3;
+    return tri;
+}
+
 // FTerrain::GetColor() hands back a loose rgb array, which is empty for a terrain code it has no
 // entry for; treat that as black rather than reading off the end of it.
 static FCanvasUVTri convertToTri(const TArray<uint8>& rgb,
     double x1, double y1, double x2, double y2, double x3, double y3, double minX, double maxX, double minY, double maxY, int32 offsetX, int32 offsetY, double width, double height) {
+    // FLinearColor(FColor) applies the sRGB curve; dividing by 255 does not. The XML's bytes are
+    // sRGB -- they are colours chosen by eye to look like themselves -- and the canvas writes into a
+    // linear float target, so treating 128 as half the light of 255 puts it on screen at 188.
     const FLinearColor color = (rgb.Num() >= 3)
-        ? FLinearColor(rgb[0] / 255.f, rgb[1] / 255.f, rgb[2] / 255.f, 1.f)
+        ? FLinearColor(FColor(rgb[0], rgb[1], rgb[2]))
         : FLinearColor(0.f, 0.f, 0.f, 1.f);
     return convertToTri(color, x1, y1, x2, y2, x3, y3, minX, maxX, minY, maxY, offsetX, offsetY, width, height);
 }
 
 static FCanvasUVTri convertToTri(const FColor& rgb,
     double x1, double y1, double x2, double y2, double x3, double y3, double minX, double maxX, double minY, double maxY, int32 offsetX, int32 offsetY, double width, double height) {
-    const FLinearColor color(rgb.R / 255.f, rgb.G / 255.f, rgb.B / 255.f, 1.f);
+    const FLinearColor color(rgb);   // sRGB bytes to linear, as above
     return convertToTri(color, x1, y1, x2, y2, x3, y3, minX, maxX, minY, maxY, offsetX, offsetY, width, height);
 }
 
@@ -622,7 +1247,7 @@ static FCanvasUVTri convertToDomainTri(const FColor& rgb,
     };
     Grow(P0); Grow(P1); Grow(P2);
 
-    const FLinearColor color(rgb.R / 255.f, rgb.G / 255.f, rgb.B / 255.f, 1.f);
+    const FLinearColor color(rgb);   // sRGB bytes to linear, as everywhere a palette colour enters
     const FVector2D UV(0.0075 * 20, 0.0075 * 20);
     return makeTri(color, P0, UV, P1, UV, P2, UV);
 }
@@ -735,6 +1360,11 @@ void FMapLowZoom::Initialize() {
     DomainData = {};
     DomainsBuilt = {};
     TriangleBases = {};
+    BlendGrids = {};
+    Coverage = {};
+    CoverageWidth = 0;
+    CoverageHeight = 0;
+    CoverageMapMode = INDEX_NONE;
 
     // zoom levels
     int32 maxLevel = getMaxZoomLevel(FPaths::ProjectContentDir() + TEXT("Data/Earth/Polygons/*"));
@@ -803,9 +1433,59 @@ void FMapLowZoom::Initialize() {
     });
 }
 
-TArray<FCanvasUVTri> FMapLowZoom::GetTriangles(FTerrain* terrain, int32 mode, int32 zoomCategory, double minFracY, double minFracX, double maxFracY, double maxFracX, int32 offsetX, int32 offsetY, int32 width, int32 height) {
+void FMapLowZoom::AddBlendedLandTriangle(TArray<FCanvasUVTri>& result, int32 zoomCategory,
+    const FVector2D& a, const FVector2D& b, const FVector2D& c,
+    const FLinearColor& ownColour, double maxEdgeDegrees, int32 depth,
+    double minX, double maxX, double minY, double maxY,
+    int32 offsetX, int32 offsetY, double width, double height,
+    int32& outFlat, int32& outBlended) {
+
+    // Four pieces per split, so three levels is at most sixty-four of them. Past that a triangle is
+    // one of the mesh's globe-spanning slivers, and no amount of cutting makes it a good witness to
+    // anything.
+    constexpr int32 maxDepth = 3;
+
+    if (depth < maxDepth && maxEdgeDegrees > 0.0) {
+        const double longest = FMath::Max3(FVector2D::Distance(a, b),
+                                           FVector2D::Distance(b, c),
+                                           FVector2D::Distance(c, a));
+        if (longest > maxEdgeDegrees) {
+            const FVector2D ab = (a + b) * 0.5;
+            const FVector2D bc = (b + c) * 0.5;
+            const FVector2D ca = (c + a) * 0.5;
+            AddBlendedLandTriangle(result, zoomCategory, a, ab, ca, ownColour, maxEdgeDegrees, depth + 1, minX, maxX, minY, maxY, offsetX, offsetY, width, height, outFlat, outBlended);
+            AddBlendedLandTriangle(result, zoomCategory, ab, b, bc, ownColour, maxEdgeDegrees, depth + 1, minX, maxX, minY, maxY, offsetX, offsetY, width, height, outFlat, outBlended);
+            AddBlendedLandTriangle(result, zoomCategory, ca, bc, c, ownColour, maxEdgeDegrees, depth + 1, minX, maxX, minY, maxY, offsetX, offsetY, width, height, outFlat, outBlended);
+            AddBlendedLandTriangle(result, zoomCategory, ab, bc, ca, ownColour, maxEdgeDegrees, depth + 1, minX, maxX, minY, maxY, offsetX, offsetY, width, height, outFlat, outBlended);
+            return;
+        }
+    }
+
+    FLinearColor c1, c2, c3;
+    float s1 = 1.f, s2 = 1.f, s3 = 1.f;
+    const bool bGot1 = SampleBlendGrid(zoomCategory, a.X, a.Y, c1, s1);
+    const bool bGot2 = SampleBlendGrid(zoomCategory, b.X, b.Y, c2, s2);
+    const bool bGot3 = SampleBlendGrid(zoomCategory, c.X, c.Y, c3, s3);
+
+    if (!bGot1 && !bGot2 && !bGot3) {
+        outFlat++;
+        result.Add(convertToTri(ownColour, a.X, a.Y, b.X, b.Y, c.X, c.Y, minX, maxX, minY, maxY, offsetX, offsetY, width, height));
+        return;
+    }
+
+    // A corner the grid has nothing for -- a headland reaching past every land sample -- takes the
+    // triangle's own colour rather than black.
+    if (!bGot1) { c1 = ownColour; s1 = 1.f; }
+    if (!bGot2) { c2 = ownColour; s2 = 1.f; }
+    if (!bGot3) { c3 = ownColour; s3 = 1.f; }
+
+    outBlended++;
+    result.Add(convertToTri(c1 * s1, c2 * s2, c3 * s3,
+        a.X, a.Y, b.X, b.Y, c.X, c.Y, minX, maxX, minY, maxY, offsetX, offsetY, width, height));
+}
+
+TArray<FCanvasUVTri> FMapLowZoom::GetTerrainTriangles(FTerrain* terrain, int32 mode, int32 zoomCategory, double minFracY, double minFracX, double maxFracY, double maxFracX, int32 offsetX, int32 offsetY, int32 width, int32 height) {
     TArray<FCanvasUVTri> result = {};
-    if (mode == 0) return result;
     if (!HasZoomLevelData(zoomCategory)) return result;
 
     int32 xBase = FMath::RoundToInt32(minFracX / (maxFracX - minFracX));
@@ -823,6 +1503,34 @@ TArray<FCanvasUVTri> FMapLowZoom::GetTriangles(FTerrain* terrain, int32 mode, in
     double maxY = 180 * maxFracY - 90;
 
     UE_LOG(LogTemp, Log, TEXT("Min/max X and Y : %f, %f ; %f, %f, tileX and tileY: %i, %i"), minX, maxX, minY, maxY, tileX, tileY);
+
+    // What this draw call writes at ProbeLatitude/ProbeLongitude, and the pixel it writes it to.
+    //
+    // The coordinate is fixed and the pixel is derived, never the other way round: the sphere covers
+    // the globe in one target and a tile covers a tile in another, so the same ground is at a
+    // different pixel in each, and every attempt so far to work that out by hand has compared two
+    // different places. Only calls whose box actually covers the point say anything.
+    {
+        const double probeMeshY = -ProbeLatitude;
+        if (ProbeLongitude >= minX && ProbeLongitude <= maxX && probeMeshY >= minY && probeMeshY <= maxY) {
+            int32 probeTileX = 0, probeTileY = 0;
+            const int32 probe = GetTriangleIDAtCoordinate(zoomCategory, ProbeLongitude, probeMeshY, probeTileX, probeTileY);
+            const FVector2D pixel = toScreen(ProbeLongitude, probeMeshY, minX, maxX, minY, maxY, offsetX, offsetY, width, height);
+
+            if (probe >= 0) {
+                const FTriangleDataEntry& probeTri = TriangleData[zoomCategory][probeTileX][probeTileY][probe];
+                const TArray<uint8> rgb = terrain->GetColor(probeTri.TerrainData, mode);
+                UE_LOG(LogTemp, Log, TEXT("Probe: level %d mode %d at lat %.3f lon %.3f -> terrain %d, palette %d,%d,%d, at pixel %.0f,%.0f of %dx%d"),
+                    zoomCategory, mode, ProbeLatitude, ProbeLongitude, probeTri.TerrainData,
+                    rgb.Num() > 0 ? rgb[0] : -1, rgb.Num() > 1 ? rgb[1] : -1, rgb.Num() > 2 ? rgb[2] : -1,
+                    pixel.X, pixel.Y, width, height);
+            }
+            else {
+                UE_LOG(LogTemp, Log, TEXT("Probe: level %d mode %d at lat %.3f lon %.3f -> no triangle, at pixel %.0f,%.0f"),
+                    zoomCategory, mode, ProbeLatitude, ProbeLongitude, pixel.X, pixel.Y);
+            }
+        }
+    }
 
     if (mode == 8) {
         TArray<TArray<uint8>> colors;
@@ -854,20 +1562,92 @@ TArray<FCanvasUVTri> FMapLowZoom::GetTriangles(FTerrain* terrain, int32 mode, in
         return result;
     }
 
-    for (int32 i = 0; i < TriangleData[zoomCategory][tileX][tileY].Num(); i++) {
-        FPointDataEntry p1 = GetFirstPoint(TriangleData[zoomCategory][tileX][tileY][i].bB1, TriangleData[zoomCategory][tileX][tileY][i].E1, zoomCategory, tileX, tileY);
-        FPointDataEntry p2 = GetFirstPoint(TriangleData[zoomCategory][tileX][tileY][i].bB2, TriangleData[zoomCategory][tileX][tileY][i].E2, zoomCategory, tileX, tileY);
-        FPointDataEntry p3 = GetFirstPoint(TriangleData[zoomCategory][tileX][tileY][i].bB3, TriangleData[zoomCategory][tileX][tileY][i].E3, zoomCategory, tileX, tileY);
-        result.Add(convertToTri(terrain->GetColor(TriangleData[zoomCategory][tileX][tileY][i].TerrainData, mode), p1.X, p1.Y, p2.X, p2.Y, p3.X, p3.Y, minX, maxX, minY, maxY, offsetX, offsetY, width, height));
+    // Mode 0 is the photorealistic one, so its land is coloured from the blend grid rather than
+    // filled flat. Every other mode stays flat: mode 1 and the thematic modes want their categories
+    // legible, and a gradient across a boundary is exactly what makes a category hard to read.
+    const bool bBlendLand = (mode == 0);
+    if (bBlendLand) {
+        EnsureBlendGridRegion(terrain, zoomCategory, minX, maxX, minY, maxY);
     }
 
-    if (mode == 7) AddBordersAsTriangles(result, zoomCategory, tileX, tileY, minX, maxX, minY, maxY, offsetX, offsetY, width, height);
+    // Land triangles the grid had nothing for, and so drew flat. Should be a handful of headlands
+    // reaching past every land sample; anything more means the grid is not covering the ground the
+    // mesh does, and the flat ones will read as unsmoothed patches among their blended neighbours.
+    int32 landDrawnFlat = 0;
+    int32 landDrawnBlended = 0;
 
-    UE_LOG(LogTemp, Log, TEXT("Num render triangles: %d"), result.Num());
+    // Cut land triangles down to about one grid cell before colouring them, so the straight ramp the
+    // canvas draws between three corners stays a fair account of the field across them.
+    const double blendMaxEdgeDegrees = (bBlendLand && BlendGrids.IsValidIndex(zoomCategory) && BlendGrids[zoomCategory].NumRows > 0)
+        ? BlendGrids[zoomCategory].Spacing
+        : 0.0;
+
+    for (int32 i = 0; i < TriangleData[zoomCategory][tileX][tileY].Num(); i++) {
+        const FTriangleDataEntry& tri = TriangleData[zoomCategory][tileX][tileY][i];
+        FPointDataEntry p1 = GetFirstPoint(tri.bB1, tri.E1, zoomCategory, tileX, tileY);
+        FPointDataEntry p2 = GetFirstPoint(tri.bB2, tri.E2, zoomCategory, tileX, tileY);
+        FPointDataEntry p3 = GetFirstPoint(tri.bB3, tri.E3, zoomCategory, tileX, tileY);
+
+        if (bBlendLand && !isWaterTerrain(tri.TerrainData)) {
+            // Sampling by position is what makes this agree across a tile boundary: the grid knows
+            // nothing about tiles, so two triangles meeting there read the same value. Cutting the
+            // triangle down to about a grid cell first is what stops the mesh showing through as
+            // facets where the grid varies quickly.
+            const TArray<uint8> rgb = terrain->GetColor(tri.TerrainData, mode);
+            const FLinearColor own = (rgb.Num() >= 3)
+                ? FLinearColor(FColor(rgb[0], rgb[1], rgb[2]))
+                : FLinearColor::Black;
+
+            AddBlendedLandTriangle(result, zoomCategory,
+                FVector2D(p1.X, p1.Y), FVector2D(p2.X, p2.Y), FVector2D(p3.X, p3.Y),
+                own, blendMaxEdgeDegrees, 0,
+                minX, maxX, minY, maxY, offsetX, offsetY, width, height,
+                landDrawnFlat, landDrawnBlended);
+            continue;
+        }
+
+        result.Add(convertToTri(terrain->GetColor(tri.TerrainData, mode), p1.X, p1.Y, p2.X, p2.Y, p3.X, p3.Y, minX, maxX, minY, maxY, offsetX, offsetY, width, height));
+    }
+
+    // Where the triangles actually landed, not just how many there are. The mesh-degree box above
+    // says which ground was asked for; this says which pixels of the render target it was drawn
+    // into, which is the other half and the half that has no other way of being seen. A sub-tile
+    // pass has to be given the destination rectangle for its own tile -- offset by the tile's
+    // position, sized to one tile -- and passing the whole target's rectangle instead draws one
+    // tile stretched across everything, while passing an offset past the target's edge draws it
+    // nowhere at all. Both look like "nothing changed" from outside.
+    {
+        double screenMinX = TNumericLimits<double>::Max(), screenMinY = TNumericLimits<double>::Max();
+        double screenMaxX = -TNumericLimits<double>::Max(), screenMaxY = -TNumericLimits<double>::Max();
+        for (const FCanvasUVTri& tri : result) {
+            const FVector2D corners[3] = { tri.V0_Pos, tri.V1_Pos, tri.V2_Pos };
+            for (const FVector2D& corner : corners) {
+                screenMinX = FMath::Min(screenMinX, corner.X);
+                screenMinY = FMath::Min(screenMinY, corner.Y);
+                screenMaxX = FMath::Max(screenMaxX, corner.X);
+                screenMaxY = FMath::Max(screenMaxY, corner.Y);
+            }
+        }
+
+        if (bBlendLand && landDrawnFlat > 0) {
+            UE_LOG(LogTemp, Warning, TEXT("Blend grid: %d land triangles had no grid colour and were drawn flat, %d blended (tile %d, %d)"),
+                landDrawnFlat, landDrawnBlended, tileX, tileY);
+        }
+
+        if (result.Num() == 0) {
+            UE_LOG(LogTemp, Log, TEXT("Num render triangles: 0 (dest offset %d,%d size %dx%d)"),
+                offsetX, offsetY, width, height);
+        }
+        else {
+            UE_LOG(LogTemp, Log, TEXT("Num render triangles: %d (dest offset %d,%d size %dx%d; drawn into x %.0f..%.0f y %.0f..%.0f)"),
+                result.Num(), offsetX, offsetY, width, height,
+                screenMinX, screenMaxX, screenMinY, screenMaxY);
+        }
+    }
     return result;
 }
 
-TArray<FCanvasUVTri>& FMapLowZoom::AddBordersAsTriangles(TArray<FCanvasUVTri>& result, int32 zoomCategory, int32 tileX, int32 tileY, double minX, double maxX, double minY, double maxY, int32 offsetX, int32 offsetY, int32 width, int32 height) {
+TArray<FCanvasUVTri>& FMapLowZoom::AddBordersAsTriangles(TArray<FCanvasUVTri>& result, int32 zoomCategory, int32 tileX, int32 tileY, double minX, double maxX, double minY, double maxY, int32 offsetX, int32 offsetY, int32 width, int32 height, double thickness) {
     int32 c = 0;
     for (FEdgeDataEntry& edgeData : EdgeData[zoomCategory][tileX][tileY]) {
         const double x1 = PointData[zoomCategory][tileX][tileY][edgeData.P1].X;
@@ -879,7 +1659,7 @@ TArray<FCanvasUVTri>& FMapLowZoom::AddBordersAsTriangles(TArray<FCanvasUVTri>& r
             bool i1 = TriangleData[zoomCategory][tileX][tileY][edgeData.T1].TerrainData % 16 == 0;
             bool i2 = TriangleData[zoomCategory][tileX][tileY][edgeData.T2].TerrainData % 16 == 0;
             if (i1 != i2) {
-                convertEdgeToTriAndAdd(result, x1, y1, x2, y2, 5, minX, maxX, minY, maxY, offsetX, offsetY, width, height);
+                convertEdgeToTriAndAdd(result, x1, y1, x2, y2, thickness, minX, maxX, minY, maxY, offsetX, offsetY, width, height);
                 c += 2;
             }
         }
@@ -887,7 +1667,7 @@ TArray<FCanvasUVTri>& FMapLowZoom::AddBordersAsTriangles(TArray<FCanvasUVTri>& r
             bool i1 = TriangleData[zoomCategory][tileX][tileY][edgeData.T1].TerrainData % 16 == 0;
             bool i2 = (-edgeData.T2 - 2) % 16 == 0;
             if (i1 != i2) {
-                convertEdgeToTriAndAdd(result, x1, y1, x2, y2, 5, minX, maxX, minY, maxY, offsetX, offsetY, width, height);
+                convertEdgeToTriAndAdd(result, x1, y1, x2, y2, thickness, minX, maxX, minY, maxY, offsetX, offsetY, width, height);
                 c += 2;
             }
         }
@@ -897,7 +1677,7 @@ TArray<FCanvasUVTri>& FMapLowZoom::AddBordersAsTriangles(TArray<FCanvasUVTri>& r
             if (edgeData.T1 >= 0) i1 = TriangleData[zoomCategory][tileX][tileY][edgeData.T1].TerrainData % 16 != 0;
             if (edgeData.T2 >= 0) i2 = TriangleData[zoomCategory][tileX][tileY][edgeData.T2].TerrainData % 16 != 0;
             if (i1 && i2) {
-                convertEdgeToTriAndAdd(result, x1, y1, x2, y2, 5, minX, maxX, minY, maxY, offsetX, offsetY, width, height);
+                convertEdgeToTriAndAdd(result, x1, y1, x2, y2, thickness, minX, maxX, minY, maxY, offsetX, offsetY, width, height);
                 c += 2;
             }
         }
@@ -1438,7 +2218,7 @@ void FMapLowZoom::BuildPlaceDomains(TArray<FPlace>& places, const TArray<FPolity
     int32 fragments = 0;
 
     // Ascending global order, which within a tile is ascending local order, so each tile's
-    // Fragments come out sorted by triangle -- which is what AddProvinceTriangles() walks them in.
+    // Fragments come out sorted by triangle -- which is what AddDomainTriangles() walks them in.
     for (int32 triangle = 0; triangle < totalTriangles; triangle++) {
         const TArray<int32>& contenders = contendersOf[triangle];
         if (contenders.Num() == 0) {
@@ -1534,7 +2314,7 @@ void FMapLowZoom::InvalidatePlaceDomains() {
     }
 }
 
-void FMapLowZoom::AddProvinceTriangles(TArray<FCanvasUVTri>& result, int32 zoomCategory, int32 tileX, int32 tileY, double minX, double maxX, double minY, double maxY, int32 offsetX, int32 offsetY, double width, double height) {
+void FMapLowZoom::AddDomainTriangles(TArray<FCanvasUVTri>& result, int32 zoomCategory, int32 tileX, int32 tileY, double minX, double maxX, double minY, double maxY, int32 offsetX, int32 offsetY, double width, double height) {
     if (!HasTileData(zoomCategory, tileX, tileY)) return;
     if (!DomainData.IsValidIndex(zoomCategory)
         || !DomainData[zoomCategory].IsValidIndex(tileX)
@@ -1590,13 +2370,42 @@ void FMapLowZoom::AddProvinceTriangles(TArray<FCanvasUVTri>& result, int32 zoomC
     }
 }
 
-TArray<FCanvasUVTri> FMapLowZoom::GetProvinceTriangles(int32 mode, int32 zoomCategory, double minFracY, double minFracX, double maxFracY, double maxFracX, int32 offsetX, int32 offsetY, int32 width, int32 height) {
+TArray<FCanvasUVTri> FMapLowZoom::GetBorderTriangles(int32 mode, int32 zoomCategory, double minFracY, double minFracX, double maxFracY, double maxFracX, int32 offsetX, int32 offsetY, int32 width, int32 height, double thickness) {
+    TArray<FCanvasUVTri> result = {};
+    if (!HasZoomLevelData(zoomCategory)) return result;
+
+    if (!ModeShowsBorders(mode)) return result;
+
+    // The same arithmetic as GetTerrainTriangles() and GetDomainTriangles(), for the same reason: all
+    // three are drawn over each other, and anything that differs shows up as coastlines sliding off
+    // their own coast at the edges of the view.
+    const int32 xBase = FMath::RoundToInt32(minFracX / (maxFracX - minFracX));
+    const int32 yBase = FMath::RoundToInt32(minFracY / (maxFracY - minFracY));
+    const int32 tileX = floorMod(xBase, TriangleData[zoomCategory].Num());
+    const int32 tileY = floorMod(yBase, TriangleData[zoomCategory][0].Num());
+
+    double minX = 360 * minFracX - 180;
+    double maxX = 360 * maxFracX - 180;
+    if (xBase < 0) minX += 360;
+    if (xBase < 0) maxX += 360;
+    if (xBase >= TriangleData[zoomCategory].Num()) minX -= 360;
+    if (xBase >= TriangleData[zoomCategory].Num()) maxX -= 360;
+    const double minY = 180 * minFracY - 90;
+    const double maxY = 180 * maxFracY - 90;
+
+    if (!HasTileData(zoomCategory, tileX, tileY)) return result;
+
+    AddBordersAsTriangles(result, zoomCategory, tileX, tileY, minX, maxX, minY, maxY, offsetX, offsetY, width, height, thickness);
+    return result;
+}
+
+TArray<FCanvasUVTri> FMapLowZoom::GetDomainTriangles(int32 mode, int32 zoomCategory, double minFracY, double minFracX, double maxFracY, double maxFracX, int32 offsetX, int32 offsetY, int32 width, int32 height) {
     TArray<FCanvasUVTri> result = {};
     if (!HasZoomLevelData(zoomCategory)) return result;
 
     if (!ModeShowsDomains(mode)) return result;
 
-    // Deliberately the same arithmetic as GetTriangles(), including the antimeridian shifts: the two
+    // Deliberately the same arithmetic as GetTerrainTriangles(), including the antimeridian shifts: the two
     // are drawn on top of each other, so anything that differs here shows up as domains sliding off
     // their terrain at the edges of the view.
     const int32 xBase = FMath::RoundToInt32(minFracX / (maxFracX - minFracX));
@@ -1613,9 +2422,9 @@ TArray<FCanvasUVTri> FMapLowZoom::GetProvinceTriangles(int32 mode, int32 zoomCat
     const double minY = 180 * minFracY - 90;
     const double maxY = 180 * maxFracY - 90;
 
-    AddProvinceTriangles(result, zoomCategory, tileX, tileY, minX, maxX, minY, maxY, offsetX, offsetY, width, height);
+    AddDomainTriangles(result, zoomCategory, tileX, tileY, minX, maxX, minY, maxY, offsetX, offsetY, width, height);
 
-    // Logged the way GetTriangles() logs its own count, and for the same reason: the two are drawn
+    // Logged the way GetTerrainTriangles() logs its own count, and for the same reason: the two are drawn
     // on top of each other per tile, so a terrain line with no domain line beside it says the
     // caller drew one pass and not the other. That is how the zoomed-in draw paths were found to be
     // missing this call entirely while the whole-world path had it.

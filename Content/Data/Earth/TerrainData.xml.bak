@@ -5,9 +5,6 @@
 		<displaycolor0>
 			<rgb>220,220,220</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>228,231,235</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>elevation,water</conditionelement>
@@ -22,9 +19,6 @@
 		<displaycolor0>
 			<rgb>10,17,35</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>20,42,68</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>elevation,water</conditionelement>
@@ -39,9 +33,6 @@
 		<displaycolor0>
 			<rgb>10,17,35</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>20,42,68</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>elevation,water</conditionelement>
@@ -56,9 +47,6 @@
 		<displaycolor0>
 			<rgb>10,17,35</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>22,45,70</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>elevation,water</conditionelement>
@@ -73,9 +61,6 @@
 		<displaycolor0>
 			<rgb>10,17,35</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>26,50,74</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>elevation,water</conditionelement>
@@ -90,9 +75,6 @@
 		<displaycolor0>
 			<rgb>10,17,50</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>28,52,74</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>elevation,water</conditionelement>
@@ -107,9 +89,6 @@
 		<displaycolor0>
 			<rgb>120,120,120</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>132,131,128</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>soil,gelisol</conditionelement>
@@ -125,9 +104,6 @@
 		<displaycolor0>
 			<rgb>80,80,80</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>97,96,93</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>soil,gelisol</conditionelement>
@@ -143,9 +119,6 @@
 		<displaycolor0>
 			<rgb>130,110,90</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>134,124,112</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,arid desert</conditionelement>
@@ -163,9 +136,6 @@
 		<displaycolor0>
 			<rgb>90,70,50</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>99,89,76</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,arid desert</conditionelement>
@@ -183,9 +153,6 @@
 		<displaycolor0>
 			<rgb>90,90,90</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>106,105,102</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>feature,north-facing cliffs</conditionelement>
@@ -197,9 +164,6 @@
 		<displaycolor0>
 			<rgb>50,50,50</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>70,69,66</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>feature,south-facing cliffs</conditionelement>
@@ -211,9 +175,6 @@
 		<displaycolor0>
 			<rgb>170,170,170</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>196,200,205</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>soil,gelisol</conditionelement>
@@ -229,9 +190,6 @@
 		<displaycolor0>
 			<rgb>110,105,75</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>121,117,100</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,arid desert</conditionelement>
@@ -249,9 +207,6 @@
 		<displaycolor0>
 			<rgb>75,75,65</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>92,91,84</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,mediterranean</conditionelement>
@@ -270,9 +225,6 @@
 		<displaycolor0>
 			<rgb>70,80,60</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>90,94,81</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,subtropical rainforest</conditionelement>
@@ -289,9 +241,6 @@
 		<displaycolor0>
 			<rgb>110,110,110</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>123,122,120</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>feature,mountains</conditionelement>
@@ -303,9 +252,6 @@
 		<displaycolor0>
 			<rgb>160,160,160</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>188,193,199</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,polar desert</conditionelement>
@@ -321,9 +267,6 @@
 		<displaycolor0>
 			<rgb>206,159,129</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>190,168,151</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>soil,shifting sand</conditionelement>
@@ -338,9 +281,6 @@
 		<displaycolor0>
 			<rgb>90,87,73</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>104,102,93</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,tundra</conditionelement>
@@ -355,9 +295,6 @@
 		<displaycolor0>
 			<rgb>47,54,45</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>69,71,64</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,taiga</conditionelement>
@@ -372,9 +309,6 @@
 		<displaycolor0>
 			<rgb>55,73,55</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>79,87,75</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,temperate forest</conditionelement>
@@ -389,9 +323,6 @@
 		<displaycolor0>
 			<rgb>100,105,90</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>115,117,107</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,temperate steppe</conditionelement>
@@ -406,9 +337,6 @@
 		<displaycolor0>
 			<rgb>37,51,33</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>61,67,55</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,subtropical rainforest</conditionelement>
@@ -423,9 +351,6 @@
 		<displaycolor0>
 			<rgb>120,115,92</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>130,126,113</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,mediterranean</conditionelement>
@@ -440,9 +365,6 @@
 		<displaycolor0>
 			<rgb>45,63,35</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>69,77,60</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,monsoon forest</conditionelement>
@@ -457,9 +379,6 @@
 		<displaycolor0>
 			<rgb>190,145,130</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>178,156,147</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,arid desert</conditionelement>
@@ -474,9 +393,6 @@
 		<displaycolor0>
 			<rgb>180,155,120</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>174,162,143</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,xeric shrubland</conditionelement>
@@ -491,9 +407,6 @@
 		<displaycolor0>
 			<rgb>165,145,115</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>163,153,136</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,dry steppe</conditionelement>
@@ -508,9 +421,6 @@
 		<displaycolor0>
 			<rgb>165,140,115</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>162,150,135</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,semiarid desert</conditionelement>
@@ -525,9 +435,6 @@
 		<displaycolor0>
 			<rgb>145,140,95</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>150,146,123</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,grass savanna</conditionelement>
@@ -542,9 +449,6 @@
 		<displaycolor0>
 			<rgb>100,120,65</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>118,126,97</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,tree savanna</conditionelement>
@@ -559,9 +463,6 @@
 		<displaycolor0>
 			<rgb>90,100,80</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>108,112,99</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,subtropical dry forest</conditionelement>
@@ -576,9 +477,6 @@
 		<displaycolor0>
 			<rgb>15,35,7</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>41,51,32</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,tropical rainforest</conditionelement>
@@ -593,9 +491,6 @@
 		<displaycolor0>
 			<rgb>96,103,89</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>112,115,105</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,tundra</conditionelement>
@@ -610,9 +505,6 @@
 		<displaycolor0>
 			<rgb>48,69,45</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>73,83,68</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,taiga</conditionelement>
@@ -627,9 +519,6 @@
 		<displaycolor0>
 			<rgb>55,88,53</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>82,98,78</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,temperate forest</conditionelement>
@@ -644,9 +533,6 @@
 		<displaycolor0>
 			<rgb>85,100,65</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>104,110,91</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,temperate steppe</conditionelement>
@@ -661,9 +547,6 @@
 		<displaycolor0>
 			<rgb>42,66,38</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>68,79,62</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,subtropical rainforest</conditionelement>
@@ -678,9 +561,6 @@
 		<displaycolor0>
 			<rgb>125,130,92</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>136,137,117</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,mediterranean</conditionelement>
@@ -695,9 +575,6 @@
 		<displaycolor0>
 			<rgb>48,78,38</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>75,89,66</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,monsoon forest</conditionelement>
@@ -712,9 +589,6 @@
 		<displaycolor0>
 			<rgb>200,165,130</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>188,171,152</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,arid desert</conditionelement>
@@ -729,9 +603,6 @@
 		<displaycolor0>
 			<rgb>190,175,120</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>184,176,149</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,xeric shrubland</conditionelement>
@@ -746,9 +617,6 @@
 		<displaycolor0>
 			<rgb>175,165,115</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>173,168,142</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,dry steppe</conditionelement>
@@ -763,9 +631,6 @@
 		<displaycolor0>
 			<rgb>175,160,115</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>172,164,141</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,semiarid desert</conditionelement>
@@ -780,9 +645,6 @@
 		<displaycolor0>
 			<rgb>155,160,90</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>160,161,126</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,grass savanna</conditionelement>
@@ -797,9 +659,6 @@
 		<displaycolor0>
 			<rgb>105,135,60</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>124,137,99</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,tree savanna</conditionelement>
@@ -814,9 +673,6 @@
 		<displaycolor0>
 			<rgb>95,115,75</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>114,123,101</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,subtropical dry forest</conditionelement>
@@ -831,9 +687,6 @@
 		<displaycolor0>
 			<rgb>15,50,5</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>44,62,35</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,tropical rainforest</conditionelement>
@@ -848,9 +701,6 @@
 		<displaycolor0>
 			<rgb>180,180,180</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>182,181,178</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,polar desert</conditionelement>
@@ -863,9 +713,6 @@
 		<displaycolor0>
 			<rgb>60,89,97</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>88,101,102</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,tundra</conditionelement>
@@ -881,9 +728,6 @@
 		<displaycolor0>
 			<rgb>130,160,120</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>147,159,138</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,arid desert</conditionelement>
@@ -901,9 +745,6 @@
 		<displaycolor0>
 			<rgb>100,140,155</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>126,144,148</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,mediterranean</conditionelement>
@@ -920,9 +761,6 @@
 		<displaycolor0>
 			<rgb>80,120,130</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>109,127,129</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,subtropical rainforest</conditionelement>
@@ -937,9 +775,6 @@
 		<displaycolor0>
 			<rgb>100,110,95</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>117,121,111</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,grass savanna</conditionelement>
@@ -955,9 +790,6 @@
 		<displaycolor0>
 			<rgb>80,110,100</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>105,118,111</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,monsoon forest</conditionelement>
@@ -973,9 +805,6 @@
 		<displaycolor0>
 			<rgb>70,89,97</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>94,102,103</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>feature,wetlands</conditionelement>
@@ -987,9 +816,6 @@
 		<displaycolor0>
 			<rgb>136,137,92</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>144,143,120</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,tundra</conditionelement>
@@ -1005,9 +831,6 @@
 		<displaycolor0>
 			<rgb>126,123,89</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>135,132,114</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>elevation,level 11</conditionelement>
@@ -1020,9 +843,6 @@
 		<displaycolor0>
 			<rgb>86,89,74</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>103,103,93</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,taiga</conditionelement>
@@ -1038,9 +858,6 @@
 		<displaycolor0>
 			<rgb>50,61,52</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>73,77,70</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,taiga</conditionelement>
@@ -1057,9 +874,6 @@
 		<displaycolor0>
 			<rgb>55,72,80</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>79,86,74</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,tundra</conditionelement>
@@ -1075,9 +889,6 @@
 		<displaycolor0>
 			<rgb>60,75,65</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>82,89,77</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,tundra</conditionelement>
@@ -1093,9 +904,6 @@
 		<displaycolor0>
 			<rgb>106,99,84</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>117,113,103</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,tundra</conditionelement>
@@ -1112,9 +920,6 @@
 		<displaycolor0>
 			<rgb>66,76,58</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>87,90,79</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,temperate forest</conditionelement>
@@ -1130,9 +935,6 @@
 		<displaycolor0>
 			<rgb>75,95,69</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>97,106,90</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,temperate forest</conditionelement>
@@ -1147,9 +949,6 @@
 		<displaycolor0>
 			<rgb>55,81,57</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>81,93,78</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,temperate forest</conditionelement>
@@ -1166,9 +965,6 @@
 		<displaycolor0>
 			<rgb>88,98,75</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>106,110,96</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,temperate forest</conditionelement>
@@ -1183,9 +979,6 @@
 		<displaycolor0>
 			<rgb>104,114,88</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>120,123,107</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,temperate forest</conditionelement>
@@ -1201,9 +994,6 @@
 		<displaycolor0>
 			<rgb>75,85,67</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>95,99,87</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,temperate forest</conditionelement>
@@ -1218,9 +1008,6 @@
 		<displaycolor0>
 			<rgb>50,69,77</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>75,83,72</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,temperate forest</conditionelement>
@@ -1236,9 +1023,6 @@
 		<displaycolor0>
 			<rgb>75,85,57</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>94,98,82</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,temperate forest</conditionelement>
@@ -1254,9 +1038,6 @@
 		<displaycolor0>
 			<rgb>156,149,120</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>159,155,139</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,temperate forest</conditionelement>
@@ -1272,9 +1053,6 @@
 		<displaycolor0>
 			<rgb>135,119,99</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>139,131,119</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,temperate forest</conditionelement>
@@ -1290,9 +1068,6 @@
 		<displaycolor0>
 			<rgb>89,95,75</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>106,108,95</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,temperate steppe</conditionelement>
@@ -1307,9 +1082,6 @@
 		<displaycolor0>
 			<rgb>72,92,67</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>94,103,88</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,temperate steppe</conditionelement>
@@ -1324,9 +1096,6 @@
 		<displaycolor0>
 			<rgb>60,76,57</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>83,90,78</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,subtropical rainforest</conditionelement>
@@ -1342,9 +1111,6 @@
 		<displaycolor0>
 			<rgb>44,56,38</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>67,72,60</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,subtropical rainforest</conditionelement>
@@ -1360,9 +1126,6 @@
 		<displaycolor0>
 			<rgb>72,90,64</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>94,102,86</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,subtropical rainforest</conditionelement>
@@ -1377,9 +1140,6 @@
 		<displaycolor0>
 			<rgb>60,89,97</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>86,100,86</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,subtropical rainforest</conditionelement>
@@ -1394,9 +1154,6 @@
 		<displaycolor0>
 			<rgb>88,85,65</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>102,100,87</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,subtropical rainforest</conditionelement>
@@ -1412,9 +1169,6 @@
 		<displaycolor0>
 			<rgb>186,159,109</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>178,165,139</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,subtropical rainforest</conditionelement>
@@ -1429,9 +1183,6 @@
 		<displaycolor0>
 			<rgb>65,80,52</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>87,93,76</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,subtropical rainforest</conditionelement>
@@ -1446,9 +1197,6 @@
 		<displaycolor0>
 			<rgb>95,100,85</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>111,112,103</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,mediterranean</conditionelement>
@@ -1464,9 +1212,6 @@
 		<displaycolor0>
 			<rgb>117,125,96</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>130,133,117</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,mediterranean</conditionelement>
@@ -1482,9 +1227,6 @@
 		<displaycolor0>
 			<rgb>117,140,96</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>134,143,120</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,mediterranean</conditionelement>
@@ -1501,9 +1243,6 @@
 		<displaycolor0>
 			<rgb>71,78,60</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>90,93,81</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,mediterranean</conditionelement>
@@ -1519,9 +1258,6 @@
 		<displaycolor0>
 			<rgb>128,135,105</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>139,142,125</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,mediterranean</conditionelement>
@@ -1537,9 +1273,6 @@
 		<displaycolor0>
 			<rgb>85,95,67</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>103,107,91</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,mediterranean</conditionelement>
@@ -1556,9 +1289,6 @@
 		<displaycolor0>
 			<rgb>60,69,77</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>81,84,73</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,mediterranean</conditionelement>
@@ -1575,9 +1305,6 @@
 		<displaycolor0>
 			<rgb>102,90,70</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>112,105,92</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,mediterranean</conditionelement>
@@ -1594,9 +1321,6 @@
 		<displaycolor0>
 			<rgb>160,149,129</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>162,156,144</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,mediterranean</conditionelement>
@@ -1613,9 +1337,6 @@
 		<displaycolor0>
 			<rgb>109,115,95</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>123,125,113</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,mediterranean</conditionelement>
@@ -1632,9 +1353,6 @@
 		<displaycolor0>
 			<rgb>135,119,99</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>139,131,119</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,mediterranean</conditionelement>
@@ -1651,9 +1369,6 @@
 		<displaycolor0>
 			<rgb>65,85,55</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>88,97,79</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,monsoon forest</conditionelement>
@@ -1669,9 +1384,6 @@
 		<displaycolor0>
 			<rgb>50,70,40</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>74,83,66</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,monsoon forest</conditionelement>
@@ -1686,9 +1398,6 @@
 		<displaycolor0>
 			<rgb>216,159,119</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>195,168,147</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,arid desert</conditionelement>
@@ -1703,9 +1412,6 @@
 		<displaycolor0>
 			<rgb>216,179,119</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>199,182,152</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,xeric shrubland</conditionelement>
@@ -1720,9 +1426,6 @@
 		<displaycolor0>
 			<rgb>170,170,125</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>172,171,148</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,arid desert</conditionelement>
@@ -1738,9 +1441,6 @@
 		<displaycolor0>
 			<rgb>205,170,135</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>192,175,157</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,semiarid desert</conditionelement>
@@ -1755,9 +1455,6 @@
 		<displaycolor0>
 			<rgb>170,155,100</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>168,160,132</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,semiarid desert</conditionelement>
@@ -1774,9 +1471,6 @@
 		<displaycolor0>
 			<rgb>155,140,105</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>156,148,129</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,semiarid desert</conditionelement>
@@ -1791,9 +1485,6 @@
 		<displaycolor0>
 			<rgb>135,140,80</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>143,145,114</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,grass savanna</conditionelement>
@@ -1809,9 +1500,6 @@
 		<displaycolor0>
 			<rgb>135,140,80</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>143,145,114</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,tree savanna</conditionelement>
@@ -1828,9 +1516,6 @@
 		<displaycolor0>
 			<rgb>95,120,50</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>114,125,89</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,tree savanna</conditionelement>
@@ -1846,9 +1531,6 @@
 		<displaycolor0>
 			<rgb>135,130,80</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>141,138,112</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,grass savanna</conditionelement>
@@ -1864,9 +1546,6 @@
 		<displaycolor0>
 			<rgb>70,79,87</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>90,93,81</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,grass savanna</conditionelement>
@@ -1882,9 +1561,6 @@
 		<displaycolor0>
 			<rgb>98,89,60</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>109,104,87</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,grass savanna</conditionelement>
@@ -1900,9 +1576,6 @@
 		<displaycolor0>
 			<rgb>135,140,90</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>144,145,119</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,subtropical dry forest</conditionelement>
@@ -1918,9 +1591,6 @@
 		<displaycolor0>
 			<rgb>75,85,45</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>94,98,75</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,subtropical dry forest</conditionelement>
@@ -1936,9 +1606,6 @@
 		<displaycolor0>
 			<rgb>35,60,20</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>61,73,50</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,tropical rainforest</conditionelement>
@@ -1954,9 +1621,6 @@
 		<displaycolor0>
 			<rgb>10,40,5</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>38,54,32</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,tropical rainforest</conditionelement>
@@ -1972,9 +1636,6 @@
 		<displaycolor0>
 			<rgb>82,100,60</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>102,110,88</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,tropical rainforest</conditionelement>
@@ -1989,9 +1650,6 @@
 		<displaycolor0>
 			<rgb>40,69,77</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>68,82,71</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,tropical rainforest</conditionelement>
@@ -2007,9 +1665,6 @@
 		<displaycolor0>
 			<rgb>82,79,60</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>97,95,82</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,tropical rainforest</conditionelement>
@@ -2025,9 +1680,6 @@
 		<displaycolor0>
 			<rgb>75,85,60</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>94,98,83</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,tropical rainforest</conditionelement>
@@ -2043,9 +1695,6 @@
 		<displaycolor0>
 			<rgb>82,79,60</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>97,95,83</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,tropical rainforest</conditionelement>
@@ -2061,9 +1710,6 @@
 		<displaycolor0>
 			<rgb>226,169,129</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>203,177,156</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>soil,shifting sand</conditionelement>
@@ -2075,9 +1721,6 @@
 		<displaycolor0>
 			<rgb>106,103,79</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>118,116,101</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,tundra</conditionelement>
@@ -2089,9 +1732,6 @@
 		<displaycolor0>
 			<rgb>58,69,55</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>80,84,75</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,taiga</conditionelement>
@@ -2103,9 +1743,6 @@
 		<displaycolor0>
 			<rgb>65,88,63</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>89,99,84</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,temperate forest</conditionelement>
@@ -2117,9 +1754,6 @@
 		<displaycolor0>
 			<rgb>95,100,75</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>111,112,97</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,temperate steppe</conditionelement>
@@ -2131,9 +1765,6 @@
 		<displaycolor0>
 			<rgb>52,66,48</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>75,81,69</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,subtropical rainforest</conditionelement>
@@ -2145,9 +1776,6 @@
 		<displaycolor0>
 			<rgb>135,130,102</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>142,139,123</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,mediterranean</conditionelement>
@@ -2159,9 +1787,6 @@
 		<displaycolor0>
 			<rgb>58,78,48</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>82,91,73</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,monsoon forest</conditionelement>
@@ -2173,9 +1798,6 @@
 		<displaycolor0>
 			<rgb>210,165,140</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>193,172,150</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,arid desert</conditionelement>
@@ -2187,9 +1809,6 @@
 		<displaycolor0>
 			<rgb>200,175,130</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>190,178,155</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,xeric shrubland</conditionelement>
@@ -2201,9 +1820,6 @@
 		<displaycolor0>
 			<rgb>185,165,145</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>180,170,158</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,dry steppe</conditionelement>
@@ -2215,9 +1831,6 @@
 		<displaycolor0>
 			<rgb>185,160,125</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>178,166,145</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,semiarid desert</conditionelement>
@@ -2229,9 +1842,6 @@
 		<displaycolor0>
 			<rgb>165,160,100</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>166,163,132</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,grass savanna</conditionelement>
@@ -2243,9 +1853,6 @@
 		<displaycolor0>
 			<rgb>115,135,70</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>130,139,105</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,tree savanna</conditionelement>
@@ -2257,9 +1864,6 @@
 		<displaycolor0>
 			<rgb>105,115,85</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>120,124,107</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,subtropical dry forest</conditionelement>
@@ -2271,9 +1875,6 @@
 		<displaycolor0>
 			<rgb>25,50,15</rgb>
 		</displaycolor0>
-		<photocolor>
-			<rgb>52,64,43</rgb>
-		</photocolor>
 		<conditions>
 			<condition>
 				<conditionelement>vegetation,tropical rainforest</conditionelement>

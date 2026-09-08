@@ -13,15 +13,15 @@ class UBurinWorld;
 class UCanvasPanel;
 class UCanvasPanelSlot;
 
-/** Which dataset on UBurinWorld a layer draws its markers from. */
+/** How a marker's latitude and longitude become a position in the world. */
 UENUM(BlueprintType)
-enum class EGlobeLabelSource : uint8
+enum class EGlobeMarkerProjection : uint8
 {
-	/** Terrain->GeographicLabelData: continents, deserts, mountain ranges. */
-	GeographicFeatures,
+	/** On the sphere: a direction from its centre, times the radius. Hidden past the horizon. */
+	Globe,
 
-	/** World->Places: settlements that exist as of UBurinWorld::CurrentYear. */
-	HistoricalPlaces
+	/** On the flat high-zoom map: an offset east and north of the view's centre coordinate. */
+	FlatMap
 };
 
 /**
@@ -45,9 +45,22 @@ public:
 	/**
 	 * Builds the marker set from the chosen dataset on the world.
 	 * Safe to call again to rebuild after the source data changes.
+	 *
+	 * Takes no globe actor: which markers exist has nothing to do with what they are drawn on, and
+	 * bundling the two meant a layer could not be built before a sphere existed -- or at all, for a
+	 * view that has no sphere. Hand the geometry over separately, with SetGlobeActor() or
+	 * SetMapView() depending on the projection.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "GlobeLabels")
-	void InitializeLayer(AActor* globeActor, UBurinWorld* world, EGlobeLabelSource source);
+	void InitializeLayer(UBurinWorld* world, EGlobeLabelSource source);
+
+	/**
+	 * The sphere the Globe projection places markers on, and whose transform and bounds it reads
+	 * every frame. What SetMapView() is to the flat map: the owning representation supplies its own
+	 * geometry, when it has it.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "GlobeLabels")
+	void SetGlobeActor(AActor* globeActor);
 
 	/** Colour used for sources that carry no colour of their own, such as historical places. */
 	UPROPERTY(EditDefaultsOnly, Category = "GlobeLabels|Data")
@@ -103,6 +116,30 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "GlobeLabels|Zoom")
 	TArray<int32> MaxImportanceByZoomLevel;
 
+	/**
+	 * Which projection places the markers. Switch it when the view switches between the sphere and
+	 * the flat map; the marker set itself does not change, only where each one lands.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "GlobeLabels")
+	void SetProjectionMode(EGlobeMarkerProjection projection);
+
+	/**
+	 * The flat map's current view, in the map's own terms. Call it every frame the view moves, from
+	 * the same numbers the tiles are placed with.
+	 *
+	 * A marker lands at mapOrigin + eastPerDegree * (its longitude - centreLongitude)
+	 *                             + northPerDegree * (its latitude  - centreLatitude),
+	 * with the longitude difference wrapped to +-180 so a view across the antimeridian keeps its
+	 * markers beside it rather than a map away.
+	 *
+	 * The two axis vectors are supplied rather than derived because the map's plane, its handedness
+	 * and its units-per-degree all live in the Blueprint that positions the tiles. Feed them from
+	 * exactly the values MoveTile uses and the markers cannot drift from the terrain under them --
+	 * including the cosine narrowing of longitude, which belongs in eastPerDegree.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "GlobeLabels")
+	void SetMapView(double centreLatitude, double centreLongitude, FVector mapOrigin, FVector eastPerDegree, FVector northPerDegree);
+
 	/** Push your zoom level counter in here whenever it changes. */
 	UFUNCTION(BlueprintCallable, Category = "GlobeLabels")
 	void SetZoomLevel(int32 zoomLevel);
@@ -141,6 +178,11 @@ private:
 		double Longitude = 0.0;
 		int32 Importance = 0;
 		FLinearColor Color = FLinearColor::White;
+
+		// The dot's tint, as distinct from Color, which is the label's. For a historical place this
+		// is its controlling polity's mapcolor2; white where nothing owns it, so the artwork shows
+		// through unchanged.
+		FLinearColor MarkerColor = FLinearColor::White;
 	};
 
 	struct FLiveMarker
@@ -148,7 +190,13 @@ private:
 		// Snapshot taken from the source data at build time; the source array is never held.
 		FLinearColor TextColor = FLinearColor::White;
 		int32 Importance = 0;
+
+		// Both forms of the same coordinate, decided once at build time. The globe wants a direction
+		// and the flat map wants degrees; converting either way per marker per frame would be work
+		// done to recover something that was already known.
 		FVector LocalDirection = FVector::ZeroVector;
+		double Latitude = 0.0;
+		double Longitude = 0.0;
 
 		// Per-frame state.
 		UGlobeMarkerWidget* Widget = nullptr;
@@ -163,6 +211,44 @@ private:
 	TArray<FLiveMarker> Markers;
 	TWeakObjectPtr<AActor> GlobeActor;
 	int32 CurrentZoomLevel = 0;
+
+	EGlobeMarkerProjection ProjectionMode = EGlobeMarkerProjection::Globe;
+
+	// Which dataset this layer was built from, kept so each marker can be told at creation.
+	EGlobeLabelSource LayerSource = EGlobeLabelSource::GeographicFeatures;
+
+	// The flat map's view, as last given to SetMapView(). Meaningless in Globe mode.
+	double MapCentreLatitude = 0.0;
+	double MapCentreLongitude = 0.0;
+	FVector MapOrigin = FVector::ZeroVector;
+	FVector MapEastPerDegree = FVector::ZeroVector;
+	FVector MapNorthPerDegree = FVector::ZeroVector;
+
+	// Why each marker did or did not appear on the last tick, logged whenever the tally changes.
+	// A layer showing nothing has half a dozen equally silent causes -- no globe actor, a zoom gate
+	// nobody pushes a level into, a projection mode that does not match what is on screen -- and
+	// they are indistinguishable from the outside. This says which one it is.
+	struct FTickTally
+	{
+		int32 Shown = -1;
+		int32 GatedByZoom = -1;
+		int32 BehindGlobe = -1;
+		int32 OffScreen = -1;
+		int32 ZoomLevel = -1;
+
+		bool operator!=(const FTickTally& other) const
+		{
+			return Shown != other.Shown || GatedByZoom != other.GatedByZoom
+				|| BehindGlobe != other.BehindGlobe || OffScreen != other.OffScreen
+				|| ZoomLevel != other.ZoomLevel;
+		}
+	};
+	FTickTally LastTally;
+
+	// Where this marker sits in the world right now, and whether it is on the visible side of
+	// whatever it is drawn on. False in Globe mode for a marker past the horizon.
+	bool GetMarkerWorldPosition(const FLiveMarker& marker, const FTransform& globeTransform, double radius,
+		const FVector& toCamera, double horizonCos, FVector& outWorldPosition) const;
 
 	void BuildMarkers(const TArray<FMarkerSeed>& seeds);
 	double GetEffectiveRadius() const;

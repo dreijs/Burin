@@ -39,5 +39,6 @@ public:
 		TArray<int32> TerrainMap;
 
 		TArray<uint8> GetDisplayColor0(int32 idx);
+		TArray<uint8> GetPhotoColor(int32 idx);
 		TArray<int32> ExtractTerrainArray(const FString& aString);
 };

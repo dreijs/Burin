@@ -135,10 +135,15 @@ FString UBurinWorld::GetTerrainText(int32 v) {
 	return MapLowZoom->GetTerrainText(Terrain.Get(), v);
 }
 
-TArray<FCanvasUVTri> UBurinWorld::GetTriangles(int32 mode, int32 zoomCategory, double minFracY, double minFracX, double maxFracY, double maxFracX, int32 offsetX, int32 offsetY, int32 width, int32 height) {
-	if (!EnsureInitialized(TEXT("GetTriangles"))) return {};
+TArray<FCanvasUVTri> UBurinWorld::GetTerrainTriangles(int32 mode, int32 zoomCategory, double minFracY, double minFracX, double maxFracY, double maxFracX, int32 offsetX, int32 offsetY, int32 width, int32 height) {
+	if (!EnsureInitialized(TEXT("GetTerrainTriangles"))) return {};
 
-	return MapLowZoom->GetTriangles(Terrain.Get(), mode, zoomCategory, minFracY, minFracX, maxFracY, maxFracX, offsetX, offsetY, width, height);
+	// Applied before the draw rather than at edit time, so changing it in the details panel takes
+	// effect on the next frame instead of needing the level reopened.
+	MapLowZoom->SetVertexBlendSettings(BlendRadiusDegrees, HillshadeStrength);
+	MapLowZoom->SetProbeCoordinate(ProbeLatitude, ProbeLongitude);
+
+	return MapLowZoom->GetTerrainTriangles(Terrain.Get(), mode, zoomCategory, minFracY, minFracX, maxFracY, maxFracX, offsetX, offsetY, width, height);
 }
 
 TArray<FCanvasUVTri> UBurinWorld::GetMaterialTriangles(int32 mode, int32 zoomCategory, int32 tileX, int32 tileY) {
@@ -159,8 +164,8 @@ TArray<FLineDisplayData> UBurinWorld::GetRivers(int32 mode, int32 zoomCategory, 
 	return MapLowZoom->GetRivers(mode, zoomCategory, tileX, tileY);
 }
 
-TArray<FCanvasUVTri> UBurinWorld::GetProvinceTriangles(int32 mode, int32 zoomCategory, double minFracY, double minFracX, double maxFracY, double maxFracX, int32 offsetX, int32 offsetY, int32 width, int32 height) {
-	if (!EnsureInitialized(TEXT("GetProvinceTriangles"))) return {};
+TArray<FCanvasUVTri> UBurinWorld::GetDomainTriangles(int32 mode, int32 zoomCategory, double minFracY, double minFracX, double maxFracY, double maxFracX, int32 offsetX, int32 offsetY, int32 width, int32 height) {
+	if (!EnsureInitialized(TEXT("GetDomainTriangles"))) return {};
 	if (!bShowPlaceDomains) return {};
 
 	// Asked before building, not after. A level's domains cost the same to build whether or not
@@ -172,7 +177,64 @@ TArray<FCanvasUVTri> UBurinWorld::GetProvinceTriangles(int32 mode, int32 zoomCat
 	// per level per year, not once per frame -- EnsurePlaceDomains() returns immediately after that.
 	MapLowZoom->EnsurePlaceDomains(Places, Polities, zoomCategory, DomainRadiusKm, bRiversBlockDomains);
 
-	return MapLowZoom->GetProvinceTriangles(mode, zoomCategory, minFracY, minFracX, maxFracY, maxFracX, offsetX, offsetY, width, height);
+	return MapLowZoom->GetDomainTriangles(mode, zoomCategory, minFracY, minFracX, maxFracY, maxFracX, offsetX, offsetY, width, height);
+}
+
+TArray<FMapDrawCall> UBurinWorld::PlanDraws(int32 mapMode, int32 zoomCategory, double y, double x, double yDelta, double xDelta, int32 renderTargetWidth, int32 renderTargetHeight) {
+	if (!EnsureInitialized(TEXT("PlanDraws"))) return {};
+
+	return MapLowZoom->PlanDraws(mapMode, zoomCategory, y, x, yDelta, xDelta, renderTargetWidth, renderTargetHeight);
+}
+
+TArray<FMapDrawCall> UBurinWorld::PlanDrawsForView(int32 mapMode, int32 zoomCategory, double latitude, double longitude, double halfAngleDegrees, int32 renderTargetWidth, int32 renderTargetHeight) {
+	const double halfAngle = FMath::Max(halfAngleDegrees, 0.0);
+
+	// Latitude flipped, because the mesh counts y southward from the north pole.
+	const double y = -latitude;
+
+	// Longitude degrees shorten by cos(latitude), so covering the same ground takes more of them
+	// away from the equator. Floored so the poles, where the factor runs to infinity, ask for half
+	// a turn rather than an unbounded number, and capped at half a turn for the same reason.
+	const double cosLatitude = FMath::Max(FMath::Cos(FMath::DegreesToRadians(latitude)), 0.01);
+	const double xDelta = FMath::Min(halfAngle / cosLatitude, 180.0);
+
+	return PlanDraws(mapMode, zoomCategory, y, longitude, halfAngle, xDelta, renderTargetWidth, renderTargetHeight);
+}
+
+FMapDrawCall UBurinWorld::MakeTileDrawCall(int32 zoomCategory, int32 tileX, int32 tileY, int32 renderTargetWidth, int32 renderTargetHeight) {
+	if (!EnsureInitialized(TEXT("MakeTileDrawCall"))) return FMapDrawCall();
+
+	return MapLowZoom->MakeTileDrawCall(zoomCategory, tileX, tileY, renderTargetWidth, renderTargetHeight);
+}
+
+void UBurinWorld::ResetMapCoverage() {
+	if (!EnsureInitialized(TEXT("ResetMapCoverage"))) return;
+
+	MapLowZoom->ResetCoverage();
+}
+
+TArray<FCanvasUVTri> UBurinWorld::GetTerrainTrianglesForDrawCall(int32 mode, const FMapDrawCall& drawCall) {
+	return GetTerrainTriangles(mode, drawCall.ZoomCategory,
+		drawCall.MinFracY, drawCall.MinFracX, drawCall.MaxFracY, drawCall.MaxFracX,
+		drawCall.OffsetX, drawCall.OffsetY, drawCall.Width, drawCall.Height);
+}
+
+TArray<FCanvasUVTri> UBurinWorld::GetDomainTrianglesForDrawCall(int32 mode, const FMapDrawCall& drawCall) {
+	return GetDomainTriangles(mode, drawCall.ZoomCategory,
+		drawCall.MinFracY, drawCall.MinFracX, drawCall.MaxFracY, drawCall.MaxFracX,
+		drawCall.OffsetX, drawCall.OffsetY, drawCall.Width, drawCall.Height);
+}
+
+TArray<FCanvasUVTri> UBurinWorld::GetBorderTriangles(int32 mode, int32 zoomCategory, double minFracY, double minFracX, double maxFracY, double maxFracX, int32 offsetX, int32 offsetY, int32 width, int32 height, double thickness) {
+	if (!EnsureInitialized(TEXT("GetBorderTriangles"))) return {};
+
+	return MapLowZoom->GetBorderTriangles(mode, zoomCategory, minFracY, minFracX, maxFracY, maxFracX, offsetX, offsetY, width, height, thickness);
+}
+
+TArray<FCanvasUVTri> UBurinWorld::GetBorderTrianglesForDrawCall(int32 mode, const FMapDrawCall& drawCall, double thickness) {
+	return GetBorderTriangles(mode, drawCall.ZoomCategory,
+		drawCall.MinFracY, drawCall.MinFracX, drawCall.MaxFracY, drawCall.MaxFracX,
+		drawCall.OffsetX, drawCall.OffsetY, drawCall.Width, drawCall.Height, thickness);
 }
 
 FDomainInfo UBurinWorld::GetDomainAtCoordinate(int32 zoomCategory, double x, double y) {
@@ -236,6 +298,55 @@ TArray<int32> UBurinWorld::GetSubregionIndices(int32 zoomCategory, double y, dou
 	if (!EnsureInitialized(TEXT("GetSubregionIndices"))) return {};
 
 	return MapLowZoom->GetSubregionIndices(zoomCategory, y, x, yDelta, xDelta);
+}
+
+TArray<int32> UBurinWorld::GetSubregionIndicesForView(int32 zoomCategory, double latitude, double longitude, double halfAngleDegrees) {
+	if (!EnsureInitialized(TEXT("GetSubregionIndicesForView"))) return {};
+
+	// Deliberately the same two conversions PlanDrawsForView makes, so the map and the sphere agree
+	// about which tiles a given view wants.
+	const double halfAngle = FMath::Max(halfAngleDegrees, 0.0);
+	const double y = -latitude;
+
+	const double cosLatitude = FMath::Max(FMath::Cos(FMath::DegreesToRadians(latitude)), 0.01);
+	const double xDelta = FMath::Min(halfAngle / cosLatitude, 180.0);
+
+	return MapLowZoom->GetSubregionIndices(zoomCategory, y, longitude, halfAngle, xDelta);
+}
+
+void UBurinWorld::GetRenderTargetPixel(double latitude, double longitude, double minLatitude, double maxLatitude, double minLongitude, double maxLongitude, int32 renderTargetWidth, int32 renderTargetHeight, int32& outX, int32& outY) {
+	outX = 0;
+	outY = 0;
+
+	const double spanLongitude = maxLongitude - minLongitude;
+	const double spanLatitude = maxLatitude - minLatitude;
+	if (FMath::IsNearlyZero(spanLongitude) || FMath::IsNearlyZero(spanLatitude)) {
+		return;
+	}
+
+	// Y counts down from the north edge, because a render target's first row is its top one and the
+	// mesh counts y southward from the pole. This is the same negation that mirrored the tile window
+	// about the equator when it was got wrong in Blueprint, so it lives here now.
+	const double fractionX = (longitude - minLongitude) / spanLongitude;
+	const double fractionY = (maxLatitude - latitude) / spanLatitude;
+
+	outX = FMath::Clamp(FMath::FloorToInt32(fractionX * renderTargetWidth), 0, FMath::Max(renderTargetWidth - 1, 0));
+	outY = FMath::Clamp(FMath::FloorToInt32(fractionY * renderTargetHeight), 0, FMath::Max(renderTargetHeight - 1, 0));
+}
+
+void UBurinWorld::GetTileCentreCoordinate(int32 zoomCategory, int32 tileX, int32 tileY, double& latitude, double& longitude) {
+	latitude = 0.0;
+	longitude = 0.0;
+	if (!EnsureInitialized(TEXT("GetTileCentreCoordinate"))) return;
+
+	const int32 w = MapLowZoom->GetNumSubregions(zoomCategory, true);
+	const int32 h = MapLowZoom->GetNumSubregions(zoomCategory, false);
+	if (w <= 0 || h <= 0) return;
+
+	longitude = -180.0 + (tileX + 0.5) * 360.0 / w;
+
+	// Row 0 is the north pole's row: mesh y counts southward from -90, and latitude is its negation.
+	latitude = 90.0 - (tileY + 0.5) * 180.0 / h;
 }
 
 int32 UBurinWorld::GetNumSubregions(int32 zoomCategory, bool isX) {
